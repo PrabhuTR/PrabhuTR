@@ -6,14 +6,18 @@ Associate SCM Engineer at Thomson Reuters with expertise in **AWS**, **CI/CD aut
 ---
 
 ## 🛠 Skills
-- **Cloud Services:** AWS (EC2, S3, VPC, Lambda, Route53, SNS)
-- **CI/CD:** Jenkins, GitHub Actions ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-%232088FF.svg?style=flat&logo=githubactions&logoColor=white)
-- **Automation & Containerization:** Ansible, Docker, Kubernetes, Terraform
-- **Monitoring:** Datadog, Prometheus, Nagios
-- **Scripting:** Python, Shell
-- **Programming:** Java
-- **Version Control:** Git, TFVS, CVS
-- **OS:** RHEL, Ubuntu Linux, Windows
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-%232088FF.svg?style=flat&logo=githubactions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-%23326ce5.svg?style=flat&logo=kubernetes&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-%23EE0000.svg?style=flat&logo=ansible&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-%237B42BC.svg?style=flat&logo=terraform&logoColor=white)
+![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=flat&logo=python&logoColor=white)
+![Shell](https://img.shields.io/badge/Shell-%23121011.svg?style=flat&logo=gnu-bash&logoColor=white)
+![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?style=flat&logo=java&logoColor=white)
+![Datadog](https://img.shields.io/badge/Datadog-%23632CA6.svg?style=flat&logo=datadog&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-%23E6522C.svg?style=flat&logo=prometheus&logoColor=white)
+![Nagios](https://img.shields.io/badge/Nagios-%23000000.svg?style=flat&logo=nagios&logoColor=white)
 
 ---
 
@@ -25,7 +29,7 @@ Associate SCM Engineer at Thomson Reuters with expertise in **AWS**, **CI/CD aut
 ---
 
 ## 📈 GitHub Stats
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=radical)
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=radical)
 
 ---
 
