@@ -1,3 +1,5 @@
+---
+
 # 👋 Hi, I'm Prabhu P
 
 ## 🚀 About Me
@@ -29,7 +31,11 @@ Associate SCM Engineer at Thomson Reuters with expertise in **AWS**, **CI/CD aut
 ---
 
 ## 📈 GitHub Stats
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=radical)
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=radical&include_all_commits=true&count_private=true)
+
+Optional:
+- Streak: https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR
+- Metrics (yearly insights): https://metrics.lecoq.io/PrabhuTR?template=classic&base=activity&base.indepth=true&config.timezone=Asia/Kolkata
 
 ---
 
