@@ -1,0 +1,84 @@
+{
+  "name": "Kids Story Video Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 24 }]
+        }
+      },
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://trends.google.com/trends/trendingsearches/daily/rss?geo=US",
+        "options": {}
+      },
+      "name": "Get Trends",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse RSS and filter kid-friendly trends\nconst xml = $input.first().json.data;\nconst trends = [];\n\n// Simple XML parsing for trend titles\nconst matches = xml.match(/<title>([^<]+)<\\/title>/g) || [];\nfor (const match of matches.slice(1, 10)) {\n  const title = match.replace(/<\\/?title>/g, '');\n  // Filter out adult/news topics\n  const skipWords = ['death', 'killed', 'murder', 'war', 'attack', 'scandal', 'arrest'];\n  if (!skipWords.some(word => title.toLowerCase().includes(word))) {\n    trends.push(title);\n  }\n}\n\nconst selectedTrend = trends[Math.floor(Math.random() * Math.min(trends.length, 5))] || 'magical adventure';\n\nreturn [{ json: { trend: selectedTrend } }];"
+      },
+      "name": "Filter Kid-Friendly",
+      "type": "n8n-nodes-base.code",
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a children's story writer. Create short, engaging, educational stories for kids aged 4-8. Stories should be positive, have a moral lesson, and be exactly 5 scenes. Format: Return ONLY valid JSON with this structure: {\\\"title\\\": \\\"Story Title\\\", \\\"scenes\\\": [{\\\"narration\\\": \\\"Scene text (2-3 sentences)\\\", \\\"image_prompt\\\": \\\"Simple visual description for AI image generation, cartoon style, bright colors, kid-friendly\\\"}]}\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Create a fun children's story inspired by: {{ $json.trend }}. Make it magical and educational.\"\n    }\n  ],\n  \"temperature\": 0.8,\n  \"max_tokens\": 1500\n}",
+        "options": {}
+      },
+      "name": "Generate Story (Groq)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the story from Groq response\nconst response = $input.first().json;\nlet storyText = response.choices[0].message.content;\n\n// Clean up and parse JSON\nstoryText = storyText.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n\ntry {\n  const story = JSON.parse(storyText);\n  return [{ json: story }];\n} catch (e) {\n  // Fallback story if parsing fails\n  return [{ json: {\n    title: \"The Magical Garden\",\n    scenes: [\n      { narration: \"Once upon a time, there was a beautiful garden where flowers could talk and sing.\", image_prompt: \"cartoon magical garden with colorful talking flowers, bright sunshine, kid-friendly\" },\n      { narration: \"A little butterfly named Bella loved to visit the garden every day.\", image_prompt: \"cute cartoon butterfly with big eyes in a flower garden, bright colors, children's illustration\" },\n      { narration: \"One day, Bella found a flower that was sad because it hadn't bloomed yet.\", image_prompt: \"cartoon butterfly comforting a sad flower bud, gentle scene, pastel colors\" },\n      { narration: \"Bella sang a happy song, and the flower began to bloom beautifully!\", image_prompt: \"cartoon butterfly singing with musical notes, flower blooming with sparkles, joyful scene\" },\n      { narration: \"The moral of the story is: A kind word can help anyone bloom! The End.\", image_prompt: \"happy cartoon butterfly and blooming flower together, rainbow in background, 'The End' text\" }\n    ]\n  }}];\n}"
+      },
+      "name": "Parse Story",
+      "type": "n8n-nodes-base.code",
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate images for each scene using Pollinations.ai (free)\nconst story = $input.first().json;\nconst scenes = story.scenes;\nconst imageUrls = [];\n\nfor (let i = 0; i < scenes.length; i++) {\n  const prompt = encodeURIComponent(scenes[i].image_prompt + ', digital art, vibrant colors, safe for children');\n  const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=1280&height=720&seed=${Date.now() + i}`;\n  imageUrls.push({\n    sceneIndex: i,\n    narration: scenes[i].narration,\n    imageUrl: imageUrl\n  });\n}\n\nreturn [{ json: { title: story.title, scenes: imageUrls } }];"
+      },
+      "name": "Generate Image URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.webhook_url }}",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "name": "Send to Video Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1450, 300],
+      "notes": "Sends to your local Python script via webhook"
+    }
+  ],
+  "connections": {
+    "Daily Trigger": { "main": [[{ "node": "Get Trends", "type": "main", "index": 0 }]] },
+    "Get Trends": { "main": [[{ "node": "Filter Kid-Friendly", "type": "main", "index": 0 }]] },
+    "Filter Kid-Friendly": { "main": [[{ "node": "Generate Story (Groq)", "type": "main", "index": 0 }]] },
+    "Generate Story (Groq)": { "main": [[{ "node": "Parse Story", "type": "main", "index": 0 }]] },
+    "Parse Story": { "main": [[{ "node": "Generate Image URLs", "type": "main", "index": 0 }]] },
+    "Generate Image URLs": { "main": [[{ "node": "Send to Video Generator", "type": "main", "index": 0 }]] }
+  }
+}

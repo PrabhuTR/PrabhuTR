@@ -1,0 +1,739 @@
+name: Daily Kids Story Generator
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Generate test video (shorter)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      language:
+        description: 'Video language'
+        required: false
+        default: 'english'
+        type: choice
+        options:
+          - 'english'
+          - 'hindi'
+          - 'tamil'
+          - 'telugu'
+          - 'kannada'
+          - 'malayalam'
+          - 'bengali'
+          - 'marathi'
+
+jobs:
+  generate-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          pip install edge-tts moviepy pillow requests google-auth-oauthlib google-api-python-client
+
+      - name: Setup YouTube credentials
+        run: |
+          echo '${{ secrets.YOUTUBE_CREDENTIALS }}' > youtube_credentials.json
+          echo '${{ secrets.YOUTUBE_TOKEN }}' > youtube_token.json
+
+      - name: Generate Kids Story Video
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TEST_MODE: ${{ inputs.test_mode }}
+          VIDEO_LANGUAGE: ${{ inputs.language || 'english' }}
+        run: |
+          python << 'SCRIPT'
+          import os
+          import json
+          import asyncio
+          import requests
+          from pathlib import Path
+          from datetime import datetime
+          import random
+          import edge_tts
+          from moviepy.editor import (
+              ImageClip, AudioFileClip, concatenate_videoclips,
+              CompositeVideoClip, ColorClip, TextClip
+          )
+          from PIL import Image, ImageDraw, ImageFont
+          from io import BytesIO
+
+          # Configuration
+          OUTPUT_DIR = Path("./output")
+          TEMP_DIR = Path("./temp")
+          OUTPUT_DIR.mkdir(exist_ok=True)
+          TEMP_DIR.mkdir(exist_ok=True)
+
+          TEST_MODE = os.environ.get('TEST_MODE', 'false') == 'true'
+          GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
+          VIDEO_LANGUAGE = os.environ.get('VIDEO_LANGUAGE', 'english').lower()
+
+          # For 10-minute video, we need ~20 scenes (30 seconds each)
+          NUM_SCENES = 5 if TEST_MODE else 20
+
+          # Multi-language voice configuration (Edge-TTS - FREE)
+          # All voices are kid-friendly female voices
+          LANGUAGE_CONFIG = {
+              "english": {
+                  "voice": "en-US-AnaNeural",  # Cheerful American voice
+                  "lang_code": "en",
+                  "name": "English"
+              },
+              "hindi": {
+                  "voice": "hi-IN-SwaraNeural",  # Hindi female voice
+                  "lang_code": "hi",
+                  "name": "Hindi"
+              },
+              "tamil": {
+                  "voice": "ta-IN-PallaviNeural",  # Tamil female voice
+                  "lang_code": "ta",
+                  "name": "Tamil"
+              },
+              "telugu": {
+                  "voice": "te-IN-ShrutiNeural",  # Telugu female voice
+                  "lang_code": "te",
+                  "name": "Telugu"
+              },
+              "kannada": {
+                  "voice": "kn-IN-SapnaNeural",  # Kannada female voice
+                  "lang_code": "kn",
+                  "name": "Kannada"
+              },
+              "malayalam": {
+                  "voice": "ml-IN-SobhanaNeural",  # Malayalam female voice
+                  "lang_code": "ml",
+                  "name": "Malayalam"
+              },
+              "bengali": {
+                  "voice": "bn-IN-TanishaaNeural",  # Bengali female voice
+                  "lang_code": "bn",
+                  "name": "Bengali"
+              },
+              "marathi": {
+                  "voice": "mr-IN-AarohiNeural",  # Marathi female voice
+                  "lang_code": "mr",
+                  "name": "Marathi"
+              }
+          }
+
+          # Get language config
+          LANG_CONFIG = LANGUAGE_CONFIG.get(VIDEO_LANGUAGE, LANGUAGE_CONFIG["english"])
+          VOICE = LANG_CONFIG["voice"]
+          LANG_CODE = LANG_CONFIG["lang_code"]
+          LANG_NAME = LANG_CONFIG["name"]
+
+          print(f"Language: {LANG_NAME} ({VOICE})")
+
+          # Kid-friendly MORAL story topics (age 4+)
+          # Each topic has a clear moral lesson for children
+          TRENDING_TOPICS = [
+              "magical unicorn who learns to share toys with friends - MORAL: Sharing brings happiness",
+              "brave little dinosaur who overcomes his fear of dark - MORAL: Courage comes from within",
+              "friendly robot who learns to be kind to everyone - MORAL: Kindness makes the world better",
+              "underwater mermaid princess who helps lost baby fish find home - MORAL: Helping others is rewarding",
+              "little star who learns patience while waiting for his turn - MORAL: Good things come to those who wait",
+              "forest animals who learn teamwork to build a treehouse - MORAL: Together we are stronger",
+              "superhero kid who learns why honesty is important - MORAL: Always tell the truth",
+              "bunny who learns to say sorry after making a mistake - MORAL: Saying sorry heals friendships",
+              "elephant who learns to be grateful for what he has - MORAL: Be thankful for everything",
+              "butterfly who learns that being different is beautiful - MORAL: Everyone is unique and special",
+              "puppy who learns the importance of listening to parents - MORAL: Parents know best",
+              "little cloud who learns to share rain with thirsty flowers - MORAL: Giving brings joy"
+          ]
+
+          async def generate_voiceover(text, output_path):
+              """Generate voiceover using Edge-TTS"""
+              communicate = edge_tts.Communicate(text, VOICE)
+              await communicate.save(output_path)
+
+          def download_image(prompt, output_path, retries=3):
+              """Download image from Pollinations.ai"""
+              safe_prompt = requests.utils.quote(prompt + ", cartoon style, bright colors, kid-friendly, children book illustration")
+              url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
+
+              for attempt in range(retries):
+                  try:
+                      print(f"  Downloading image (attempt {attempt + 1})...")
+                      response = requests.get(url, timeout=90)
+                      if response.status_code == 200:
+                          img = Image.open(BytesIO(response.content))
+                          img = img.convert('RGB')
+                          img = img.resize((1280, 720), Image.Resampling.LANCZOS)
+                          img.save(output_path)
+                          return True
+                  except Exception as e:
+                      print(f"  Retry {attempt + 1}: {e}")
+
+              # Create colorful placeholder
+              colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185)]
+              img = Image.new('RGB', (1280, 720), random.choice(colors))
+              img.save(output_path)
+              return False
+
+          def generate_story_with_groq(topic, num_scenes):
+              """Generate story using Groq API"""
+              if not GROQ_API_KEY:
+                  return generate_fallback_story(topic, num_scenes)
+
+              # Language instruction for story generation
+              lang_instruction = ""
+              if VIDEO_LANGUAGE != "english":
+                  lang_instruction = f"""
+          IMPORTANT: Write the story narration in {LANG_NAME} language.
+          - Use simple {LANG_NAME} words that children aged 4+ can understand
+          - Keep image_prompt in English (for image generation)
+          """
+
+              try:
+                  response = requests.post(
+                      "https://api.groq.com/openai/v1/chat/completions",
+                      headers={
+                          "Authorization": f"Bearer {GROQ_API_KEY}",
+                          "Content-Type": "application/json"
+                      },
+                      json={
+                          "model": "llama-3.1-8b-instant",
+                          "messages": [
+                              {
+                                  "role": "system",
+                                  "content": f"""You are a children's story writer specializing in MORAL STORIES for kids aged 4-8 years.
+
+          TARGET AUDIENCE: Children aged 4+ years old
+          STORY TYPE: Moral/Educational Story with clear life lesson
+
+          STRICT RULES:
+          - Story must have EXACTLY {num_scenes} scenes
+          - Each scene narration: 2-3 simple sentences (25-30 seconds when read aloud)
+          - Use VERY SIMPLE words that 4-year-old kids can understand
+          - Story MUST have a clear MORAL LESSON at the end (kindness, sharing, honesty, courage, respect, etc.)
+          - Make it fun, magical, colorful, and engaging
+          - NO scary content, NO violence, NO negative themes
+          - Include cute animal characters or magical creatures kids love
+          - End with "The End!" and state the moral clearly
+          {lang_instruction}
+
+          Return ONLY valid JSON in this exact format:
+          {{"title": "Story Title", "moral": "The moral lesson", "scenes": [{{"narration": "Scene text here", "image_prompt": "Simple description for AI image in English"}}]}}"""
+                              },
+                              {
+                                  "role": "user",
+                                  "content": f"Create a magical moral story for children about: {topic}"
+                              }
+                          ],
+                          "temperature": 0.8,
+                          "max_tokens": 4000
+                      },
+                      timeout=60
+                  )
+
+                  if response.status_code == 200:
+                      content = response.json()['choices'][0]['message']['content']
+                      content = content.replace('```json', '').replace('```', '').strip()
+                      story = json.loads(content)
+                      if len(story.get('scenes', [])) >= num_scenes:
+                          return story
+              except Exception as e:
+                  print(f"Groq API error: {e}")
+
+              return generate_fallback_story(topic, num_scenes)
+
+          def generate_fallback_story(topic, num_scenes):
+              """Generate a longer fallback story"""
+              stories = {
+                  "magical unicorn": {
+                      "title": "Luna the Magical Unicorn",
+                      "scenes": [
+                          {"narration": "Once upon a time, in a land made of cotton candy clouds, there lived a beautiful unicorn named Luna. Her mane sparkled with all the colors of the rainbow.", "image_prompt": "beautiful cartoon unicorn with rainbow mane standing on cotton candy clouds"},
+                          {"narration": "Luna had a special power. Every time she ran, flowers would bloom behind her, leaving trails of roses, daisies, and sunflowers.", "image_prompt": "cartoon unicorn running with colorful flowers blooming behind her in a meadow"},
+                          {"narration": "One sunny morning, Luna heard a tiny cry coming from the Whispering Woods. Someone needed help!", "image_prompt": "cartoon unicorn with curious expression near a magical forest entrance"},
+                          {"narration": "She galloped into the forest and found a little bunny named Benny. He had lost his way home and was very scared.", "image_prompt": "cute cartoon unicorn meeting a small scared bunny in a forest"},
+                          {"narration": "Don't worry, little friend, said Luna with a warm smile. I'll help you find your family!", "image_prompt": "friendly cartoon unicorn comforting a small bunny, warm glowing light"},
+                          {"narration": "Luna used her magical horn to light up the path. It glowed like a golden flashlight in the dark forest.", "image_prompt": "cartoon unicorn with glowing horn illuminating a dark forest path"},
+                          {"narration": "They walked past the Giggling Stream, where the water made funny sounds like laughter.", "image_prompt": "cartoon unicorn and bunny crossing a sparkling stream with happy water droplets"},
+                          {"narration": "They climbed over the Marshmallow Mountains, which were soft and squishy under their feet.", "image_prompt": "cartoon unicorn and bunny climbing fluffy white marshmallow mountains"},
+                          {"narration": "Along the way, they met a friendly bluebird named Bella who joined their adventure.", "image_prompt": "cartoon unicorn bunny and bluebird together on an adventure, sunny day"},
+                          {"narration": "Bella flew high above the trees and spotted something special in the distance.", "image_prompt": "cartoon bluebird flying high with unicorn and bunny looking up hopefully"},
+                          {"narration": "There it is! cried Bella. I can see Benny's home - the Cozy Carrot Village!", "image_prompt": "cartoon village made of carrots and vegetables in distance, characters excited"},
+                          {"narration": "Luna ran as fast as the wind, with Benny holding on tight and Bella flying alongside.", "image_prompt": "cartoon unicorn running fast with bunny on back and bird flying beside"},
+                          {"narration": "When they arrived at the village, Benny's family was so happy to see him! They hugged him tight.", "image_prompt": "cartoon bunny family hugging happily, unicorn and bird watching with smiles"},
+                          {"narration": "Thank you, Luna! said Benny's mother. You are the kindest unicorn in all the land!", "image_prompt": "grateful cartoon bunny family thanking unicorn, warm happy scene"},
+                          {"narration": "Luna felt her heart grow warm and fuzzy. Helping others always made her feel so good inside.", "image_prompt": "cartoon unicorn with glowing heart, surrounded by happy friends"},
+                          {"narration": "The bunny family invited everyone for a delicious carrot cake celebration!", "image_prompt": "cartoon characters having party with carrot cake, balloons and decorations"},
+                          {"narration": "They danced and sang songs until the stars came out to twinkle in the sky.", "image_prompt": "cartoon characters dancing under starry night sky, magical atmosphere"},
+                          {"narration": "That night, Luna learned that the best adventures are the ones where you help someone in need.", "image_prompt": "cartoon unicorn looking at stars thoughtfully, peaceful night scene"},
+                          {"narration": "From that day on, Luna, Benny, and Bella became the best of friends and had many more adventures together.", "image_prompt": "cartoon unicorn bunny and bird as best friends, rainbow in background"},
+                          {"narration": "And they all lived happily ever after! Remember kids, always be kind and help those who need it. The End!", "image_prompt": "happy ending scene with all characters waving, THE END text, sparkles and rainbow"}
+                      ]
+                  },
+                  "default": {
+                      "title": "The Adventure of Sunny the Star",
+                      "scenes": [
+                          {"narration": "High up in the sparkly night sky, there lived a little star named Sunny who dreamed of visiting Earth.", "image_prompt": "cute cartoon star with happy face in night sky surrounded by other stars"},
+                          {"narration": "One magical night, Sunny made a wish and whoooosh - she started falling gently toward Earth!", "image_prompt": "cartoon star falling through colorful clouds toward earth, excited expression"},
+                          {"narration": "Sunny landed softly in a beautiful garden filled with sleeping flowers waiting for morning.", "image_prompt": "cartoon glowing star in a garden at night with closed flowers"},
+                          {"narration": "When the sun began to rise, the flowers woke up and were amazed to see Sunny glowing beside them.", "image_prompt": "cartoon flowers waking up surprised to see a glowing star character"},
+                          {"narration": "Hello! said a sunflower named Sally. Are you the sun? You're so bright and beautiful!", "image_prompt": "cartoon sunflower talking to a star character, friendly garden scene"},
+                          {"narration": "Sunny giggled and said, No silly! I'm a star from the sky. I came to make friends!", "image_prompt": "laughing cartoon star with friendly flowers around her"},
+                          {"narration": "The garden animals came to meet Sunny too - butterflies, ladybugs, and a friendly frog named Fred.", "image_prompt": "cartoon star surrounded by butterflies ladybugs and a frog in garden"},
+                          {"narration": "Fred showed Sunny how to jump on lily pads. Splash! Sunny wasn't very good at it but she had so much fun!", "image_prompt": "cartoon star trying to jump on lily pads with frog, water splashing"},
+                          {"narration": "The butterflies taught Sunny how to dance in the breeze, twirling and spinning through the flowers.", "image_prompt": "cartoon star dancing with butterflies among colorful flowers"},
+                          {"narration": "As afternoon came, the ladybugs showed Sunny their favorite hiding spots under the leaves.", "image_prompt": "cartoon star and ladybugs playing hide and seek under plant leaves"},
+                          {"narration": "Sunny shared her starlight with everyone, making the whole garden sparkle and shimmer.", "image_prompt": "cartoon star spreading sparkly light over magical glowing garden"},
+                          {"narration": "But as evening approached, Sunny noticed the sky was getting dark and her star family was twinkling above.", "image_prompt": "cartoon star looking up at night sky with other stars appearing"},
+                          {"narration": "I have to go back home, said Sunny sadly. My family is calling me back to the sky.", "image_prompt": "sad cartoon star saying goodbye to garden friends at sunset"},
+                          {"narration": "All her new friends gathered around for a group hug. We'll miss you Sunny! they said.", "image_prompt": "cartoon star getting hugs from all garden friends, emotional scene"},
+                          {"narration": "Sunny floated back up to the sky, but she promised to twinkle extra bright every night.", "image_prompt": "cartoon star floating up to sky waving goodbye to friends below"},
+                          {"narration": "Now every night, the garden friends look up and wave at the brightest star in the sky - that's Sunny!", "image_prompt": "garden animals looking up at brightest star in night sky, waving"},
+                          {"narration": "And Sunny always winks back at them, sending down a little bit of stardust on their dreams.", "image_prompt": "cartoon star winking with stardust falling down to sleeping garden"},
+                          {"narration": "The moral of this story is that true friends stay connected, no matter how far apart they are.", "image_prompt": "split scene showing star in sky and friends on earth connected by starlight"},
+                          {"narration": "So whenever you see a twinkling star, remember that someone up there might be your friend too!", "image_prompt": "child looking at stars through window, magical night scene"},
+                          {"narration": "And they all lived happily ever after. Sweet dreams, little ones! The End!", "image_prompt": "peaceful night scene with happy star and garden THE END with sparkles"}
+                      ]
+                  }
+              }
+
+              # Select appropriate story or use default
+              story_key = "magical unicorn" if "unicorn" in topic.lower() else "default"
+              story = stories.get(story_key, stories["default"])
+
+              # Trim to requested number of scenes
+              story["scenes"] = story["scenes"][:num_scenes]
+              return story
+
+          def create_opening_intro(title, moral, output_path):
+              """Create beautiful opening intro with gradient and decorations"""
+              img = Image.new('RGB', (1280, 720), (135, 206, 250))
+              draw = ImageDraw.Draw(img)
+
+              # Create gradient background (sky blue to soft pink)
+              for y in range(720):
+                  r = int(135 + (255 - 135) * y / 720)
+                  g = int(206 + (182 - 206) * y / 720)
+                  b = int(250 + (220 - 250) * y / 720)
+                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
+
+              # Add decorative stars
+              import random
+              for _ in range(25):
+                  x, y = random.randint(50, 1230), random.randint(30, 250)
+                  size = random.randint(3, 10)
+                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 200))
+
+              # Add sparkles
+              for _ in range(15):
+                  x, y = random.randint(50, 1230), random.randint(500, 680)
+                  size = random.randint(2, 6)
+                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 200, 255))
+
+              img.save(output_path)
+              return output_path
+
+          def create_thumbnail(title, moral, output_path):
+              """Create eye-catching YouTube thumbnail"""
+              # Create colorful background
+              img = Image.new('RGB', (1280, 720), (255, 100, 150))
+              draw = ImageDraw.Draw(img)
+
+              # Rainbow gradient
+              colors = [(255,100,100), (255,165,0), (255,255,0), (0,255,0), (0,150,255), (150,0,255)]
+              stripe_height = 720 // len(colors)
+              for i, color in enumerate(colors):
+                  y_start = i * stripe_height
+                  draw.rectangle([0, y_start, 1280, y_start + stripe_height], fill=color)
+
+              # Add semi-transparent overlay
+              overlay = Image.new('RGBA', (1280, 720), (0, 0, 0, 120))
+              img = img.convert('RGBA')
+              img = Image.alpha_composite(img, overlay)
+              img = img.convert('RGB')
+              draw = ImageDraw.Draw(img)
+
+              # Add white banner for title
+              draw.rectangle([60, 280, 1220, 440], fill=(255, 255, 255), outline=(255, 215, 0), width=8)
+
+              # Add decorative elements
+              for _ in range(20):
+                  x, y = random.randint(50, 1230), random.randint(30, 250)
+                  draw.text((x, y), "★", fill=(255, 255, 0))
+
+              img.save(output_path)
+              return output_path
+
+          def create_ending_card(moral, output_path):
+              """Create THE END card with moral lesson"""
+              img = Image.new('RGB', (1280, 720), (75, 0, 130))  # Indigo
+              draw = ImageDraw.Draw(img)
+
+              # Gradient
+              for y in range(720):
+                  r = int(75 + (138 - 75) * y / 720)
+                  g = int(0 + (43 - 0) * y / 720)
+                  b = int(130 + (226 - 130) * y / 720)
+                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
+
+              # Add stars
+              for _ in range(40):
+                  x, y = random.randint(20, 1260), random.randint(20, 700)
+                  size = random.randint(2, 7)
+                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 220))
+
+              img.save(output_path)
+              return output_path
+
+          def create_video(story):
+              """Create the full video with intro, thumbnail, and ending"""
+              title = story.get('title', 'Kids Story Time')
+              moral = story.get('moral', 'Be kind and good!')
+              scenes = story.get('scenes', [])
+
+              print(f"\n{'='*60}")
+              print(f"Creating: {title}")
+              print(f"Moral: {moral}")
+              print(f"Scenes: {len(scenes)}")
+              print(f"{'='*60}\n")
+
+              clips = []
+
+              # 1. Create beautiful opening intro
+              print("Creating opening intro...")
+              intro_path = TEMP_DIR / "intro.jpg"
+              create_opening_intro(title, moral, intro_path)
+              intro_audio_path = TEMP_DIR / "intro_audio.mp3"
+
+              # Language-specific intro
+              intro_texts = {
+                  "en": f"Welcome to Story Time! Today's story is: {title}. A wonderful moral story for children!",
+                  "hi": f"कहानी के समय में आपका स्वागत है! आज की कहानी है: {title}",
+                  "ta": f"கதை நேரத்திற்கு வரவேற்கிறோம்! இன்றைய கதை: {title}",
+                  "te": f"కథా సమయానికి స్వాగతం! నేటి కథ: {title}",
+                  "kn": f"ಕಥೆ ಸಮಯಕ್ಕೆ ಸ್ವಾಗತ! ಇಂದಿನ ಕಥೆ: {title}",
+                  "ml": f"കഥാ സമയത്തിലേക്ക് സ്വാഗതം! ഇന്നത്തെ കഥ: {title}",
+                  "bn": f"গল্পের সময়ে স্বাগতম! আজকের গল্প: {title}",
+                  "mr": f"गोष्टीच्या वेळेत स्वागत! आजची गोष्ट: {title}"
+              }
+              intro_text = intro_texts.get(LANG_CODE, intro_texts["en"])
+              asyncio.run(generate_voiceover(intro_text, str(intro_audio_path)))
+              intro_audio = AudioFileClip(str(intro_audio_path))
+              intro_clip = ImageClip(str(intro_path)).set_duration(intro_audio.duration + 1.5).set_audio(intro_audio)
+              clips.append(intro_clip)
+
+              # 2. Create thumbnail (save separately for YouTube)
+              print("Creating thumbnail...")
+              thumb_path = OUTPUT_DIR / "thumbnail.jpg"
+              create_thumbnail(title, moral, thumb_path)
+              print(f"Thumbnail saved: {thumb_path}")
+
+              # Process each scene
+              for i, scene in enumerate(scenes):
+                  print(f"\nScene {i+1}/{len(scenes)}: {scene['narration'][:50]}...")
+
+                  # Download image
+                  img_path = TEMP_DIR / f"scene_{i}.jpg"
+                  download_image(scene['image_prompt'], str(img_path))
+
+                  # Generate voiceover
+                  audio_path = TEMP_DIR / f"audio_{i}.mp3"
+                  asyncio.run(generate_voiceover(scene['narration'], str(audio_path)))
+
+                  # Create clip
+                  audio = AudioFileClip(str(audio_path))
+                  duration = audio.duration + 2  # Add pause between scenes
+
+                  clip = ImageClip(str(img_path)).set_duration(duration).set_audio(audio)
+                  clips.append(clip)
+
+              # 4. Create ending card with moral
+              print("\nCreating ending card...")
+              ending_path = TEMP_DIR / "ending.jpg"
+              create_ending_card(moral, ending_path)
+              ending_audio_path = TEMP_DIR / "ending_audio.mp3"
+
+              # Language-specific ending
+              ending_texts = {
+                  "en": f"And that's the end of our story! Remember children: {moral}. Please like and subscribe for more wonderful stories. See you next time! Goodbye!",
+                  "hi": f"और यह हमारी कहानी का अंत है! याद रखें बच्चों: {moral}. अगली कहानी के लिए सब्सक्राइब करें! अलविदा!",
+                  "ta": f"இது எங்கள் கதையின் முடிவு! நினைவில் கொள்ளுங்கள்: {moral}. மேலும் கதைகளுக்கு சந்தா செலுத்துங்கள்!",
+                  "te": f"ఇది మా కథ ముగింపు! గుర్తుంచుకోండి: {moral}. మరిన్ని కథలకు సబ్స్క్రైబ్ చేయండి!",
+                  "kn": f"ಇದು ನಮ್ಮ ಕಥೆಯ ಕೊನೆ! ನೆನಪಿಡಿ: {moral}. ಹೆಚ್ಚಿನ ಕಥೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ!",
+                  "ml": f"ഇത് നമ്മുടെ കഥയുടെ അവസാനം! ഓർക്കുക: {moral}. കൂടുതൽ കഥകൾക്കായി സബ്സ്ക്രൈബ് ചെയ്യുക!",
+                  "bn": f"এই আমাদের গল্পের শেষ! মনে রেখো: {moral}. আরও গল্পের জন্য সাবস্ক্রাইব করো!",
+                  "mr": f"ही आमच्या गोष्टीचा शेवट! लक्षात ठेवा: {moral}. अधिक गोष्टींसाठी सबस्क्राइब करा!"
+              }
+              ending_text = ending_texts.get(LANG_CODE, ending_texts["en"])
+              asyncio.run(generate_voiceover(ending_text, str(ending_audio_path)))
+              ending_audio = AudioFileClip(str(ending_audio_path))
+              ending_clip = ImageClip(str(ending_path)).set_duration(ending_audio.duration + 2).set_audio(ending_audio)
+              clips.append(ending_clip)
+
+              # Combine clips
+              print("\nCombining all clips...")
+              final = concatenate_videoclips(clips, method="compose")
+
+              # Output
+              timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+              safe_title = "".join(c for c in title if c.isalnum() or c in " -_").strip()[:50]
+              output_path = OUTPUT_DIR / f"{safe_title}_{timestamp}.mp4"
+
+              print(f"\nRendering video to {output_path}...")
+              final.write_videofile(
+                  str(output_path),
+                  fps=24,
+                  codec='libx264',
+                  audio_codec='aac',
+                  verbose=False,
+                  logger=None
+              )
+
+              # Get video duration
+              duration_mins = final.duration / 60
+              print(f"\nVideo duration: {duration_mins:.1f} minutes")
+
+              # Cleanup temp files
+              for f in TEMP_DIR.glob("*"):
+                  try:
+                      f.unlink()
+                  except:
+                      pass
+
+              print(f"\n{'='*60}")
+              print(f"VIDEO CREATED: {output_path}")
+              print(f"{'='*60}\n")
+
+              return str(output_path), title
+
+          # Main execution
+          print("Starting Kids Story Video Generator...")
+          print(f"Mode: {'TEST (5 scenes)' if TEST_MODE else 'FULL (20 scenes for 10 min)'}")
+          print(f"Language: {LANG_NAME}")
+          print(f"Voice: {VOICE}")
+          print(f"Age Group: 4+ years")
+
+          # Select random topic
+          topic = random.choice(TRENDING_TOPICS)
+          print(f"Selected topic: {topic}")
+
+          # Generate story
+          print("\nGenerating moral story...")
+          story = generate_story_with_groq(topic, NUM_SCENES)
+          print(f"Story title: {story.get('title', 'Unknown')}")
+          print(f"Moral: {story.get('moral', 'Be kind and good')}")
+          print(f"Number of scenes: {len(story.get('scenes', []))}")
+
+          # Create video
+          video_path, video_title = create_video(story)
+
+          # Save metadata for upload step
+          metadata = {
+              "video_path": video_path,
+              "title": video_title,
+              "topic": topic,
+              "language": LANG_NAME,
+              "lang_code": LANG_CODE,
+              "moral": story.get('moral', 'Be kind and good')
+          }
+          with open("video_metadata.json", "w") as f:
+              json.dump(metadata, f)
+
+          print("Video generation complete!")
+          SCRIPT
+
+      - name: Upload to YouTube
+        env:
+          YOUTUBE_CREDENTIALS: ${{ secrets.YOUTUBE_CREDENTIALS }}
+        run: |
+          python << 'SCRIPT'
+          import json
+          import os
+          from pathlib import Path
+          from datetime import datetime
+
+          # Check if credentials exist
+          if not os.path.exists("youtube_credentials.json") or os.path.getsize("youtube_credentials.json") < 10:
+              print("YouTube credentials not configured. Skipping upload.")
+              print("Video saved locally in ./output/")
+              exit(0)
+
+          try:
+              from googleapiclient.discovery import build
+              from googleapiclient.http import MediaFileUpload
+              from google.oauth2.credentials import Credentials
+
+              # Load video metadata
+              with open("video_metadata.json", "r") as f:
+                  metadata = json.load(f)
+
+              video_path = metadata["video_path"]
+              story_title = metadata["title"]
+              language = metadata.get("language", "English")
+              lang_code = metadata.get("lang_code", "en")
+              moral = metadata.get("moral", "Be kind and good")
+
+              # Language-specific title suffixes
+              lang_suffix = {
+                  "English": "Animated Story for Kids",
+                  "Hindi": "बच्चों की कहानी",
+                  "Tamil": "குழந்தைகள் கதை",
+                  "Telugu": "పిల్లల కథ",
+                  "Kannada": "ಮಕ್ಕಳ ಕಥೆ",
+                  "Malayalam": "കുട്ടികളുടെ കഥ",
+                  "Bengali": "শিশুদের গল্প",
+                  "Marathi": "मुलांची गोष्ट"
+              }
+
+              suffix = lang_suffix.get(language, "Animated Story for Kids")
+
+              # YouTube video details
+              title = f"{story_title} | {suffix} | Moral Story"
+              description = f"""🌟 {story_title} 🌟
+
+          📖 Language: {language}
+          👶 Age Group: 4+ years
+          🎓 Moral: {moral}
+
+          Welcome to our magical story time! This animated MORAL STORY is perfect for children aged 4 and above.
+
+          🎨 What you'll enjoy:
+          ✨ Beautiful colorful animations
+          🎵 Clear {language} narration with soothing voice
+          📚 Important life lesson for kids
+          💤 Perfect for bedtime!
+          🧒 Safe content for young children
+
+          📝 MORAL OF THE STORY: {moral}
+
+          👍 If your little ones enjoyed this story, please LIKE and SUBSCRIBE for more magical adventures every day!
+
+          🔔 Turn on notifications so you never miss a new story!
+
+          #KidsStories #MoralStories #{language}Stories #AnimatedStories #BedtimeStories #ChildrensBooks #StoriesForKids #KidsAnimation #FairyTales #PreschoolStories #ToddlerStories #4PlusKids #EducationalStories
+
+          🤖 This video was created with AI assistance for educational entertainment.
+          """
+
+              # Language-specific tags
+              lang_tags = {
+                  "Hindi": ["hindi stories", "hindi kahani", "bachon ki kahani", "hindi cartoon"],
+                  "Tamil": ["tamil stories", "tamil kathai", "kuzhanthai kathai", "tamil cartoon"],
+                  "Telugu": ["telugu stories", "telugu kathalu", "pillala kathalu", "telugu cartoon"],
+                  "Kannada": ["kannada stories", "kannada kathe", "makkala kathe", "kannada cartoon"],
+                  "Malayalam": ["malayalam stories", "malayalam katha", "kuttikal katha", "malayalam cartoon"],
+                  "Bengali": ["bengali stories", "bangla golpo", "shishuder golpo", "bengali cartoon"],
+                  "Marathi": ["marathi stories", "marathi goshti", "mulanche goshti", "marathi cartoon"]
+              }
+
+              tags = [
+                  "kids stories", "children stories", "animated stories",
+                  "bedtime stories", "stories for kids", "moral stories",
+                  "fairy tales", "preschool", "toddler stories", "kids animation",
+                  "educational videos", "kids entertainment", "story time",
+                  "children animation", "kids videos", "4 plus kids", "moral lesson"
+              ]
+
+              # Add language-specific tags
+              tags.extend(lang_tags.get(language, []))
+
+              # Load credentials
+              creds = Credentials.from_authorized_user_file("youtube_token.json")
+
+              youtube = build('youtube', 'v3', credentials=creds)
+
+              body = {
+                  'snippet': {
+                      'title': title[:100],  # YouTube limit
+                      'description': description,
+                      'tags': tags,
+                      'categoryId': '24',  # Entertainment
+                      'defaultLanguage': 'en',
+                      'defaultAudioLanguage': 'en'
+                  },
+                  'status': {
+                      'privacyStatus': 'public',
+                      'selfDeclaredMadeForKids': True,
+                      'license': 'youtube',
+                      'embeddable': True,
+                      'publicStatsViewable': True
+                  }
+              }
+
+              print(f"Uploading: {title}")
+              media = MediaFileUpload(video_path, mimetype='video/mp4', resumable=True)
+
+              request = youtube.videos().insert(
+                  part='snippet,status',
+                  body=body,
+                  media_body=media
+              )
+
+              response = None
+              while response is None:
+                  status, response = request.next_chunk()
+                  if status:
+                      print(f"Upload progress: {int(status.progress() * 100)}%")
+
+              video_id = response['id']
+              print(f"\n✅ Video uploaded successfully!")
+              print(f"📺 Watch: https://youtube.com/watch?v={video_id}")
+
+              # Upload thumbnail
+              thumbnail_path = "./output/thumbnail.jpg"
+              if os.path.exists(thumbnail_path):
+                  print("\n📸 Uploading thumbnail...")
+                  try:
+                      youtube.thumbnails().set(
+                          videoId=video_id,
+                          media_body=MediaFileUpload(thumbnail_path, mimetype='image/jpeg')
+                      ).execute()
+                      print("✅ Thumbnail uploaded!")
+                  except Exception as thumb_error:
+                      print(f"⚠️ Thumbnail upload failed: {thumb_error}")
+                      print("(Video uploaded successfully, thumbnail can be added manually)")
+
+              print(f"\n🎉 All done! Video is live at: https://youtube.com/watch?v={video_id}")
+
+          except Exception as e:
+              print(f"Upload error: {e}")
+              print("Video saved locally. You can upload manually.")
+          SCRIPT
+
+      - name: Upload video and thumbnail as artifact (backup)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kids-story-video
+          path: |
+            output/*.mp4
+            output/thumbnail.jpg
+          retention-days: 7
+
+      - name: Summary
+        run: |
+          echo "## Kids Story Video Generator" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Video generated successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f video_metadata.json ]; then
+            TITLE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('title', 'Unknown'))")
+            echo "📖 Story: $TITLE" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📁 Video saved as artifact (available for 7 days)" >> $GITHUB_STEP_SUMMARY
