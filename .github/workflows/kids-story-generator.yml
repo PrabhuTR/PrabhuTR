@@ -151,40 +151,132 @@ jobs:
           print(f"Language: {LANG_NAME} ({VOICE})")
 
           # REAL INDIAN ANCIENT HISTORY STORIES (age 4+)
-          # Authentic stories from Maurya, Chola, Hoysala, Gupta and other great Indian dynasties
+          # 60+ Authentic stories from all great Indian dynasties and historical figures
           TRENDING_TOPICS = [
-              # MAURYA EMPIRE STORIES
+              # ===================== MAURYA EMPIRE STORIES =====================
               "Young Chandragupta Maurya - Little Chandragupta, his wise guru Chanakya, friend Bindusara, and loyal guard Pushyamitra learn to build the great Maurya empire. They unite small kingdoms into one great India - MORAL: Unity makes us stronger than any enemy",
               "Emperor Ashoka's transformation - Young warrior prince Ashoka, his wife Devi, advisor Radhagupta, and elephant friend Gajraj witness the Kalinga war. Ashoka learns that peace is better than war and becomes a kind ruler - MORAL: True victory is winning hearts with kindness, not swords",
               "Chanakya's clever plan - Wise teacher Chanakya, young student Chandragupta, helper Sharangrav, and spy Ratnagupta work together to free India from the Greek king. They use intelligence instead of weapons - MORAL: Intelligence and planning defeat even the mightiest enemy",
               "Ashoka builds hospitals - Kind Emperor Ashoka, doctor Jeevaka, nurse Sundari, and helper boy Ramu build hospitals for people and animals. They plant trees and dig wells for everyone - MORAL: A good leader cares for all living beings",
+              "Ashoka's lion pillar - Emperor Ashoka, craftsman Shilpakar, artist Chitrakara, and elephant Airavata create the magnificent lion pillar at Sarnath that becomes India's national symbol - MORAL: Great symbols inspire generations",
+              "Bindusara the brave prince - Young prince Bindusara, mother Helena, teacher Chanakya, and horse Shyam learn to rule wisely between his father Chandragupta and son Ashoka - MORAL: Every generation adds to the family's glory",
 
-              # CHOLA DYNASTY STORIES
+              # ===================== CHOLA DYNASTY STORIES =====================
               "Raja Raja Chola builds the great temple - Young prince Raja Raja, architect Kunjaramallan, sculptor Shilpi, and elephant Airavata work together to build the magnificent Brihadeeswarar Temple in Thanjavur - MORAL: Great dreams need great teamwork",
               "Rajendra Chola's sea voyage - Brave king Rajendra, naval commander Arjuna, navigator Samudra, and parrot guide Kili sail across the ocean to bring glory to the Chola empire - MORAL: Courage and curiosity lead to great discoveries",
               "The Chola bronze makers - Master craftsman Vishwakarma, his daughter Kamala, apprentice Rajan, and elephant Ganesha create beautiful bronze statues that are famous around the world - MORAL: Art and craftsmanship bring eternal glory",
+              "Karikala Chola builds the dam - Young king Karikala, engineer Kallanai, farmer Muthu, and buffalo Erumai build the great Kallanai dam on river Kaveri to help farmers - MORAL: Great leaders solve problems for their people",
+              "Chola navy conquers the seas - Admiral Rajendra, captain Samudran, sailor boy Kadal, and dolphin friend Oongal protect merchant ships and spread Indian culture across Asia - MORAL: Protecting trade brings prosperity to all",
+              "Sembiyan Mahadevi the queen builder - Wise queen Sembiyan, architect Perumthachan, sculptor Kannagi, and peacock Mayil build many temples and help the poor - MORAL: Women leaders make great contributions",
 
-              # HOYSALA DYNASTY STORIES
+              # ===================== HOYSALA DYNASTY STORIES =====================
               "The Hoysala lion slayer - Young prince Sala, guru Sudatta, friend Lakshmi, and dog Simha face a fierce lion to protect their village. The Hoysala dynasty begins with this brave act - MORAL: Bravery protects the innocent",
               "Queen Shantala's dance - Beautiful queen Shantala, king Vishnuvardhana, dance teacher Bharata, and musician Tansen build the famous Belur temple with dancing sculptures - MORAL: Art and beauty make the world wonderful",
               "Hoysala temple builders - Architect Jakanachari, sculptor Dankanachari, painter Rani, and elephant helper Airavatam create the intricate Hoysala temples with thousand pillars - MORAL: Patience and skill create timeless masterpieces",
+              "Veera Ballala the warrior - Young king Ballala, general Singeya, elephant Gajapati, and spy Charana defend Karnataka from invaders - MORAL: Courage protects our homeland",
 
-              # GUPTA EMPIRE - GOLDEN AGE STORIES
+              # ===================== GUPTA EMPIRE - GOLDEN AGE STORIES =====================
               "Aryabhata counts the stars - Young mathematician Aryabhata, his teacher Narayana, friend Varahamihira, and owl Uluka discover that Earth is round and rotates. They invent zero and study the stars - MORAL: Curiosity and knowledge light up the world",
               "Kalidasa the poet - Poor shepherd Kalidasa, princess Vidyottama, wise sage Vyasa, and peacock Mayura. Kalidasa becomes the greatest poet through hard work and dedication - MORAL: Hard work transforms anyone into a genius",
               "Samudragupta the warrior king - Young prince Samudragupta, teacher Harishena, friend Chandragupta II, and horse Ashwamedh unite India and bring the Golden Age - MORAL: Wise leaders bring prosperity to all",
+              "Chandragupta II and the nine gems - Great king Vikramaditya, poet Kalidasa, astronomer Varahamihira, and physician Dhanvantari make the Gupta court shine with knowledge - MORAL: Surrounding yourself with wise people makes you wiser",
+              "Fa Hien visits India - Chinese traveler Fa Hien, guide boy Ananda, monk Buddhagupta, and elephant Hastini explore the peaceful and prosperous Gupta empire - MORAL: Welcoming visitors spreads our culture far",
+              "Prabhavati the Gupta princess - Princess Prabhavati, her father Chandragupta II, husband Rudrasena, and advisor Chandrashekhar rule wisely and spread learning - MORAL: Education makes rulers wise and just",
 
-              # VIJAYANAGARA EMPIRE STORIES
+              # ===================== VIJAYANAGARA EMPIRE STORIES =====================
               "Krishnadevaraya the just king - Wise king Krishnadevaraya, court jester Tenali Rama, queen Tirumalamba, and elephant Bhadra bring justice and prosperity to Hampi - MORAL: A just ruler is loved by all",
               "Tenali Rama's clever tricks - Witty Tenali Rama, king Krishnadevaraya, jealous minister Tathacharya, and parrot Shuka solve problems with humor and intelligence - MORAL: Wit and wisdom are mightier than swords",
+              "Harihara and Bukka found Vijayanagara - Brothers Harihara and Bukka, sage Vidyaranya, architect Sangama, and horse Vijaya build the magnificent city of Hampi - MORAL: Brothers working together achieve greatness",
+              "The diamond market of Hampi - Merchant Ratnakara, his daughter Manikyam, helper Heera, and dog Vajra trade precious diamonds and gems in the great Hampi bazaar - MORAL: Honest trade brings wealth and respect",
+              "Purandaradasa the musician - Singer Purandaradasa, his wife Saraswati, student Kanakadasa, and veena Saraswati create beautiful Carnatic music for all to enjoy - MORAL: Music is the language of the soul",
 
-              # PALLAVA DYNASTY STORIES
+              # ===================== PALLAVA DYNASTY STORIES =====================
               "Mahendravarman the artist king - Creative king Mahendravarman, sculptor Mandagapattu, musician Rudracharya, and monkey friend Maruti carve beautiful temples in rock caves - MORAL: Creativity makes ordinary things extraordinary",
               "Narasimhavarman defeats Chalukyas - Young king Narasimhavarman, general Paranjothi, elephant Airavata, and friend Hiuen Tsang bring glory to Pallava kingdom - MORAL: Defending your land is the greatest duty",
+              "Shore Temple at Mamallapuram - King Rajasimha, architect Mamalla, sculptor Sthapati, and waves friend Kadal build the beautiful Shore Temple by the sea - MORAL: Beauty lasts forever when built with love",
+              "Arjuna's Penance sculpture - Master sculptor Mamallan, apprentice Shilpi, elephant family Gajendra, and monkey troupe create the world's largest rock carving - MORAL: Patience creates wonders",
 
-              # ANCIENT WISDOM STORIES
+              # ===================== CHALUKYA DYNASTY STORIES =====================
+              "Pulakeshin II the great - Brave king Pulakeshin, general Kubja, queen Kadambari, and elephant Jayasimha defeat Emperor Harsha and bring glory to Deccan - MORAL: Even small kingdoms can defeat mighty empires with courage",
+              "Badami cave temples - King Mangalesha, sculptor Shilpacharya, painter Chitrakar, and monkey helper Vayu create magnificent cave temples in red sandstone - MORAL: Art carved in stone lives forever",
+              "Aihole the temple city - Architect Revadi, sculptor Ovanna, princess Lokambika, and elephant Airavat build hundreds of temples in the cradle of Indian architecture - MORAL: Experimentation leads to perfection",
+              "Vikramaditya II rebuilds Kanchipuram - Noble king Vikramaditya, general Avanijanashraya, queen Lokamahadevi, and horse Vijay conquer but protect enemy temples - MORAL: True victory respects others' beliefs",
+
+              # ===================== RASHTRAKUTA DYNASTY STORIES =====================
+              "Amoghavarsha the scholar king - Wise king Amoghavarsha, poet Jinasena, mathematician Mahaviracharya, and elephant Airavata make Manyakheta a center of learning - MORAL: Knowledge is the greatest treasure",
+              "Kailasa temple at Ellora - King Krishna I, master architect Kokasa, sculptor Vishwakarma, and elephant Nandi carve an entire temple from a single mountain - MORAL: Impossible dreams become real with determination",
+              "Rashtrakuta gold coins - Minter Suvarnakara, his son Hiranya, quality checker Parikshaka, and parrot Sona create beautiful gold coins that trade across the world - MORAL: Quality work brings lasting fame",
+
+              # ===================== PANDYA DYNASTY STORIES =====================
+              "Madurai the temple city - King Kulasekara, architect Ariyanatha, queen Meenakshi, and elephant temple guardian Ganesha build the magnificent Meenakshi temple - MORAL: Devotion creates lasting monuments",
+              "Pandya pearl divers - Pearl diver Muthu, his daughter Mukta, friend Kadal, and dolphin Meen dive for precious pearls in the Gulf of Mannar - MORAL: Treasures come to those who work hard",
+              "Sangam poets of Madurai - Poet Avvaiyar, young prince Athiyaman, scribe Tamilselvan, and peacock Mayil create timeless Tamil poetry at the great Sangam - MORAL: Words written with heart live forever",
+              "Neduncheliyan the just Pandya - Fair king Neduncheliyan, innocent merchant Kovalan, dancer Madhavi, and elephant Karikal learn that justice must be perfect - MORAL: A single mistake in justice is a great sin",
+
+              # ===================== CHERA DYNASTY STORIES =====================
+              "Cheran Senguttuvan's expedition - Brave king Senguttuvan, queen Kannagi, general Villavan, and elephant Anai bring a stone from the Himalayas to honor a goddess - MORAL: Honoring the good brings blessings to all",
+              "Muziris the ancient port - Merchant Yavana, captain Kadalmagan, translator Vanigar, and parrot Kili trade pepper and spices with Romans and Greeks - MORAL: Trade connects the world in friendship",
+              "Kannagi the brave woman - Brave Kannagi, her husband Kovalan, friend Madhavi, and goddess Pattini seek justice and truth in ancient Tamil Nadu - MORAL: Truth always wins in the end",
+
+              # ===================== MARATHA EMPIRE STORIES =====================
+              "Young Shivaji's courage - Little Shivaji, mother Jijabai, guru Dadoji Konddev, and horse Vishwas learn about bravery and protecting people from injustice - MORAL: Even children can dream of greatness",
+              "Shivaji and Tanaji's friendship - King Shivaji, brave general Tanaji, soldier Suryaji, and horse Ranveer capture the impossible fort of Kondana - MORAL: True friends sacrifice everything for each other",
+              "Shivaji meets Afzal Khan - Clever king Shivaji, bodyguard Jiva Mahala, spy Bahirji Naik, and horse Moti outsmart the giant general with intelligence - MORAL: Brain defeats brawn every time",
+              "Jijabai the brave mother - Strong mother Jijabai, young Shivaji, teacher Dadoji, and elephant Gajraj raise a future king with stories of courage - MORAL: Mothers shape the destiny of nations",
+              "Tarabai the warrior queen - Queen Tarabai, young king Shivaji II, general Dhanaji Jadhav, and horse Bijli protect the Maratha kingdom from mighty enemies - MORAL: Women can lead armies and nations",
+              "Bajirao the undefeated - Young Peshwa Bajirao, brother Chimaji, wife Kashibai, and horse Shamsher never lose a single battle - MORAL: Strategy and speed win wars",
+
+              # ===================== RAJPUT STORIES =====================
+              "Prithviraj Chauhan the brave - Young king Prithviraj, friend Chand Bardai, horse Ranthambhor, and falcon Shyenaka defend India with unmatched archery skills - MORAL: True warriors fight for honor, not revenge",
+              "Rana Pratap's resistance - Brave Rana Pratap, loyal horse Chetak, general Hakim Khan, and friend Bhama Shah never give up their freedom - MORAL: Freedom is more precious than comfort",
+              "Padmini of Chittor - Beautiful queen Padmini, king Rawal Ratan Singh, friend Nagmati, and parrot Hiraman choose honor over surrender - MORAL: Honor is more valuable than life",
+              "Mira Bai the devotee - Princess Mira, her beloved Krishna, friend Raidasa, and cow Nandini sing songs of pure love and devotion - MORAL: True love knows no fear",
+              "Panna Dhai's sacrifice - Brave nurse Panna, prince Udai Singh, her son Chandan, and helper Mira save the future king by ultimate sacrifice - MORAL: True loyalty means giving everything",
+              "Rani Durgavati the warrior - Queen Durgavati, son Vir Narayan, elephant Sarman, and advisor Adhar Simha fight bravely to protect Gondwana - MORAL: Brave queens inspire generations",
+
+              # ===================== PALA AND SENA DYNASTY STORIES =====================
+              "Nalanda University - Teacher Shilabhadra, student Xuanzang, librarian Dharmakirti, and elephant Bodhi study at the world's first university - MORAL: Education is the light that removes darkness",
+              "Dharmapala builds monasteries - Kind king Dharmapala, monk Santarakshita, artist Dhiman, and elephant Vajra spread Buddhist learning across Asia - MORAL: Sharing knowledge multiplies wisdom",
+              "Vikramashila the learning center - Teacher Atisha, student Rinchen, scribe Sukhavati, and peacock Mayur teach meditation and compassion - MORAL: Inner peace brings outer harmony",
+
+              # ===================== KAKATIYA DYNASTY STORIES =====================
+              "Rani Rudrama Devi the warrior queen - Queen Rudrama Devi, general Ganapatideva, elephant Ganapati, and horse Vijaya rule Warangal with wisdom and strength - MORAL: Women can rule as well as any king",
+              "Thousand pillar temple - King Rudradeva, architect Ramappa, sculptor Jakanna, and elephant helper build the stunning Ramappa temple - MORAL: Dedication creates eternal beauty",
+              "Warangal fort's gates - Engineer Ganapati, sculptor Siddhaya, guard Pratapa, and elephant Bhadra build four magnificent gateways facing four directions - MORAL: Strong defenses protect peaceful people",
+
+              # ===================== EASTERN GANGA DYNASTY STORIES =====================
+              "Konark Sun Temple - King Narasimhadeva, architect Bisu Maharana, sculptor Sadashiva, and twelve stone horses build the chariot temple for the Sun god - MORAL: Imagination creates wonders",
+              "Jagannath Temple of Puri - King Anantavarman, architect Sibei Samantaraya, priest Brahma, and elephant Airavata build the sacred home of Lord Jagannath - MORAL: Faith moves mountains",
+
+              # ===================== SATAVAHANA DYNASTY STORIES =====================
+              "Gautamiputra Satakarni - Brave king Gautamiputra, mother Gautami Balashri, general Vijayasena, and elephant Satakarnika restore the glory of the Satavahanas - MORAL: A mother's blessings lead to victory",
+              "Amaravati Stupa - King Pulumavi, sculptor Nagarjuna, monk Ananda, and elephant Dharmavahana build the magnificent Buddhist stupa with marble carvings - MORAL: Art speaks across centuries",
+              "The Satavahana coins - Minter Devavridhi, artist Nandika, quality tester Pariksha, and parrot Suvarna create coins that tell stories of the kings - MORAL: Small things carry big messages",
+
+              # ===================== ANCIENT SCHOLARS AND SCIENTISTS =====================
               "Bhaskara invents mathematics - Mathematician Bhaskara, his daughter Lilavati, student Ganita, and parrot Shuka discover new ways of counting and measuring that help everyone - MORAL: Knowledge shared is knowledge multiplied",
-              "Sushruta the first surgeon - Doctor Sushruta, nurse Dhanwantari, helper Charaka, and elephant patient Gajendra perform the world's first surgeries and help sick people - MORAL: Healing others is the noblest profession"
+              "Sushruta the first surgeon - Doctor Sushruta, nurse Dhanwantari, helper Charaka, and elephant patient Gajendra perform the world's first surgeries and help sick people - MORAL: Healing others is the noblest profession",
+              "Brahmagupta and zero - Mathematician Brahmagupta, student Shunya, scribe Anka, and owl Uluka discover that nothing (zero) is actually something very important - MORAL: Even nothing has great value",
+              "Charaka writes Ayurveda - Physician Charaka, herb collector Dravyada, nurse Vaidyamata, and deer patient Mriga create the science of healthy living - MORAL: Prevention is better than cure",
+              "Panini writes grammar - Scholar Panini, student Katyayana, scribe Patanjali, and parrot Vyakarana create perfect rules for Sanskrit language - MORAL: Clear rules make communication perfect",
+              "Varahamihira reads the stars - Astronomer Varahamihira, student Jyotisha, princess Khagola, and owl Nakshatra predict eclipses and seasons accurately - MORAL: Observing nature reveals its secrets",
+
+              # ===================== KADAMBA DYNASTY STORIES =====================
+              "Mayurasharma the scholar warrior - Young brahmin Mayurasharma, teacher Virasharma, horse Kadamba, and elephant Gajapati establish the first Kannada kingdom - MORAL: Knowledge and courage together create kingdoms",
+              "Banavasi the ancient capital - King Kakusthavarman, queen Prabhavati, architect Shilpi, and peacock Mayura make Banavasi a beautiful capital city - MORAL: Beautiful cities attract scholars and artists",
+
+              # ===================== WESTERN GANGA DYNASTY STORIES =====================
+              "Gommateshwara statue - King Chavundaraya, sculptor Arishtanemi, mother Kalala, and elephant Bahubali build the giant statue of peace at Shravanabelagola - MORAL: Peace is the greatest victory",
+              "Ganga kings and Jainism - King Shivamara, teacher Jinasena, nun Padmavati, and elephant Chandraprabha spread the message of non-violence - MORAL: Not hurting any creature is the highest religion",
+
+              # ===================== AHOM KINGDOM STORIES =====================
+              "Lachit Borphukan's victory - General Lachit Borphukan, soldier Ismail, boatman Kalia, and elephant Airavat defeat the mighty Mughal army at Saraighat - MORAL: Love for motherland gives superhuman strength",
+              "Ahom rice farmers - Farmer Momai, his daughter Jonaki, buffalo Moh, and parrot Boga develop wet rice farming that feeds millions - MORAL: Feeding people is sacred work",
+
+              # ===================== INDUS VALLEY CIVILIZATION =====================
+              "The great bath of Mohenjo-daro - Engineer Sindhu, builder Harap, swimmer girl Jala, and elephant friend build the world's first swimming pool - MORAL: Cleanliness keeps everyone healthy",
+              "Harappan toy makers - Toy maker Khilauna, his daughter Gudiya, helper Chakra, and bull toy Nandi create toys that children play with 5000 years later - MORAL: Things made with love last forever",
+              "The Indus seals - Seal maker Mudra, artist Lipi, merchant Vanijar, and unicorn image create trading seals for the ancient cities - MORAL: Trust marks make trade honest"
           ]
 
           async def generate_voiceover(text, output_path):
@@ -345,62 +437,98 @@ jobs:
               return generate_fallback_story(topic, num_scenes)
 
           def generate_fallback_story(topic, num_scenes):
-              """Generate a longer fallback story"""
+              """Generate Indian history-based fallback story"""
+              # Fallback stories are Indian history themed to match our topic list
               stories = {
-                  "magical unicorn": {
-                      "title": "Luna the Magical Unicorn",
+                  "ashoka": {
+                      "title": "Emperor Ashoka's Transformation",
+                      "moral": "True victory is winning hearts with kindness, not swords",
                       "scenes": [
-                          {"narration": "Once upon a time, in a land made of cotton candy clouds, there lived a beautiful unicorn named Luna. Her mane sparkled with all the colors of the rainbow.", "image_prompt": "beautiful cartoon unicorn with rainbow mane standing on cotton candy clouds"},
-                          {"narration": "Luna had a special power. Every time she ran, flowers would bloom behind her, leaving trails of roses, daisies, and sunflowers.", "image_prompt": "cartoon unicorn running with colorful flowers blooming behind her in a meadow"},
-                          {"narration": "One sunny morning, Luna heard a tiny cry coming from the Whispering Woods. Someone needed help!", "image_prompt": "cartoon unicorn with curious expression near a magical forest entrance"},
-                          {"narration": "She galloped into the forest and found a little bunny named Benny. He had lost his way home and was very scared.", "image_prompt": "cute cartoon unicorn meeting a small scared bunny in a forest"},
-                          {"narration": "Don't worry, little friend, said Luna with a warm smile. I'll help you find your family!", "image_prompt": "friendly cartoon unicorn comforting a small bunny, warm glowing light"},
-                          {"narration": "Luna used her magical horn to light up the path. It glowed like a golden flashlight in the dark forest.", "image_prompt": "cartoon unicorn with glowing horn illuminating a dark forest path"},
-                          {"narration": "They walked past the Giggling Stream, where the water made funny sounds like laughter.", "image_prompt": "cartoon unicorn and bunny crossing a sparkling stream with happy water droplets"},
-                          {"narration": "They climbed over the Marshmallow Mountains, which were soft and squishy under their feet.", "image_prompt": "cartoon unicorn and bunny climbing fluffy white marshmallow mountains"},
-                          {"narration": "Along the way, they met a friendly bluebird named Bella who joined their adventure.", "image_prompt": "cartoon unicorn bunny and bluebird together on an adventure, sunny day"},
-                          {"narration": "Bella flew high above the trees and spotted something special in the distance.", "image_prompt": "cartoon bluebird flying high with unicorn and bunny looking up hopefully"},
-                          {"narration": "There it is! cried Bella. I can see Benny's home - the Cozy Carrot Village!", "image_prompt": "cartoon village made of carrots and vegetables in distance, characters excited"},
-                          {"narration": "Luna ran as fast as the wind, with Benny holding on tight and Bella flying alongside.", "image_prompt": "cartoon unicorn running fast with bunny on back and bird flying beside"},
-                          {"narration": "When they arrived at the village, Benny's family was so happy to see him! They hugged him tight.", "image_prompt": "cartoon bunny family hugging happily, unicorn and bird watching with smiles"},
-                          {"narration": "Thank you, Luna! said Benny's mother. You are the kindest unicorn in all the land!", "image_prompt": "grateful cartoon bunny family thanking unicorn, warm happy scene"},
-                          {"narration": "Luna felt her heart grow warm and fuzzy. Helping others always made her feel so good inside.", "image_prompt": "cartoon unicorn with glowing heart, surrounded by happy friends"},
-                          {"narration": "The bunny family invited everyone for a delicious carrot cake celebration!", "image_prompt": "cartoon characters having party with carrot cake, balloons and decorations"},
-                          {"narration": "They danced and sang songs until the stars came out to twinkle in the sky.", "image_prompt": "cartoon characters dancing under starry night sky, magical atmosphere"},
-                          {"narration": "That night, Luna learned that the best adventures are the ones where you help someone in need.", "image_prompt": "cartoon unicorn looking at stars thoughtfully, peaceful night scene"},
-                          {"narration": "From that day on, Luna, Benny, and Bella became the best of friends and had many more adventures together.", "image_prompt": "cartoon unicorn bunny and bird as best friends, rainbow in background"},
-                          {"narration": "And they all lived happily ever after! Remember kids, always be kind and help those who need it. The End!", "image_prompt": "happy ending scene with all characters waving, THE END text, sparkles and rainbow"}
+                          {"narration": "Long ago in ancient India, there lived a young warrior prince named Ashoka. He was very brave and strong!", "image_prompt": "cute cartoon young Indian prince Ashoka in golden palace, bright colors, Pixar style"},
+                          {"narration": "Ashoka had three best friends - his wife Devi who was very kind, his advisor Radhagupta who was very wise, and his elephant friend Gajraj!", "image_prompt": "cartoon prince Ashoka with kind wife Devi, wise advisor, and cute elephant friend, Indian palace"},
+                          {"narration": "One day, Ashoka went to fight a big war in a place called Kalinga. He wanted to win and be the greatest king!", "image_prompt": "cartoon prince Ashoka on elephant going to battle, colorful Indian army, bright sky"},
+                          {"narration": "But after the war, Ashoka saw something that made him very sad. Many people were hurt and crying.", "image_prompt": "sad cartoon Ashoka looking at aftermath of war, somber but child-friendly, soft colors"},
+                          {"narration": "Ashoka's heart broke. He said - What have I done? This is not victory. This is sadness!", "image_prompt": "cartoon Ashoka with tears, elephant Gajraj comforting him, emotional scene"},
+                          {"narration": "Kind Devi held his hand and said - Dear Ashoka, true kings help people, they don't hurt them.", "image_prompt": "cartoon wife Devi comforting Ashoka, warm lighting, Indian setting"},
+                          {"narration": "Wise Radhagupta said - Great king, you can still change. You can become the kindest king ever!", "image_prompt": "wise cartoon advisor talking to Ashoka, palace garden, peaceful setting"},
+                          {"narration": "From that day, Ashoka changed completely! He decided to never fight wars again.", "image_prompt": "cartoon Ashoka making a promise, hands on heart, glowing aura, transformation scene"},
+                          {"narration": "Instead, Ashoka built hospitals for sick people and animals. Everyone got free medicine!", "image_prompt": "cartoon Ashoka building hospital, doctors helping people and animals, happy scene"},
+                          {"narration": "He planted thousands of trees along the roads so travelers could rest in the shade.", "image_prompt": "cartoon Ashoka planting trees with villagers, green landscape, sunny day"},
+                          {"narration": "Ashoka dug wells so everyone had clean water to drink. Even the birds were happy!", "image_prompt": "cartoon Ashoka near a well, villagers drinking water, birds bathing, joyful scene"},
+                          {"narration": "He built tall pillars with lion statues. These pillars had messages of peace and love!", "image_prompt": "cartoon Ashoka with famous lion pillar, four lions on top, Indian landscape"},
+                          {"narration": "Gajraj the elephant was so proud of Ashoka! He trumpeted happily - My friend is the kindest king!", "image_prompt": "happy cartoon elephant Gajraj with Ashoka, celebrating, colorful flowers"},
+                          {"narration": "People from far away lands came to see the peaceful kingdom. They were amazed!", "image_prompt": "cartoon visitors from different lands meeting Ashoka, diverse characters, friendly"},
+                          {"narration": "Ashoka sent messengers to spread the message of peace and kindness to the whole world!", "image_prompt": "cartoon messengers on horses and elephants spreading peace, world map background"},
+                          {"narration": "Children loved Emperor Ashoka. He would play with them and tell them stories of kindness.", "image_prompt": "cartoon Ashoka playing with happy children in palace garden, toys and games"},
+                          {"narration": "Even today, we remember Ashoka as one of the greatest and kindest kings ever!", "image_prompt": "cartoon modern children learning about Ashoka from a book, classroom setting"},
+                          {"narration": "The lion pillar that Ashoka built became the symbol of India! You can see it on Indian coins!", "image_prompt": "cartoon showing Ashoka pillar and Indian national emblem, patriotic colors"},
+                          {"narration": "Remember children - true victory is not about fighting. It is about making others happy!", "image_prompt": "cartoon Ashoka with all friends, moral message, hearts and peace symbols"},
+                          {"narration": "And that is the story of Emperor Ashoka! Always be kind like him. The End!", "image_prompt": "happy ending with Ashoka, Devi, Radhagupta, and Gajraj waving, THE END text"}
+                      ]
+                  },
+                  "shivaji": {
+                      "title": "Young Shivaji's Courage",
+                      "moral": "Even children can dream of greatness",
+                      "scenes": [
+                          {"narration": "In the beautiful hills of Maharashtra, there lived a brave little boy named Shivaji. He loved his homeland very much!", "image_prompt": "cute cartoon young Shivaji boy in Maharashtrian dress, green hills, forts in background"},
+                          {"narration": "Shivaji had the best mother in the world - Jijabai. She told him wonderful stories of brave kings and queens!", "image_prompt": "cartoon mother Jijabai telling stories to young Shivaji, warm home setting, oil lamp"},
+                          {"narration": "His teacher Dadoji Konddev taught him sword fighting, horse riding, and most importantly - to always protect the weak!", "image_prompt": "cartoon teacher Dadoji teaching young Shivaji, training ground, wooden swords"},
+                          {"narration": "Shivaji's best friend was his horse Vishwas. Together they would explore the mountains and valleys!", "image_prompt": "cartoon young Shivaji riding horse Vishwas, Sahyadri mountains, sunset"},
+                          {"narration": "One day, Shivaji saw some villagers looking very sad. Bad people had taken away their food!", "image_prompt": "cartoon Shivaji seeing sad villagers, sympathetic expression, village setting"},
+                          {"narration": "Little Shivaji said to his friends - We must help them! We are small but our hearts are big!", "image_prompt": "cartoon young Shivaji rallying his young friends, determined faces, hillfort"},
+                          {"narration": "Mother Jijabai smiled proudly. She said - My son, a true king protects all his people like his own family!", "image_prompt": "proud cartoon Jijabai blessing Shivaji, warm golden lighting, emotional scene"},
+                          {"narration": "Shivaji and his friends made a clever plan. They would get back the villagers' food!", "image_prompt": "cartoon Shivaji and friends planning together, map on ground, excited faces"},
+                          {"narration": "Using the secret paths in the mountains that only they knew, Shivaji's team moved quietly like cats!", "image_prompt": "cartoon Shivaji and friends sneaking through mountain paths, moonlight, adventure"},
+                          {"narration": "Whoosh! Before anyone knew what happened, Shivaji and his friends had returned the food to the happy villagers!", "image_prompt": "cartoon Shivaji returning food to cheering villagers, celebration, bright colors"},
+                          {"narration": "The villagers were so happy! They said - Little Shivaji is our hero! He will be a great king one day!", "image_prompt": "cartoon villagers celebrating Shivaji, flowers, garlands, joyful scene"},
+                          {"narration": "Teacher Dadoji was proud. He said - Shivaji, you have learned the most important lesson - always help others!", "image_prompt": "cartoon Dadoji praising Shivaji, other students watching admiringly"},
+                          {"narration": "Horse Vishwas neighed happily as if saying - My friend Shivaji is the bravest boy I know!", "image_prompt": "cartoon horse Vishwas nuzzling Shivaji affectionately, stable setting, warm"},
+                          {"narration": "From that day, more and more people joined Shivaji. Everyone wanted to help make their land safe and happy!", "image_prompt": "cartoon Shivaji with growing group of supporters, diverse people, hillfort"},
+                          {"narration": "Shivaji grew up to build many forts on the mountains. These forts kept everyone safe!", "image_prompt": "cartoon older Shivaji with magnificent hillforts, Raigad fort style, impressive"},
+                          {"narration": "He became one of the greatest kings of India - Chhatrapati Shivaji Maharaj!", "image_prompt": "cartoon adult Shivaji as king with crown and sword, royal but friendly, majestic"},
+                          {"narration": "But Shivaji never forgot his childhood friends, his mother's stories, or his teacher's lessons!", "image_prompt": "cartoon King Shivaji remembering childhood, thought bubbles with Jijabai and Dadoji"},
+                          {"narration": "Even today, people in Maharashtra celebrate Shivaji as their greatest hero!", "image_prompt": "cartoon modern children celebrating Shivaji Jayanti, flags, procession, happy"},
+                          {"narration": "Remember children - you are never too small to do something big! Dream big like Shivaji!", "image_prompt": "cartoon young Shivaji inspiring modern children, motivational scene, bright"},
+                          {"narration": "And that is the story of brave Shivaji! Always be courageous and help others. The End!", "image_prompt": "happy ending with young Shivaji, Jijabai, Dadoji, and Vishwas, THE END text"}
                       ]
                   },
                   "default": {
-                      "title": "The Adventure of Sunny the Star",
+                      "title": "Raja Raja Chola Builds the Great Temple",
+                      "moral": "Great dreams need great teamwork",
                       "scenes": [
-                          {"narration": "High up in the sparkly night sky, there lived a little star named Sunny who dreamed of visiting Earth.", "image_prompt": "cute cartoon star with happy face in night sky surrounded by other stars"},
-                          {"narration": "One magical night, Sunny made a wish and whoooosh - she started falling gently toward Earth!", "image_prompt": "cartoon star falling through colorful clouds toward earth, excited expression"},
-                          {"narration": "Sunny landed softly in a beautiful garden filled with sleeping flowers waiting for morning.", "image_prompt": "cartoon glowing star in a garden at night with closed flowers"},
-                          {"narration": "When the sun began to rise, the flowers woke up and were amazed to see Sunny glowing beside them.", "image_prompt": "cartoon flowers waking up surprised to see a glowing star character"},
-                          {"narration": "Hello! said a sunflower named Sally. Are you the sun? You're so bright and beautiful!", "image_prompt": "cartoon sunflower talking to a star character, friendly garden scene"},
-                          {"narration": "Sunny giggled and said, No silly! I'm a star from the sky. I came to make friends!", "image_prompt": "laughing cartoon star with friendly flowers around her"},
-                          {"narration": "The garden animals came to meet Sunny too - butterflies, ladybugs, and a friendly frog named Fred.", "image_prompt": "cartoon star surrounded by butterflies ladybugs and a frog in garden"},
-                          {"narration": "Fred showed Sunny how to jump on lily pads. Splash! Sunny wasn't very good at it but she had so much fun!", "image_prompt": "cartoon star trying to jump on lily pads with frog, water splashing"},
-                          {"narration": "The butterflies taught Sunny how to dance in the breeze, twirling and spinning through the flowers.", "image_prompt": "cartoon star dancing with butterflies among colorful flowers"},
-                          {"narration": "As afternoon came, the ladybugs showed Sunny their favorite hiding spots under the leaves.", "image_prompt": "cartoon star and ladybugs playing hide and seek under plant leaves"},
-                          {"narration": "Sunny shared her starlight with everyone, making the whole garden sparkle and shimmer.", "image_prompt": "cartoon star spreading sparkly light over magical glowing garden"},
-                          {"narration": "But as evening approached, Sunny noticed the sky was getting dark and her star family was twinkling above.", "image_prompt": "cartoon star looking up at night sky with other stars appearing"},
-                          {"narration": "I have to go back home, said Sunny sadly. My family is calling me back to the sky.", "image_prompt": "sad cartoon star saying goodbye to garden friends at sunset"},
-                          {"narration": "All her new friends gathered around for a group hug. We'll miss you Sunny! they said.", "image_prompt": "cartoon star getting hugs from all garden friends, emotional scene"},
-                          {"narration": "Sunny floated back up to the sky, but she promised to twinkle extra bright every night.", "image_prompt": "cartoon star floating up to sky waving goodbye to friends below"},
-                          {"narration": "Now every night, the garden friends look up and wave at the brightest star in the sky - that's Sunny!", "image_prompt": "garden animals looking up at brightest star in night sky, waving"},
-                          {"narration": "And Sunny always winks back at them, sending down a little bit of stardust on their dreams.", "image_prompt": "cartoon star winking with stardust falling down to sleeping garden"},
-                          {"narration": "The moral of this story is that true friends stay connected, no matter how far apart they are.", "image_prompt": "split scene showing star in sky and friends on earth connected by starlight"},
-                          {"narration": "So whenever you see a twinkling star, remember that someone up there might be your friend too!", "image_prompt": "child looking at stars through window, magical night scene"},
-                          {"narration": "And they all lived happily ever after. Sweet dreams, little ones! The End!", "image_prompt": "peaceful night scene with happy star and garden THE END with sparkles"}
+                          {"narration": "In the golden land of Tamil Nadu, there lived a wise king named Raja Raja Chola. He had a beautiful dream!", "image_prompt": "cute cartoon King Raja Raja Chola in Tamil royal dress, Thanjavur palace, bright colors"},
+                          {"narration": "Raja Raja wanted to build the tallest and most beautiful temple in the whole world for Lord Shiva!", "image_prompt": "cartoon Raja Raja looking at temple plans with excited expression, architects around"},
+                          {"narration": "He called his best friend, the architect Kunjaramallan. He was the cleverest builder in all of India!", "image_prompt": "cartoon architect Kunjaramallan with Raja Raja, holding building plans, happy"},
+                          {"narration": "The sculptor Shilpi joined them too. He could carve stones into beautiful gods and goddesses!", "image_prompt": "cartoon sculptor Shilpi showing his carvings, detailed stone work, workshop"},
+                          {"narration": "And of course, there was Airavata the elephant! He was the strongest helper of them all!", "image_prompt": "cute cartoon elephant Airavata with royal decorations, ready to help, excited"},
+                          {"narration": "Raja Raja said - My friends, together we will build something that will make people happy for thousands of years!", "image_prompt": "cartoon Raja Raja inspiring his team, pointing to the sky, motivational scene"},
+                          {"narration": "First, they needed giant stones! Airavata the elephant pulled huge stones from the mountains.", "image_prompt": "cartoon elephant Airavata pulling giant stones with workers, construction site"},
+                          {"narration": "Kunjaramallan designed a special ramp. The stones rolled up slowly, slowly, higher and higher!", "image_prompt": "cartoon showing stone ramp construction, innovative engineering, workers helping"},
+                          {"narration": "Sculptor Shilpi and his students carved beautiful dancers, flowers, and gods on every stone!", "image_prompt": "cartoon sculptors carving intricate designs, stone carvings coming to life"},
+                          {"narration": "Day after day, month after month, the temple grew taller and taller! Everyone worked with love!", "image_prompt": "cartoon temple growing taller over time, workers happy, progress montage"},
+                          {"narration": "The tower needed a very special stone on top - a single giant stone weighing 80 tons!", "image_prompt": "cartoon showing massive top stone, everyone wondering how to lift it"},
+                          {"narration": "Clever Kunjaramallan built a long ramp. Airavata and hundred elephants pushed the stone to the top!", "image_prompt": "cartoon elephants pushing stone up long ramp, teamwork, exciting moment"},
+                          {"narration": "HOORAY! The great Brihadeshwara Temple was complete! It touched the clouds!", "image_prompt": "cartoon completed Brihadeshwara Temple, magnificent, everyone celebrating"},
+                          {"narration": "The temple was so tall that its shadow never fell on the ground! It was magical!", "image_prompt": "cartoon temple with no shadow, sun rays, magical atmosphere, amazed people"},
+                          {"narration": "Raja Raja was so happy! He gave gifts to all the workers and their families!", "image_prompt": "cartoon Raja Raja giving gifts to workers, celebration, gold coins, happy families"},
+                          {"narration": "Kunjaramallan, Shilpi, and Airavata became famous all over the world for their amazing work!", "image_prompt": "cartoon three heroes celebrated, garlands, cheering crowd, proud moment"},
+                          {"narration": "People from far away kingdoms came to see the beautiful temple. They couldn't believe their eyes!", "image_prompt": "cartoon visitors from different lands amazed by temple, diverse characters"},
+                          {"narration": "Even today, after 1000 years, the Brihadeshwara Temple stands tall and beautiful in Thanjavur!", "image_prompt": "cartoon modern tourists visiting ancient temple, cameras, wonder, continuity"},
+                          {"narration": "Remember children - when friends work together with love, they can achieve anything!", "image_prompt": "cartoon Raja Raja, Kunjaramallan, Shilpi, and Airavata together, moral scene"},
+                          {"narration": "And that is the story of the Great Temple! Teamwork makes dreams come true. The End!", "image_prompt": "happy ending with all characters in front of temple, THE END text, fireworks"}
                       ]
                   }
               }
 
-              # Select appropriate story or use default
-              story_key = "magical unicorn" if "unicorn" in topic.lower() else "default"
+              # Select appropriate story based on topic keywords
+              topic_lower = topic.lower()
+              if "ashoka" in topic_lower or "maurya" in topic_lower or "chandragupta" in topic_lower:
+                  story_key = "ashoka"
+              elif "shivaji" in topic_lower or "maratha" in topic_lower or "jijabai" in topic_lower:
+                  story_key = "shivaji"
+              else:
+                  story_key = "default"  # Raja Raja Chola story
+
               story = stories.get(story_key, stories["default"])
 
               # Trim to requested number of scenes
