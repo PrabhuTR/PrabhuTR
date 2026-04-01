@@ -29,6 +29,9 @@ on:
           - 'bengali'
           - 'marathi'
 
+permissions:
+  contents: write  # Required to create GitHub releases
+
 jobs:
   generate-and-upload:
     runs-on: ubuntu-latest
@@ -147,36 +150,41 @@ jobs:
 
           print(f"Language: {LANG_NAME} ({VOICE})")
 
-          # History-oriented and real-life MORAL story topics (age 4+)
-          # Indian folk tales, historical stories, and real-life lessons with 3-4 cartoon characters
+          # REAL INDIAN ANCIENT HISTORY STORIES (age 4+)
+          # Authentic stories from Maurya, Chola, Hoysala, Gupta and other great Indian dynasties
           TRENDING_TOPICS = [
-              # Indian Folk Tales & Panchatantra
-              "The Thirsty Crow - A clever crow named Kalu finds a pot with little water. His friends Minu the sparrow, Titu the squirrel, and Golu the frog watch as Kalu uses pebbles to raise the water level - MORAL: Intelligence and patience solve problems",
-              "The Lion and the Mouse - Raja the mighty lion gets trapped in a net. Chiku the tiny mouse, Bela the deer, and Motu the elephant help save him - MORAL: Even the smallest friend can help in big ways",
-              "The Monkey and the Crocodile - Bandar the clever monkey lives on a jamun tree by the river. Magarmach the crocodile, his wife Magri, and Tota the parrot teach about true friendship - MORAL: True friends never betray each other",
-              "The Tortoise and the Hare - Kachua the slow tortoise races against Khargosh the fast rabbit. Referee Ullu the owl and cheerleader Gillu the squirrel watch the famous race - MORAL: Slow and steady wins the race",
+              # MAURYA EMPIRE STORIES
+              "Young Chandragupta Maurya - Little Chandragupta, his wise guru Chanakya, friend Bindusara, and loyal guard Pushyamitra learn to build the great Maurya empire. They unite small kingdoms into one great India - MORAL: Unity makes us stronger than any enemy",
+              "Emperor Ashoka's transformation - Young warrior prince Ashoka, his wife Devi, advisor Radhagupta, and elephant friend Gajraj witness the Kalinga war. Ashoka learns that peace is better than war and becomes a kind ruler - MORAL: True victory is winning hearts with kindness, not swords",
+              "Chanakya's clever plan - Wise teacher Chanakya, young student Chandragupta, helper Sharangrav, and spy Ratnagupta work together to free India from the Greek king. They use intelligence instead of weapons - MORAL: Intelligence and planning defeat even the mightiest enemy",
+              "Ashoka builds hospitals - Kind Emperor Ashoka, doctor Jeevaka, nurse Sundari, and helper boy Ramu build hospitals for people and animals. They plant trees and dig wells for everyone - MORAL: A good leader cares for all living beings",
 
-              # Historical Indian Stories
-              "Young Shivaji and his brave friends - Little Shivaji, his friend Tanaji, wise teacher Dadaji, and loyal Yashwanti learn about courage and protecting their land - MORAL: Courage and unity protect our homeland",
-              "Little Rani Lakshmibai learns horse riding - Young Manu (Lakshmibai), her friend Nana Sahib, teacher Tatya Tope, and her horse Badal train together - MORAL: Practice and determination make you strong",
-              "Chanakya teaches young students - Wise teacher Chanakya, students Chandragupta, Bindusara, and friend Sthulabhadra learn about honesty and wisdom - MORAL: Knowledge and honesty are the greatest treasures",
-              "Ashoka learns kindness - Young prince Ashoka, his sister Sanghamitra, advisor Radhagupta, and elephant friend Hasti learn about peace - MORAL: Kindness is more powerful than war",
+              # CHOLA DYNASTY STORIES
+              "Raja Raja Chola builds the great temple - Young prince Raja Raja, architect Kunjaramallan, sculptor Shilpi, and elephant Airavata work together to build the magnificent Brihadeeswarar Temple in Thanjavur - MORAL: Great dreams need great teamwork",
+              "Rajendra Chola's sea voyage - Brave king Rajendra, naval commander Arjuna, navigator Samudra, and parrot guide Kili sail across the ocean to bring glory to the Chola empire - MORAL: Courage and curiosity lead to great discoveries",
+              "The Chola bronze makers - Master craftsman Vishwakarma, his daughter Kamala, apprentice Rajan, and elephant Ganesha create beautiful bronze statues that are famous around the world - MORAL: Art and craftsmanship bring eternal glory",
 
-              # Real-life Values Stories
-              "Four friends start a garden - Rani, Raju, Meena, and Gopal work together to grow vegetables in their village. Each has a special role - MORAL: Teamwork makes dreams come true",
-              "The honest shopkeeper - Ramesh the shopkeeper, his daughter Priya, customer Sharma uncle, and helper boy Tinku show why honesty matters - MORAL: Honesty brings respect and trust",
-              "Grandma's wisdom - Dadi tells stories to grandchildren Chintu, Mintu, and Pinky about respecting elders and nature - MORAL: Elders' wisdom guides us through life",
-              "The village helpers - Doctor Aunty, Teacher Sir, Farmer Uncle, and Postman Kaka show how everyone's work is important - MORAL: Every job is important and deserves respect",
+              # HOYSALA DYNASTY STORIES
+              "The Hoysala lion slayer - Young prince Sala, guru Sudatta, friend Lakshmi, and dog Simha face a fierce lion to protect their village. The Hoysala dynasty begins with this brave act - MORAL: Bravery protects the innocent",
+              "Queen Shantala's dance - Beautiful queen Shantala, king Vishnuvardhana, dance teacher Bharata, and musician Tansen build the famous Belur temple with dancing sculptures - MORAL: Art and beauty make the world wonderful",
+              "Hoysala temple builders - Architect Jakanachari, sculptor Dankanachari, painter Rani, and elephant helper Airavatam create the intricate Hoysala temples with thousand pillars - MORAL: Patience and skill create timeless masterpieces",
 
-              # Nature & Environment Stories
-              "Save the trees - Eco-warriors Arun, Bhavna, Chitra, and their dog Moti plant trees and save the forest from cutting - MORAL: Protecting nature protects our future",
-              "The river's journey - Little drop Boond, fish friend Machli, turtle Kachua, and bird Bulbul travel from mountain to sea - MORAL: Every journey teaches something new",
-              "Four seasons friends - Spring fairy Vasant, Summer sun Grishma, Rain cloud Varsha, and Winter snow Shishir teach about nature's cycle - MORAL: Change is natural and beautiful",
+              # GUPTA EMPIRE - GOLDEN AGE STORIES
+              "Aryabhata counts the stars - Young mathematician Aryabhata, his teacher Narayana, friend Varahamihira, and owl Uluka discover that Earth is round and rotates. They invent zero and study the stars - MORAL: Curiosity and knowledge light up the world",
+              "Kalidasa the poet - Poor shepherd Kalidasa, princess Vidyottama, wise sage Vyasa, and peacock Mayura. Kalidasa becomes the greatest poet through hard work and dedication - MORAL: Hard work transforms anyone into a genius",
+              "Samudragupta the warrior king - Young prince Samudragupta, teacher Harishena, friend Chandragupta II, and horse Ashwamedh unite India and bring the Golden Age - MORAL: Wise leaders bring prosperity to all",
 
-              # Everyday Heroes Stories
-              "The brave firefighter - Fireman Ramu, his partner Shamu, dalmatian dog Spotty, and helper Guddu save people from fire - MORAL: Bravery means helping others in danger",
-              "Doctor who cares - Dr. Kavitha, nurse Lakshmi, compounder Raja, and patient little Bunty show importance of health - MORAL: Good health is our greatest wealth",
-              "Teacher's special day - Guruji, students Amit, Sunita, and Vijay celebrate teacher's day with love and respect - MORAL: Teachers shape our future with knowledge"
+              # VIJAYANAGARA EMPIRE STORIES
+              "Krishnadevaraya the just king - Wise king Krishnadevaraya, court jester Tenali Rama, queen Tirumalamba, and elephant Bhadra bring justice and prosperity to Hampi - MORAL: A just ruler is loved by all",
+              "Tenali Rama's clever tricks - Witty Tenali Rama, king Krishnadevaraya, jealous minister Tathacharya, and parrot Shuka solve problems with humor and intelligence - MORAL: Wit and wisdom are mightier than swords",
+
+              # PALLAVA DYNASTY STORIES
+              "Mahendravarman the artist king - Creative king Mahendravarman, sculptor Mandagapattu, musician Rudracharya, and monkey friend Maruti carve beautiful temples in rock caves - MORAL: Creativity makes ordinary things extraordinary",
+              "Narasimhavarman defeats Chalukyas - Young king Narasimhavarman, general Paranjothi, elephant Airavata, and friend Hiuen Tsang bring glory to Pallava kingdom - MORAL: Defending your land is the greatest duty",
+
+              # ANCIENT WISDOM STORIES
+              "Bhaskara invents mathematics - Mathematician Bhaskara, his daughter Lilavati, student Ganita, and parrot Shuka discover new ways of counting and measuring that help everyone - MORAL: Knowledge shared is knowledge multiplied",
+              "Sushruta the first surgeon - Doctor Sushruta, nurse Dhanwantari, helper Charaka, and elephant patient Gajendra perform the world's first surgeries and help sick people - MORAL: Healing others is the noblest profession"
           ]
 
           async def generate_voiceover(text, output_path):
@@ -224,23 +232,42 @@ jobs:
               if not GROQ_API_KEY:
                   return generate_fallback_story(topic, num_scenes)
 
-              # Strong language instruction for non-English stories
+              # MANDATORY language instruction - story MUST be in selected language
               lang_instruction = ""
               if VIDEO_LANGUAGE != "english":
+                  # Language-specific examples for better generation
+                  lang_examples = {
+                      "kannada": 'narration: "ಒಂದು ಕಾಲದಲ್ಲಿ ಭಾರತದಲ್ಲಿ ಒಬ್ಬ ಧೈರ್ಯಶಾಲಿ ರಾಜ ಇದ್ದನು. ಅವನ ಹೆಸರು ಅಶೋಕ."',
+                      "hindi": 'narration: "एक समय की बात है, भारत में एक बहादुर राजा था। उसका नाम अशोक था."',
+                      "tamil": 'narration: "ஒரு காலத்தில் இந்தியாவில் ஒரு தைரியமான அரசன் இருந்தான். அவன் பெயர் அசோகன்."',
+                      "telugu": 'narration: "ఒకప్పుడు భారతదేశంలో ఒక ధైర్యవంతుడైన రాజు ఉండేవాడు. అతని పేరు అశోకుడు."',
+                      "malayalam": 'narration: "ഒരിക്കൽ ഇന്ത്യയിൽ ഒരു ധീരനായ രാജാവ് ഉണ്ടായിരുന്നു. അദ്ദേഹത്തിന്റെ പേര് അശോകൻ."',
+                      "bengali": 'narration: "এক সময় ভারতে এক সাহসী রাজা ছিলেন। তাঁর নাম অশোক।"',
+                      "marathi": 'narration: "एकेकाळी भारतात एक शूर राजा होता. त्याचे नाव अशोक."'
+                  }
+                  example = lang_examples.get(VIDEO_LANGUAGE, lang_examples.get("kannada"))
+
                   lang_instruction = f"""
-          **** CRITICAL LANGUAGE REQUIREMENT ****
-          YOU MUST write ALL narration text in {LANG_NAME} language using {LANG_NAME} script.
-          - The "narration" field MUST be 100% in {LANG_NAME} - NO English words allowed in narration
-          - Use simple {LANG_NAME} words that 4-year-old children can easily understand
-          - The "title" should also be in {LANG_NAME}
-          - The "moral" should also be in {LANG_NAME}
-          - ONLY the "image_prompt" field should be in English (for image generation)
+          !!!!!!! ABSOLUTELY CRITICAL - READ THIS FIRST !!!!!!!
 
-          Example for Kannada:
-          - narration: "ಒಂದು ಸುಂದರ ಕಾಡಿನಲ್ಲಿ ಒಂದು ಚಿಕ್ಕ ಮೊಲ ವಾಸಿಸುತ್ತಿತ್ತು."
-          - image_prompt: "cute little bunny in beautiful forest, cartoon style"
+          YOU MUST WRITE THE ENTIRE STORY IN {LANG_NAME} LANGUAGE.
+          NOT IN ENGLISH. IN {LANG_NAME} ONLY.
 
-          DO NOT mix English in the narration. Write ONLY in {LANG_NAME}.
+          MANDATORY REQUIREMENTS:
+          1. "narration" field = 100% {LANG_NAME} script - ZERO English words
+          2. "title" field = {LANG_NAME} script
+          3. "moral" field = {LANG_NAME} script
+          4. ONLY "image_prompt" = English (for AI image generation)
+
+          CORRECT EXAMPLE IN {LANG_NAME}:
+          {example}
+          image_prompt: "brave Indian king Ashoka in golden palace, cute cartoon style"
+
+          WRONG (DO NOT DO THIS):
+          narration: "Once upon a time there was a king" ← THIS IS WRONG!
+
+          I REPEAT: Write narration, title, moral in {LANG_NAME} language using {LANG_NAME} script.
+          If you write in English, the video will be REJECTED.
           """
 
               try:
@@ -503,64 +530,84 @@ jobs:
               create_thumbnail(title, moral, thumb_path)
               print(f"Thumbnail saved: {thumb_path}")
 
-              # Ken Burns effect types for cinematic feel
-              def create_ken_burns_clip(img_path, duration, effect_type):
-                  """Create a cinematic Ken Burns effect (zoom/pan) on an image"""
-                  from moviepy.video.fx.all import resize, crop
-
-                  # Load image at higher resolution for zoom headroom
-                  img = ImageClip(str(img_path))
+              # Optimized Ken Burns effect - smoother and faster rendering
+              def create_cinematic_clip(img_path, duration, effect_type):
+                  """Create smooth cinematic Ken Burns effect with optimized performance"""
                   w, h = 1280, 720
 
-                  if effect_type == 'zoom_in':
-                      # Slow zoom in from 100% to 120%
-                      def zoom_in(t):
-                          scale = 1 + (0.2 * t / duration)  # 1.0 to 1.2
-                          return scale
-                      clip = img.resize(lambda t: zoom_in(t))
-                      clip = clip.set_position(('center', 'center'))
+                  # Load and resize image larger for zoom/pan headroom
+                  pil_img = Image.open(str(img_path))
+                  pil_img = pil_img.resize((1600, 900), Image.Resampling.LANCZOS)  # 25% larger
 
-                  elif effect_type == 'zoom_out':
-                      # Slow zoom out from 120% to 100%
-                      def zoom_out(t):
-                          scale = 1.2 - (0.2 * t / duration)  # 1.2 to 1.0
-                          return scale
-                      clip = img.resize(lambda t: zoom_out(t))
-                      clip = clip.set_position(('center', 'center'))
+                  # Convert to numpy for faster processing
+                  import numpy as np
+                  img_array = np.array(pil_img)
 
-                  elif effect_type == 'pan_left':
-                      # Pan from right to left
-                      clip = img.resize(1.3)  # Slightly larger
-                      def pan_left(t):
-                          x = int((1.3 * w - w) * (1 - t / duration))
-                          return (x, 'center')
-                      clip = clip.set_position(pan_left)
+                  def make_frame(t):
+                      progress = t / duration  # 0 to 1
 
-                  elif effect_type == 'pan_right':
-                      # Pan from left to right
-                      clip = img.resize(1.3)
-                      def pan_right(t):
-                          x = -int((1.3 * w - w) * (1 - t / duration))
-                          return (x, 'center')
-                      clip = clip.set_position(pan_right)
+                      if effect_type == 'zoom_in':
+                          # Smooth zoom in: start at full view, end zoomed in
+                          scale = 1.0 + (0.15 * progress)  # 1.0 to 1.15
+                          crop_w = int(1600 / scale)
+                          crop_h = int(900 / scale)
+                          x1 = (1600 - crop_w) // 2
+                          y1 = (900 - crop_h) // 2
 
-                  else:
-                      # Default: subtle zoom in
-                      def subtle_zoom(t):
-                          return 1 + (0.1 * t / duration)
-                      clip = img.resize(lambda t: subtle_zoom(t))
-                      clip = clip.set_position(('center', 'center'))
+                      elif effect_type == 'zoom_out':
+                          # Smooth zoom out: start zoomed in, end at full view
+                          scale = 1.15 - (0.15 * progress)  # 1.15 to 1.0
+                          crop_w = int(1600 / scale)
+                          crop_h = int(900 / scale)
+                          x1 = (1600 - crop_w) // 2
+                          y1 = (900 - crop_h) // 2
 
-                  # Create a composite with the background
-                  final = CompositeVideoClip([clip], size=(w, h))
-                  return final.set_duration(duration)
+                      elif effect_type == 'pan_right':
+                          # Smooth pan from left to right
+                          crop_w, crop_h = 1280, 720
+                          x1 = int((1600 - 1280) * progress)  # 0 to 320
+                          y1 = (900 - 720) // 2
 
-              # Effect sequence for variety
-              effect_types = ['zoom_in', 'zoom_out', 'pan_left', 'pan_right', 'zoom_in', 'pan_right', 'zoom_out', 'pan_left']
+                      elif effect_type == 'pan_left':
+                          # Smooth pan from right to left
+                          crop_w, crop_h = 1280, 720
+                          x1 = int((1600 - 1280) * (1 - progress))  # 320 to 0
+                          y1 = (900 - 720) // 2
 
-              # Process each scene with cinematic effects
+                      elif effect_type == 'zoom_pan_right':
+                          # Zoom in while panning right
+                          scale = 1.0 + (0.1 * progress)
+                          crop_w = int(1600 / scale)
+                          crop_h = int(900 / scale)
+                          x1 = int((1600 - crop_w) * progress * 0.5)
+                          y1 = (900 - crop_h) // 2
+
+                      else:  # subtle
+                          # Very subtle zoom for calm scenes
+                          scale = 1.0 + (0.08 * progress)
+                          crop_w = int(1600 / scale)
+                          crop_h = int(900 / scale)
+                          x1 = (1600 - crop_w) // 2
+                          y1 = (900 - crop_h) // 2
+
+                      # Crop and resize to output dimensions
+                      cropped = img_array[y1:y1+crop_h, x1:x1+crop_w]
+                      # Use PIL for high-quality resize
+                      pil_cropped = Image.fromarray(cropped)
+                      pil_resized = pil_cropped.resize((w, h), Image.Resampling.LANCZOS)
+                      return np.array(pil_resized)
+
+                  from moviepy.video.VideoClip import VideoClip
+                  clip = VideoClip(make_frame, duration=duration)
+                  return clip
+
+              # Effect sequence for variety - more effects for visual interest
+              effect_types = ['zoom_in', 'pan_right', 'zoom_out', 'pan_left', 'zoom_pan_right', 'zoom_in', 'pan_left', 'zoom_out']
+
+              # Process each scene with smooth cinematic effects
               for i, scene in enumerate(scenes):
-                  print(f"\nScene {i+1}/{len(scenes)}: {scene['narration'][:50]}...")
+                  narration_preview = scene['narration'][:60].replace('\n', ' ')
+                  print(f"\nScene {i+1}/{len(scenes)}: {narration_preview}...")
 
                   # Download image
                   img_path = TEMP_DIR / f"scene_{i}.jpg"
@@ -570,19 +617,19 @@ jobs:
                   audio_path = TEMP_DIR / f"audio_{i}.mp3"
                   asyncio.run(generate_voiceover(scene['narration'], str(audio_path)))
 
-                  # Create cinematic clip with Ken Burns effect
+                  # Create smooth cinematic clip
                   audio = AudioFileClip(str(audio_path))
-                  duration = audio.duration + 3  # Longer pause for cinematic feel
+                  duration = audio.duration + 1.5  # Slight pause between scenes
 
                   # Select effect type (cycles through different effects)
                   effect = effect_types[i % len(effect_types)]
-                  print(f"  Applying {effect} effect...")
+                  print(f"  Applying smooth {effect} effect...")
 
                   try:
-                      clip = create_ken_burns_clip(img_path, duration, effect)
+                      clip = create_cinematic_clip(img_path, duration, effect)
                       clip = clip.set_audio(audio)
                   except Exception as e:
-                      print(f"  Ken Burns failed, using static: {e}")
+                      print(f"  Cinematic effect failed, using static: {e}")
                       clip = ImageClip(str(img_path)).set_duration(duration).set_audio(audio)
 
                   clips.append(clip)
@@ -619,12 +666,16 @@ jobs:
               safe_title = "".join(c for c in title if c.isalnum() or c in " -_").strip()[:50]
               output_path = OUTPUT_DIR / f"{safe_title}_{timestamp}.mp4"
 
-              print(f"\nRendering video to {output_path}...")
+              print(f"\nRendering HIGH QUALITY video to {output_path}...")
               final.write_videofile(
                   str(output_path),
-                  fps=24,
+                  fps=30,  # Higher frame rate for smoother motion
                   codec='libx264',
                   audio_codec='aac',
+                  bitrate='8000k',  # Higher bitrate for better quality
+                  audio_bitrate='192k',  # Better audio quality
+                  preset='medium',  # Balance between quality and speed
+                  ffmpeg_params=['-crf', '18'],  # High quality encoding
                   verbose=False,
                   logger=None
               )
