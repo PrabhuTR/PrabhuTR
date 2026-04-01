@@ -4,7 +4,16 @@ on:
   schedule:
     # Run every 15 minutes
     - cron: '*/15 * * * *'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Send test notification (bypasses ticket check)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 jobs:
   check-tickets:
@@ -48,14 +57,25 @@ jobs:
           fi
 
       - name: Send Telegram Alert
-        if: steps.check-tickets.outputs.tickets_available == 'true'
+        if: steps.check-tickets.outputs.tickets_available == 'true' || inputs.test_mode == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S UTC')
-          MESSAGE=$(cat <<'EOF'
-          🚨🚨🚨 RCB TICKET ALERT 🚨🚨🚨
+          TEST_MODE="${{ inputs.test_mode }}"
+
+          if [ "$TEST_MODE" == "true" ]; then
+            MESSAGE="🧪 TEST NOTIFICATION 🧪
+
+          ✅ Your Telegram alerts are working!
+
+          This is a test message from the RCB Ticket Checker.
+          When tickets become available, you'll receive alerts like this.
+
+          ⏰ Test sent: ${TIMESTAMP}"
+          else
+            MESSAGE="🚨🚨🚨 RCB TICKET ALERT 🚨🚨🚨
 
           🎟️ TICKETS ARE AVAILABLE NOW!
 
@@ -68,11 +88,9 @@ jobs:
           ⚡ HURRY! IPL tickets sell out in minutes!
 
           🔴 GO RCB! 🔴
-          EOF
-          )
-          MESSAGE="${MESSAGE}
 
           ⏰ Detected: ${TIMESTAMP}"
+          fi
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d "chat_id=${TELEGRAM_CHAT_ID}" \
