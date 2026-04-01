@@ -1,0 +1,121 @@
+name: Upload to YouTube
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag name (from story generator)'
+        required: true
+        type: string
+      custom_title:
+        description: 'Custom video title (optional - uses metadata if empty)'
+        required: false
+        type: string
+
+jobs:
+  upload-to-youtube:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install google-auth-oauthlib google-api-python-client requests
+
+      - name: Download video from GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          mkdir -p ./download
+
+          echo "Fetching release: $RELEASE_TAG"
+
+          # Check if release exists
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            echo "ERROR: Release '$RELEASE_TAG' not found!"
+            echo ""
+            echo "Available releases:"
+            gh release list --limit 10
+            exit 1
+          fi
+
+          echo "Release found! Downloading assets..."
+
+          # Download all assets from the release
+          gh release download "$RELEASE_TAG" --dir ./download
+
+          echo "Downloaded files:"
+          ls -la ./download/
+
+      - name: Find video files
+        id: find-files
+        run: |
+          VIDEO_FILE=$(find ./download -name "*.mp4" -type f | head -1)
+          THUMBNAIL_FILE=$(find ./download -name "thumbnail.jpg" -type f | head -1)
+          METADATA_FILE=$(find ./download -name "video_metadata.json" -type f | head -1)
+
+          if [ -z "$VIDEO_FILE" ]; then
+            echo "ERROR: No video file found in release!"
+            ls -la ./download/
+            exit 1
+          fi
+
+          echo "video_path=$VIDEO_FILE" >> $GITHUB_OUTPUT
+          echo "thumbnail_path=$THUMBNAIL_FILE" >> $GITHUB_OUTPUT
+          echo "metadata_path=$METADATA_FILE" >> $GITHUB_OUTPUT
+
+          echo "Video: $VIDEO_FILE"
+          echo "Thumbnail: $THUMBNAIL_FILE"
+          echo "Metadata: $METADATA_FILE"
+
+      - name: Setup YouTube credentials
+        run: |
+          echo '${{ secrets.YOUTUBE_CREDENTIALS }}' > youtube_credentials.json
+          echo '${{ secrets.YOUTUBE_TOKEN }}' > youtube_token.json
+
+          # Validate credentials exist
+          if [ ! -s youtube_token.json ] || [ "$(cat youtube_token.json)" == "" ]; then
+            echo "ERROR: YOUTUBE_TOKEN secret is not configured!"
+            echo "Please add your YouTube OAuth token to repository secrets."
+            exit 1
+          fi
+
+      - name: Upload to YouTube
+        env:
+          VIDEO_PATH: ${{ steps.find-files.outputs.video_path }}
+          THUMBNAIL_PATH: ${{ steps.find-files.outputs.thumbnail_path }}
+          METADATA_PATH: ${{ steps.find-files.outputs.metadata_path }}
+          CUSTOM_TITLE: ${{ inputs.custom_title }}
+        run: |
+          python scripts/youtube_upload.py
+
+      - name: Summary
+        run: |
+          echo "## YouTube Upload Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f video_url.txt ]; then
+            VIDEO_URL=$(cat video_url.txt)
+            VIDEO_TITLE=$(cat video_title.txt 2>/dev/null || echo "Kids Story")
+
+            echo "Video uploaded successfully!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| **Title** | $VIDEO_TITLE |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Release Tag** | ${{ inputs.release_tag }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| **YouTube URL** | $VIDEO_URL |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Watch Now" >> $GITHUB_STEP_SUMMARY
+            echo "$VIDEO_URL" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Upload may have failed. Check the logs above." >> $GITHUB_STEP_SUMMARY
+          fi

@@ -32,7 +32,7 @@ on:
 jobs:
   generate-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120  # Increased for cinematic Ken Burns effects and quality
 
     steps:
       - name: Checkout repository
@@ -89,8 +89,10 @@ jobs:
           GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
           VIDEO_LANGUAGE = os.environ.get('VIDEO_LANGUAGE', 'english').lower()
 
-          # For 10-minute video, we need ~20 scenes (30 seconds each)
-          NUM_SCENES = 5 if TEST_MODE else 20
+          # For 10-minute CINEMATIC video with smooth Ken Burns effect (zoom/pan on images)
+          # Each scene: 15-20 seconds with zoom/pan animation for professional look
+          # 35 scenes × ~18 seconds = ~10 minutes of cinematic content
+          NUM_SCENES = 8 if TEST_MODE else 35
 
           # Multi-language voice configuration (Edge-TTS - FREE)
           # All voices are kid-friendly female voices
@@ -145,21 +147,36 @@ jobs:
 
           print(f"Language: {LANG_NAME} ({VOICE})")
 
-          # Kid-friendly MORAL story topics (age 4+)
-          # Each topic has a clear moral lesson for children
+          # History-oriented and real-life MORAL story topics (age 4+)
+          # Indian folk tales, historical stories, and real-life lessons with 3-4 cartoon characters
           TRENDING_TOPICS = [
-              "magical unicorn who learns to share toys with friends - MORAL: Sharing brings happiness",
-              "brave little dinosaur who overcomes his fear of dark - MORAL: Courage comes from within",
-              "friendly robot who learns to be kind to everyone - MORAL: Kindness makes the world better",
-              "underwater mermaid princess who helps lost baby fish find home - MORAL: Helping others is rewarding",
-              "little star who learns patience while waiting for his turn - MORAL: Good things come to those who wait",
-              "forest animals who learn teamwork to build a treehouse - MORAL: Together we are stronger",
-              "superhero kid who learns why honesty is important - MORAL: Always tell the truth",
-              "bunny who learns to say sorry after making a mistake - MORAL: Saying sorry heals friendships",
-              "elephant who learns to be grateful for what he has - MORAL: Be thankful for everything",
-              "butterfly who learns that being different is beautiful - MORAL: Everyone is unique and special",
-              "puppy who learns the importance of listening to parents - MORAL: Parents know best",
-              "little cloud who learns to share rain with thirsty flowers - MORAL: Giving brings joy"
+              # Indian Folk Tales & Panchatantra
+              "The Thirsty Crow - A clever crow named Kalu finds a pot with little water. His friends Minu the sparrow, Titu the squirrel, and Golu the frog watch as Kalu uses pebbles to raise the water level - MORAL: Intelligence and patience solve problems",
+              "The Lion and the Mouse - Raja the mighty lion gets trapped in a net. Chiku the tiny mouse, Bela the deer, and Motu the elephant help save him - MORAL: Even the smallest friend can help in big ways",
+              "The Monkey and the Crocodile - Bandar the clever monkey lives on a jamun tree by the river. Magarmach the crocodile, his wife Magri, and Tota the parrot teach about true friendship - MORAL: True friends never betray each other",
+              "The Tortoise and the Hare - Kachua the slow tortoise races against Khargosh the fast rabbit. Referee Ullu the owl and cheerleader Gillu the squirrel watch the famous race - MORAL: Slow and steady wins the race",
+
+              # Historical Indian Stories
+              "Young Shivaji and his brave friends - Little Shivaji, his friend Tanaji, wise teacher Dadaji, and loyal Yashwanti learn about courage and protecting their land - MORAL: Courage and unity protect our homeland",
+              "Little Rani Lakshmibai learns horse riding - Young Manu (Lakshmibai), her friend Nana Sahib, teacher Tatya Tope, and her horse Badal train together - MORAL: Practice and determination make you strong",
+              "Chanakya teaches young students - Wise teacher Chanakya, students Chandragupta, Bindusara, and friend Sthulabhadra learn about honesty and wisdom - MORAL: Knowledge and honesty are the greatest treasures",
+              "Ashoka learns kindness - Young prince Ashoka, his sister Sanghamitra, advisor Radhagupta, and elephant friend Hasti learn about peace - MORAL: Kindness is more powerful than war",
+
+              # Real-life Values Stories
+              "Four friends start a garden - Rani, Raju, Meena, and Gopal work together to grow vegetables in their village. Each has a special role - MORAL: Teamwork makes dreams come true",
+              "The honest shopkeeper - Ramesh the shopkeeper, his daughter Priya, customer Sharma uncle, and helper boy Tinku show why honesty matters - MORAL: Honesty brings respect and trust",
+              "Grandma's wisdom - Dadi tells stories to grandchildren Chintu, Mintu, and Pinky about respecting elders and nature - MORAL: Elders' wisdom guides us through life",
+              "The village helpers - Doctor Aunty, Teacher Sir, Farmer Uncle, and Postman Kaka show how everyone's work is important - MORAL: Every job is important and deserves respect",
+
+              # Nature & Environment Stories
+              "Save the trees - Eco-warriors Arun, Bhavna, Chitra, and their dog Moti plant trees and save the forest from cutting - MORAL: Protecting nature protects our future",
+              "The river's journey - Little drop Boond, fish friend Machli, turtle Kachua, and bird Bulbul travel from mountain to sea - MORAL: Every journey teaches something new",
+              "Four seasons friends - Spring fairy Vasant, Summer sun Grishma, Rain cloud Varsha, and Winter snow Shishir teach about nature's cycle - MORAL: Change is natural and beautiful",
+
+              # Everyday Heroes Stories
+              "The brave firefighter - Fireman Ramu, his partner Shamu, dalmatian dog Spotty, and helper Guddu save people from fire - MORAL: Bravery means helping others in danger",
+              "Doctor who cares - Dr. Kavitha, nurse Lakshmi, compounder Raja, and patient little Bunty show importance of health - MORAL: Good health is our greatest wealth",
+              "Teacher's special day - Guruji, students Amit, Sunita, and Vijay celebrate teacher's day with love and respect - MORAL: Teachers shape our future with knowledge"
           ]
 
           async def generate_voiceover(text, output_path):
@@ -168,14 +185,23 @@ jobs:
               await communicate.save(output_path)
 
           def download_image(prompt, output_path, retries=3):
-              """Download image from Pollinations.ai"""
-              safe_prompt = requests.utils.quote(prompt + ", cartoon style, bright colors, kid-friendly, children book illustration")
+              """Download image from Pollinations.ai with child-friendly enhancements"""
+              # Enhanced style modifiers for more attractive children's images
+              style_modifiers = (
+                  ", cute adorable cartoon style, pixar disney animation style, "
+                  "vibrant bright rainbow colors, sparkles and stars, "
+                  "soft rounded shapes, big expressive eyes, happy cheerful mood, "
+                  "children's storybook illustration, magical dreamy atmosphere, "
+                  "pastel background, high quality, detailed, beautiful lighting, "
+                  "safe for kids, no scary elements, warm friendly feeling"
+              )
+              safe_prompt = requests.utils.quote(prompt + style_modifiers)
               url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
 
               for attempt in range(retries):
                   try:
                       print(f"  Downloading image (attempt {attempt + 1})...")
-                      response = requests.get(url, timeout=90)
+                      response = requests.get(url, timeout=120)
                       if response.status_code == 200:
                           img = Image.open(BytesIO(response.content))
                           img = img.convert('RGB')
@@ -184,9 +210,11 @@ jobs:
                           return True
                   except Exception as e:
                       print(f"  Retry {attempt + 1}: {e}")
+                      import time
+                      time.sleep(2)  # Small delay before retry
 
-              # Create colorful placeholder
-              colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185)]
+              # Create colorful gradient placeholder if image fails
+              colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185), (255, 255, 200), (230, 190, 255)]
               img = Image.new('RGB', (1280, 720), random.choice(colors))
               img.save(output_path)
               return False
@@ -196,13 +224,23 @@ jobs:
               if not GROQ_API_KEY:
                   return generate_fallback_story(topic, num_scenes)
 
-              # Language instruction for story generation
+              # Strong language instruction for non-English stories
               lang_instruction = ""
               if VIDEO_LANGUAGE != "english":
                   lang_instruction = f"""
-          IMPORTANT: Write the story narration in {LANG_NAME} language.
-          - Use simple {LANG_NAME} words that children aged 4+ can understand
-          - Keep image_prompt in English (for image generation)
+          **** CRITICAL LANGUAGE REQUIREMENT ****
+          YOU MUST write ALL narration text in {LANG_NAME} language using {LANG_NAME} script.
+          - The "narration" field MUST be 100% in {LANG_NAME} - NO English words allowed in narration
+          - Use simple {LANG_NAME} words that 4-year-old children can easily understand
+          - The "title" should also be in {LANG_NAME}
+          - The "moral" should also be in {LANG_NAME}
+          - ONLY the "image_prompt" field should be in English (for image generation)
+
+          Example for Kannada:
+          - narration: "ಒಂದು ಸುಂದರ ಕಾಡಿನಲ್ಲಿ ಒಂದು ಚಿಕ್ಕ ಮೊಲ ವಾಸಿಸುತ್ತಿತ್ತು."
+          - image_prompt: "cute little bunny in beautiful forest, cartoon style"
+
+          DO NOT mix English in the narration. Write ONLY in {LANG_NAME}.
           """
 
               try:
@@ -217,34 +255,55 @@ jobs:
                           "messages": [
                               {
                                   "role": "system",
-                                  "content": f"""You are a children's story writer specializing in MORAL STORIES for kids aged 4-8 years.
+                                  "content": f"""You are a children's story writer specializing in HISTORY-BASED and FOLK TALE stories for kids aged 4-8 years.
 
           TARGET AUDIENCE: Children aged 4+ years old
-          STORY TYPE: Moral/Educational Story with clear life lesson
+          STORY TYPE: History-oriented / Folk Tale / Real-life Moral Story with cartoon characters
 
-          STRICT RULES:
-          - Story must have EXACTLY {num_scenes} scenes
-          - Each scene narration: 2-3 simple sentences (25-30 seconds when read aloud)
-          - Use VERY SIMPLE words that 4-year-old kids can understand
-          - Story MUST have a clear MORAL LESSON at the end (kindness, sharing, honesty, courage, respect, etc.)
-          - Make it fun, magical, colorful, and engaging
-          - NO scary content, NO violence, NO negative themes
-          - Include cute animal characters or magical creatures kids love
-          - End with "The End!" and state the moral clearly
           {lang_instruction}
 
+          **** CRITICAL CHARACTER REQUIREMENTS ****
+          - Story MUST have exactly 3-4 NAMED cartoon characters with DISTINCT appearances
+          - Give each character a UNIQUE NAME (Indian names preferred like Raju, Meena, Gopal, Priya, Chintu, etc.)
+          - Give each character a DISTINCT look (different colors, clothing, accessories)
+          - Characters can be: children, animals with clothes, historical figures as cute cartoons
+          - Keep the SAME characters throughout the entire story - DO NOT introduce new characters mid-story
+
+          CHARACTER EXAMPLE:
+          - Raju: A boy with blue shirt and red cap
+          - Meena: A girl with yellow dress and two braids
+          - Gopal: A boy with green kurta and glasses
+          - Priya: A girl with pink dress and flower in hair
+
+          STRICT RULES FOR STORY CONTENT:
+          - Story must have EXACTLY {num_scenes} scenes - this is VERY important!
+          - Each scene narration: 2-3 sentences (10-15 seconds when read aloud) - cinematic pacing!
+          - Use VERY SIMPLE words that 4-year-old kids can understand
+          - Story should be based on Indian folk tales, Panchatantra, historical events, or real-life values
+          - Make it feel REALISTIC but with cute cartoon visuals
+          - Include action words and sound effects (swoosh, splash, pop, zoom!)
+          - NO scary content, NO violence
+          - End with "The End!" and state the moral clearly
+
+          RULES FOR IMAGE PROMPTS (in English):
+          - ALWAYS mention the character names and their EXACT appearance in every scene
+          - Use: "cute cartoon style, Pixar animation, bright colors, Indian setting, detailed background"
+          - Show character emotions clearly (happy, sad, excited, curious, brave)
+          - Include Indian elements: villages, temples, nature, traditional clothes
+          - Make backgrounds colorful and detailed
+
           Return ONLY valid JSON in this exact format:
-          {{"title": "Story Title", "moral": "The moral lesson", "scenes": [{{"narration": "Scene text here", "image_prompt": "Simple description for AI image in English"}}]}}"""
+          {{"title": "Story Title", "moral": "The moral lesson", "characters": ["Character 1 description", "Character 2 description", "Character 3 description"], "scenes": [{{"narration": "One short sentence", "image_prompt": "Detailed scene with character names and appearances"}}]}}"""
                               },
                               {
                                   "role": "user",
-                                  "content": f"Create a magical moral story for children about: {topic}"
+                                  "content": f"Create a magical, exciting, and colorful moral story for young children about: {topic}"
                               }
                           ],
-                          "temperature": 0.8,
-                          "max_tokens": 4000
+                          "temperature": 0.85,
+                          "max_tokens": 6000
                       },
-                      timeout=60
+                      timeout=90
                   )
 
                   if response.status_code == 200:
@@ -444,7 +503,62 @@ jobs:
               create_thumbnail(title, moral, thumb_path)
               print(f"Thumbnail saved: {thumb_path}")
 
-              # Process each scene
+              # Ken Burns effect types for cinematic feel
+              def create_ken_burns_clip(img_path, duration, effect_type):
+                  """Create a cinematic Ken Burns effect (zoom/pan) on an image"""
+                  from moviepy.video.fx.all import resize, crop
+
+                  # Load image at higher resolution for zoom headroom
+                  img = ImageClip(str(img_path))
+                  w, h = 1280, 720
+
+                  if effect_type == 'zoom_in':
+                      # Slow zoom in from 100% to 120%
+                      def zoom_in(t):
+                          scale = 1 + (0.2 * t / duration)  # 1.0 to 1.2
+                          return scale
+                      clip = img.resize(lambda t: zoom_in(t))
+                      clip = clip.set_position(('center', 'center'))
+
+                  elif effect_type == 'zoom_out':
+                      # Slow zoom out from 120% to 100%
+                      def zoom_out(t):
+                          scale = 1.2 - (0.2 * t / duration)  # 1.2 to 1.0
+                          return scale
+                      clip = img.resize(lambda t: zoom_out(t))
+                      clip = clip.set_position(('center', 'center'))
+
+                  elif effect_type == 'pan_left':
+                      # Pan from right to left
+                      clip = img.resize(1.3)  # Slightly larger
+                      def pan_left(t):
+                          x = int((1.3 * w - w) * (1 - t / duration))
+                          return (x, 'center')
+                      clip = clip.set_position(pan_left)
+
+                  elif effect_type == 'pan_right':
+                      # Pan from left to right
+                      clip = img.resize(1.3)
+                      def pan_right(t):
+                          x = -int((1.3 * w - w) * (1 - t / duration))
+                          return (x, 'center')
+                      clip = clip.set_position(pan_right)
+
+                  else:
+                      # Default: subtle zoom in
+                      def subtle_zoom(t):
+                          return 1 + (0.1 * t / duration)
+                      clip = img.resize(lambda t: subtle_zoom(t))
+                      clip = clip.set_position(('center', 'center'))
+
+                  # Create a composite with the background
+                  final = CompositeVideoClip([clip], size=(w, h))
+                  return final.set_duration(duration)
+
+              # Effect sequence for variety
+              effect_types = ['zoom_in', 'zoom_out', 'pan_left', 'pan_right', 'zoom_in', 'pan_right', 'zoom_out', 'pan_left']
+
+              # Process each scene with cinematic effects
               for i, scene in enumerate(scenes):
                   print(f"\nScene {i+1}/{len(scenes)}: {scene['narration'][:50]}...")
 
@@ -456,11 +570,21 @@ jobs:
                   audio_path = TEMP_DIR / f"audio_{i}.mp3"
                   asyncio.run(generate_voiceover(scene['narration'], str(audio_path)))
 
-                  # Create clip
+                  # Create cinematic clip with Ken Burns effect
                   audio = AudioFileClip(str(audio_path))
-                  duration = audio.duration + 2  # Add pause between scenes
+                  duration = audio.duration + 3  # Longer pause for cinematic feel
 
-                  clip = ImageClip(str(img_path)).set_duration(duration).set_audio(audio)
+                  # Select effect type (cycles through different effects)
+                  effect = effect_types[i % len(effect_types)]
+                  print(f"  Applying {effect} effect...")
+
+                  try:
+                      clip = create_ken_burns_clip(img_path, duration, effect)
+                      clip = clip.set_audio(audio)
+                  except Exception as e:
+                      print(f"  Ken Burns failed, using static: {e}")
+                      clip = ImageClip(str(img_path)).set_duration(duration).set_audio(audio)
+
                   clips.append(clip)
 
               # 4. Create ending card with moral
@@ -558,163 +682,39 @@ jobs:
           print("Video generation complete!")
           SCRIPT
 
-      - name: Upload to YouTube
-        env:
-          YOUTUBE_CREDENTIALS: ${{ secrets.YOUTUBE_CREDENTIALS }}
+      # YouTube upload is disabled - use youtube-uploader.yml workflow instead
+      # To enable: run the separate "Upload to YouTube" workflow after reviewing the video
+
+      - name: Prepare release files
+        id: prepare-release
         run: |
-          python << 'SCRIPT'
-          import json
-          import os
-          from pathlib import Path
-          from datetime import datetime
+          # Get video info from metadata
+          if [ -f video_metadata.json ]; then
+            TITLE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('title', 'Unknown'))")
+            MORAL=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('moral', 'Be kind!'))")
+            LANGUAGE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('language', 'English'))")
+          else
+            TITLE="Kids-Story"
+            MORAL="Be kind and good!"
+            LANGUAGE="English"
+          fi
 
-          # Check if credentials exist
-          if not os.path.exists("youtube_credentials.json") or os.path.getsize("youtube_credentials.json") < 10:
-              print("YouTube credentials not configured. Skipping upload.")
-              print("Video saved locally in ./output/")
-              exit(0)
+          # Create tag-safe name (lowercase, no spaces, no special chars)
+          TAG_NAME=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+          TAG_NAME="${TAG_NAME}-$(date +%Y%m%d-%H%M%S)"
 
-          try:
-              from googleapiclient.discovery import build
-              from googleapiclient.http import MediaFileUpload
-              from google.oauth2.credentials import Credentials
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "moral=$MORAL" >> $GITHUB_OUTPUT
+          echo "language=$LANGUAGE" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
-              # Load video metadata
-              with open("video_metadata.json", "r") as f:
-                  metadata = json.load(f)
+          # Find video file
+          VIDEO_FILE=$(find ./output -name "*.mp4" -type f | head -1)
+          echo "video_file=$VIDEO_FILE" >> $GITHUB_OUTPUT
 
-              video_path = metadata["video_path"]
-              story_title = metadata["title"]
-              language = metadata.get("language", "English")
-              lang_code = metadata.get("lang_code", "en")
-              moral = metadata.get("moral", "Be kind and good")
-
-              # Language-specific title suffixes
-              lang_suffix = {
-                  "English": "Animated Story for Kids",
-                  "Hindi": "बच्चों की कहानी",
-                  "Tamil": "குழந்தைகள் கதை",
-                  "Telugu": "పిల్లల కథ",
-                  "Kannada": "ಮಕ್ಕಳ ಕಥೆ",
-                  "Malayalam": "കുട്ടികളുടെ കഥ",
-                  "Bengali": "শিশুদের গল্প",
-                  "Marathi": "मुलांची गोष्ट"
-              }
-
-              suffix = lang_suffix.get(language, "Animated Story for Kids")
-
-              # YouTube video details
-              title = f"{story_title} | {suffix} | Moral Story"
-              description = f"""🌟 {story_title} 🌟
-
-          📖 Language: {language}
-          👶 Age Group: 4+ years
-          🎓 Moral: {moral}
-
-          Welcome to our magical story time! This animated MORAL STORY is perfect for children aged 4 and above.
-
-          🎨 What you'll enjoy:
-          ✨ Beautiful colorful animations
-          🎵 Clear {language} narration with soothing voice
-          📚 Important life lesson for kids
-          💤 Perfect for bedtime!
-          🧒 Safe content for young children
-
-          📝 MORAL OF THE STORY: {moral}
-
-          👍 If your little ones enjoyed this story, please LIKE and SUBSCRIBE for more magical adventures every day!
-
-          🔔 Turn on notifications so you never miss a new story!
-
-          #KidsStories #MoralStories #{language}Stories #AnimatedStories #BedtimeStories #ChildrensBooks #StoriesForKids #KidsAnimation #FairyTales #PreschoolStories #ToddlerStories #4PlusKids #EducationalStories
-
-          🤖 This video was created with AI assistance for educational entertainment.
-          """
-
-              # Language-specific tags
-              lang_tags = {
-                  "Hindi": ["hindi stories", "hindi kahani", "bachon ki kahani", "hindi cartoon"],
-                  "Tamil": ["tamil stories", "tamil kathai", "kuzhanthai kathai", "tamil cartoon"],
-                  "Telugu": ["telugu stories", "telugu kathalu", "pillala kathalu", "telugu cartoon"],
-                  "Kannada": ["kannada stories", "kannada kathe", "makkala kathe", "kannada cartoon"],
-                  "Malayalam": ["malayalam stories", "malayalam katha", "kuttikal katha", "malayalam cartoon"],
-                  "Bengali": ["bengali stories", "bangla golpo", "shishuder golpo", "bengali cartoon"],
-                  "Marathi": ["marathi stories", "marathi goshti", "mulanche goshti", "marathi cartoon"]
-              }
-
-              tags = [
-                  "kids stories", "children stories", "animated stories",
-                  "bedtime stories", "stories for kids", "moral stories",
-                  "fairy tales", "preschool", "toddler stories", "kids animation",
-                  "educational videos", "kids entertainment", "story time",
-                  "children animation", "kids videos", "4 plus kids", "moral lesson"
-              ]
-
-              # Add language-specific tags
-              tags.extend(lang_tags.get(language, []))
-
-              # Load credentials
-              creds = Credentials.from_authorized_user_file("youtube_token.json")
-
-              youtube = build('youtube', 'v3', credentials=creds)
-
-              body = {
-                  'snippet': {
-                      'title': title[:100],  # YouTube limit
-                      'description': description,
-                      'tags': tags,
-                      'categoryId': '24',  # Entertainment
-                      'defaultLanguage': 'en',
-                      'defaultAudioLanguage': 'en'
-                  },
-                  'status': {
-                      'privacyStatus': 'public',
-                      'selfDeclaredMadeForKids': True,
-                      'license': 'youtube',
-                      'embeddable': True,
-                      'publicStatsViewable': True
-                  }
-              }
-
-              print(f"Uploading: {title}")
-              media = MediaFileUpload(video_path, mimetype='video/mp4', resumable=True)
-
-              request = youtube.videos().insert(
-                  part='snippet,status',
-                  body=body,
-                  media_body=media
-              )
-
-              response = None
-              while response is None:
-                  status, response = request.next_chunk()
-                  if status:
-                      print(f"Upload progress: {int(status.progress() * 100)}%")
-
-              video_id = response['id']
-              print(f"\n✅ Video uploaded successfully!")
-              print(f"📺 Watch: https://youtube.com/watch?v={video_id}")
-
-              # Upload thumbnail
-              thumbnail_path = "./output/thumbnail.jpg"
-              if os.path.exists(thumbnail_path):
-                  print("\n📸 Uploading thumbnail...")
-                  try:
-                      youtube.thumbnails().set(
-                          videoId=video_id,
-                          media_body=MediaFileUpload(thumbnail_path, mimetype='image/jpeg')
-                      ).execute()
-                      print("✅ Thumbnail uploaded!")
-                  except Exception as thumb_error:
-                      print(f"⚠️ Thumbnail upload failed: {thumb_error}")
-                      print("(Video uploaded successfully, thumbnail can be added manually)")
-
-              print(f"\n🎉 All done! Video is live at: https://youtube.com/watch?v={video_id}")
-
-          except Exception as e:
-              print(f"Upload error: {e}")
-              print("Video saved locally. You can upload manually.")
-          SCRIPT
+          echo "Tag: $TAG_NAME"
+          echo "Title: $TITLE"
+          echo "Video: $VIDEO_FILE"
 
       - name: Upload video and thumbnail as artifact (backup)
         uses: actions/upload-artifact@v4
@@ -723,7 +723,36 @@ jobs:
           path: |
             output/*.mp4
             output/thumbnail.jpg
+            video_metadata.json
           retention-days: 7
+
+      - name: Create GitHub Release with video
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.prepare-release.outputs.tag_name }}
+          name: "🎬 ${{ steps.prepare-release.outputs.title }}"
+          body: |
+            ## 📖 Kids Story Video
+
+            **Title:** ${{ steps.prepare-release.outputs.title }}
+            **Language:** ${{ steps.prepare-release.outputs.language }}
+            **Moral:** ${{ steps.prepare-release.outputs.moral }}
+            **Age Group:** 4+ years
+
+            ---
+
+            ### 📥 Download the video and thumbnail below
+
+            ### 📺 To upload to YouTube:
+            1. Go to **Actions** → **Upload to YouTube**
+            2. Enter tag: `${{ steps.prepare-release.outputs.tag_name }}`
+            3. Click **Run workflow**
+          files: |
+            ${{ steps.prepare-release.outputs.video_file }}
+            output/thumbnail.jpg
+            video_metadata.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
         run: |
@@ -731,9 +760,16 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ Video generated successfully!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f video_metadata.json ]; then
-            TITLE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('title', 'Unknown'))")
-            echo "📖 Story: $TITLE" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "📖 **Story:** ${{ steps.prepare-release.outputs.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "🎓 **Moral:** ${{ steps.prepare-release.outputs.moral }}" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **Language:** ${{ steps.prepare-release.outputs.language }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📁 Video saved as artifact (available for 7 days)" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Release Created" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** \`${{ steps.prepare-release.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📺 To Upload to YouTube:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to **Actions** → **Upload to YouTube**" >> $GITHUB_STEP_SUMMARY
+          echo "2. Enter tag: \`${{ steps.prepare-release.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Click **Run workflow**" >> $GITHUB_STEP_SUMMARY
