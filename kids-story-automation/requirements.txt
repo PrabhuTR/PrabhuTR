@@ -1,7 +1,10 @@
 edge-tts
-moviepy
+moviepy==1.0.3
 pillow
 flask
 google-auth-oauthlib
 google-api-python-client
 requests
+decorator
+imageio
+imageio-ffmpeg

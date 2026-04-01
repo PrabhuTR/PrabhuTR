@@ -20,13 +20,21 @@ import subprocess
 
 # Install dependencies
 def install_deps():
-    deps = ['edge-tts', 'moviepy', 'pillow', 'requests']
-    for dep in deps:
+    deps = [
+        ('edge-tts', 'edge_tts'),
+        ('moviepy==1.0.3', 'moviepy'),
+        ('pillow', 'PIL'),
+        ('requests', 'requests'),
+        ('decorator', 'decorator'),
+        ('imageio', 'imageio'),
+        ('imageio-ffmpeg', 'imageio_ffmpeg')
+    ]
+    for pkg, import_name in deps:
         try:
-            __import__(dep.replace('-', '_'))
+            __import__(import_name.replace('-', '_'))
         except ImportError:
-            print(f"Installing {dep}...")
-            subprocess.run([sys.executable, '-m', 'pip', 'install', dep], check=True)
+            print(f"Installing {pkg}...")
+            subprocess.run([sys.executable, '-m', 'pip', 'install', pkg], check=True)
 
 print("Checking dependencies...")
 install_deps()

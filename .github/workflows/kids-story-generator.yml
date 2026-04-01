@@ -50,7 +50,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install edge-tts moviepy pillow requests google-auth-oauthlib google-api-python-client
+          pip install edge-tts "moviepy==1.0.3" pillow requests google-auth-oauthlib google-api-python-client decorator imageio imageio-ffmpeg
 
       - name: Setup YouTube credentials
         run: |
