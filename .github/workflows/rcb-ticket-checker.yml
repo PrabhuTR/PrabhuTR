@@ -7,13 +7,14 @@ on:
   workflow_dispatch:
     inputs:
       test_mode:
-        description: 'Send test notification (bypasses ticket check)'
+        description: 'Test notification type'
         required: false
-        default: 'false'
+        default: 'none'
         type: choice
         options:
-          - 'false'
-          - 'true'
+          - 'none'
+          - 'test'
+          - 'live_simulation'
 
 jobs:
   check-tickets:
@@ -57,7 +58,7 @@ jobs:
           fi
 
       - name: Send Telegram Alert
-        if: steps.check-tickets.outputs.tickets_available == 'true' || inputs.test_mode == 'true'
+        if: steps.check-tickets.outputs.tickets_available == 'true' || inputs.test_mode == 'test' || inputs.test_mode == 'live_simulation'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -65,7 +66,7 @@ jobs:
           TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S UTC')
           TEST_MODE="${{ inputs.test_mode }}"
 
-          if [ "$TEST_MODE" == "true" ]; then
+          if [ "$TEST_MODE" == "test" ]; then
             MESSAGE="🧪 TEST NOTIFICATION 🧪
 
           ✅ Your Telegram alerts are working!
@@ -75,6 +76,7 @@ jobs:
 
           ⏰ Test sent: ${TIMESTAMP}"
           else
+            # Used for both real alerts and live_simulation
             MESSAGE="🚨🚨🚨 RCB TICKET ALERT 🚨🚨🚨
 
           🎟️ TICKETS ARE AVAILABLE NOW!
@@ -90,6 +92,12 @@ jobs:
           🔴 GO RCB! 🔴
 
           ⏰ Detected: ${TIMESTAMP}"
+
+            if [ "$TEST_MODE" == "live_simulation" ]; then
+              MESSAGE="${MESSAGE}
+
+          ⚠️ (This is a SIMULATION - not real tickets)"
+            fi
           fi
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
