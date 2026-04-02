@@ -46,12 +46,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install FFmpeg and Fonts
+      - name: Install FFmpeg and Fonts (including Indian language support)
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-freefont-ttf
-          # Verify fonts are installed
-          fc-list | grep -i dejavu || echo "DejaVu fonts installed"
+          # Install Indian language fonts for Kannada, Hindi, Tamil, Telugu, Malayalam, Bengali
+          sudo apt-get install -y fonts-noto fonts-noto-core
+          sudo apt-get install -y fonts-lohit-knda fonts-lohit-deva fonts-lohit-taml fonts-lohit-telu fonts-lohit-mlym fonts-lohit-beng
+          # Refresh font cache
+          fc-cache -fv
+          echo "Installed fonts for Indian languages"
 
       - name: Install Python dependencies
         run: |
@@ -376,89 +380,179 @@ jobs:
               return False
 
           def create_illustrated_placeholder(prompt):
-              """Create a nice illustrated placeholder when AI image fails"""
-              # Color themes based on prompt content
-              if any(word in prompt.lower() for word in ['king', 'palace', 'royal', 'emperor']):
-                  colors = [(255, 215, 0), (218, 165, 32), (255, 223, 186)]  # Gold theme
-              elif any(word in prompt.lower() for word in ['forest', 'tree', 'garden', 'nature']):
-                  colors = [(144, 238, 144), (60, 179, 113), (152, 251, 152)]  # Green theme
-              elif any(word in prompt.lower() for word in ['sky', 'cloud', 'bird', 'flying']):
-                  colors = [(135, 206, 250), (176, 224, 230), (173, 216, 230)]  # Blue theme
-              elif any(word in prompt.lower() for word in ['temple', 'statue', 'ancient']):
-                  colors = [(255, 228, 196), (245, 222, 179), (255, 218, 185)]  # Sand theme
-              else:
-                  colors = [(255, 182, 193), (255, 192, 203), (255, 228, 225)]  # Pink theme
-
-              base_color = random.choice(colors)
-              img = Image.new('RGB', (1280, 720), base_color)
+              """Create detailed cartoon illustration matching the story scene"""
+              prompt_lower = prompt.lower()
+              img = Image.new('RGB', (1280, 720), (135, 206, 250))  # Sky blue
               draw = ImageDraw.Draw(img)
 
-              # Create gradient background
-              for y in range(720):
-                  factor = 1 - (y / 720) * 0.4
-                  r = int(base_color[0] * factor)
-                  g = int(base_color[1] * factor)
-                  b = int(base_color[2] * factor)
+              # Determine scene type and colors
+              is_palace = any(w in prompt_lower for w in ['palace', 'king', 'emperor', 'royal', 'throne'])
+              is_temple = any(w in prompt_lower for w in ['temple', 'pillar', 'statue'])
+              is_battle = any(w in prompt_lower for w in ['battle', 'war', 'army', 'fight'])
+              is_nature = any(w in prompt_lower for w in ['forest', 'garden', 'tree', 'river'])
+              is_village = any(w in prompt_lower for w in ['village', 'people', 'crowd', 'celebration'])
+              has_elephant = any(w in prompt_lower for w in ['elephant', 'gajraj', 'airavata'])
+              has_horse = any(w in prompt_lower for w in ['horse', 'vishwas', 'riding'])
+              is_happy = any(w in prompt_lower for w in ['happy', 'joy', 'celebration', 'cheer', 'smile'])
+              is_sad = any(w in prompt_lower for w in ['sad', 'cry', 'tear', 'hurt'])
+
+              # SKY GRADIENT
+              if is_battle:
+                  sky_top, sky_bottom = (255, 150, 100), (255, 200, 150)  # Orange/sunset
+              elif is_happy or is_village:
+                  sky_top, sky_bottom = (135, 206, 250), (255, 223, 186)  # Bright blue to warm
+              else:
+                  sky_top, sky_bottom = (135, 206, 250), (200, 230, 255)  # Blue gradient
+
+              for y in range(400):
+                  ratio = y / 400
+                  r = int(sky_top[0] + (sky_bottom[0] - sky_top[0]) * ratio)
+                  g = int(sky_top[1] + (sky_bottom[1] - sky_top[1]) * ratio)
+                  b = int(sky_top[2] + (sky_bottom[2] - sky_top[2]) * ratio)
                   draw.line([(0, y), (1280, y)], fill=(r, g, b))
 
-              # Add sun/moon
-              sun_color = (255, 255, 200)
-              draw.ellipse([1050, 50, 1150, 150], fill=sun_color)
+              # SUN with rays
+              sun_x, sun_y = 1100, 80
+              for i in range(12):
+                  angle = i * 30
+                  import math
+                  x2 = sun_x + int(80 * math.cos(math.radians(angle)))
+                  y2 = sun_y + int(80 * math.sin(math.radians(angle)))
+                  draw.line([(sun_x, sun_y), (x2, y2)], fill=(255, 255, 150), width=3)
+              draw.ellipse([sun_x-40, sun_y-40, sun_x+40, sun_y+40], fill=(255, 255, 0))
 
-              # Add clouds
-              for _ in range(5):
-                  x = random.randint(100, 1100)
-                  y = random.randint(50, 200)
-                  for dx in range(0, 80, 20):
-                      draw.ellipse([x+dx, y, x+dx+50, y+30], fill=(255, 255, 255))
+              # CLOUDS
+              cloud_color = (255, 255, 255)
+              for cx in [150, 500, 900]:
+                  cy = random.randint(60, 150)
+                  for dx in range(0, 100, 25):
+                      draw.ellipse([cx+dx, cy, cx+dx+60, cy+35], fill=cloud_color)
 
-              # Add hills/mountains
-              hill_color = tuple(max(0, c - 50) for c in base_color)
-              for i in range(3):
-                  x1 = random.randint(-100, 800)
-                  points = [(x1, 720), (x1 + 300, 400 + i*50), (x1 + 600, 720)]
-                  draw.polygon(points, fill=hill_color)
+              # GROUND
+              if is_palace or is_temple:
+                  ground_color = (210, 180, 140)  # Tan/stone
+              elif is_nature:
+                  ground_color = (34, 139, 34)  # Green
+              else:
+                  ground_color = (139, 119, 101)  # Brown
 
-              # Add trees
-              tree_green = (34, 139, 34)
-              tree_brown = (139, 69, 19)
-              for _ in range(8):
-                  x = random.randint(50, 1200)
-                  y = random.randint(450, 650)
-                  # Trunk
-                  draw.rectangle([x-5, y, x+5, y+50], fill=tree_brown)
-                  # Leaves (triangle)
-                  draw.polygon([(x, y-40), (x-30, y+10), (x+30, y+10)], fill=tree_green)
+              draw.rectangle([0, 400, 1280, 720], fill=ground_color)
 
-              # Add cartoon characters (simple circles with faces)
-              char_colors = [(255, 200, 150), (200, 150, 100), (255, 220, 180)]
-              for i in range(3):
-                  x = 300 + i * 250
-                  y = 500
-                  color = char_colors[i % len(char_colors)]
-                  # Body
-                  draw.ellipse([x-40, y, x+40, y+80], fill=color)
+              # BACKGROUND ELEMENTS based on scene
+              if is_palace:
+                  # Draw palace
+                  draw.rectangle([400, 200, 880, 400], fill=(255, 215, 0))  # Gold palace
+                  draw.rectangle([420, 220, 860, 380], fill=(255, 235, 150))
+                  # Domes
+                  draw.ellipse([500, 150, 600, 220], fill=(255, 215, 0))
+                  draw.ellipse([680, 150, 780, 220], fill=(255, 215, 0))
+                  # Windows
+                  for wx in [480, 580, 680, 780]:
+                      draw.rectangle([wx, 280, wx+40, 350], fill=(139, 69, 19))
+
+              elif is_temple:
+                  # Draw temple/pillar
+                  draw.rectangle([550, 180, 730, 400], fill=(245, 222, 179))
+                  draw.polygon([(640, 100), (520, 180), (760, 180)], fill=(255, 200, 150))
+                  # Pillar
+                  draw.rectangle([300, 250, 350, 400], fill=(220, 200, 180))
+                  draw.rectangle([930, 250, 980, 400], fill=(220, 200, 180))
+                  # Lion on pillar
+                  draw.ellipse([290, 200, 360, 250], fill=(255, 200, 100))
+
+              elif is_nature:
+                  # Trees
+                  for tx in [100, 300, 900, 1100]:
+                      ty = 350
+                      draw.rectangle([tx-10, ty, tx+10, ty+100], fill=(139, 69, 19))
+                      draw.ellipse([tx-50, ty-80, tx+50, ty+20], fill=(34, 139, 34))
+                      draw.ellipse([tx-40, ty-100, tx+40, ty-20], fill=(50, 160, 50))
+
+              # CHARACTERS
+              def draw_king(x, y, crown=True):
+                  # Body (royal robe)
+                  draw.ellipse([x-50, y, x+50, y+100], fill=(128, 0, 128))  # Purple robe
                   # Head
-                  draw.ellipse([x-30, y-50, x+30, y+10], fill=color)
-                  # Eyes
-                  draw.ellipse([x-15, y-30, x-5, y-15], fill=(0, 0, 0))
-                  draw.ellipse([x+5, y-30, x+15, y-15], fill=(0, 0, 0))
-                  # Smile
-                  draw.arc([x-10, y-15, x+10, y], 0, 180, fill=(0, 0, 0), width=2)
+                  draw.ellipse([x-35, y-60, x+35, y+10], fill=(255, 200, 150))
+                  # Crown
+                  if crown:
+                      draw.polygon([(x-25, y-60), (x, y-90), (x+25, y-60)], fill=(255, 215, 0))
+                      draw.ellipse([x-5, y-95, x+5, y-85], fill=(255, 0, 0))  # Ruby
+                  # Face
+                  draw.ellipse([x-15, y-40, x-5, y-25], fill=(0, 0, 0))  # Eye
+                  draw.ellipse([x+5, y-40, x+15, y-25], fill=(0, 0, 0))  # Eye
+                  if is_happy:
+                      draw.arc([x-15, y-20, x+15, y], 0, 180, fill=(0, 0, 0), width=3)
+                  elif is_sad:
+                      draw.arc([x-15, y-10, x+15, y+10], 180, 360, fill=(0, 0, 0), width=3)
+                  else:
+                      draw.line([(x-10, y-10), (x+10, y-10)], fill=(0, 0, 0), width=2)
 
-              # Add sparkles/stars
-              for _ in range(20):
-                  x = random.randint(50, 1230)
-                  y = random.randint(50, 300)
-                  size = random.randint(2, 5)
+              def draw_elephant(x, y):
+                  # Body
+                  draw.ellipse([x-80, y-30, x+80, y+70], fill=(128, 128, 128))
+                  # Head
+                  draw.ellipse([x+50, y-50, x+130, y+30], fill=(128, 128, 128))
+                  # Trunk
+                  draw.arc([x+80, y, x+140, y+80], 180, 360, fill=(100, 100, 100), width=15)
+                  # Ear
+                  draw.ellipse([x+40, y-60, x+90, y-10], fill=(150, 150, 150))
+                  # Eye
+                  draw.ellipse([x+85, y-25, x+100, y-10], fill=(0, 0, 0))
+                  # Legs
+                  for lx in [x-50, x-20, x+20, x+50]:
+                      draw.rectangle([lx-10, y+50, lx+10, y+100], fill=(100, 100, 100))
+                  # Decorations
+                  draw.rectangle([x-60, y-20, x+60, y+10], fill=(255, 0, 0))  # Red cloth
+
+              def draw_person(x, y, color=(255, 200, 150), dress_color=(255, 150, 50)):
+                  # Body/dress
+                  draw.polygon([(x, y), (x-40, y+80), (x+40, y+80)], fill=dress_color)
+                  # Head
+                  draw.ellipse([x-25, y-50, x+25, y+5], fill=color)
+                  # Eyes
+                  draw.ellipse([x-12, y-30, x-4, y-18], fill=(0, 0, 0))
+                  draw.ellipse([x+4, y-30, x+12, y-18], fill=(0, 0, 0))
+                  # Smile
+                  draw.arc([x-10, y-15, x+10, y+5], 0, 180, fill=(0, 0, 0), width=2)
+
+              # Place characters based on scene
+              if has_elephant:
+                  draw_elephant(640, 480)
+                  draw_king(400, 450)
+              elif is_palace or 'ashoka' in prompt_lower or 'king' in prompt_lower:
+                  draw_king(640, 450)
+                  draw_person(450, 480, dress_color=(255, 100, 100))
+                  draw_person(830, 480, dress_color=(100, 200, 100))
+              elif is_village or is_happy:
+                  for i, px in enumerate([300, 500, 700, 900]):
+                      colors = [(255, 150, 50), (50, 150, 255), (255, 100, 150), (100, 255, 150)]
+                      draw_person(px, 480, dress_color=colors[i % 4])
+              else:
+                  draw_king(500, 450)
+                  draw_person(750, 480, dress_color=(200, 100, 255))
+
+              # SPARKLES/STARS
+              for _ in range(15):
+                  sx = random.randint(50, 1230)
+                  sy = random.randint(50, 200)
+                  size = random.randint(3, 8)
                   draw.polygon([
-                      (x, y-size*2), (x+size, y-size), (x+size*2, y),
-                      (x+size, y+size), (x, y+size*2), (x-size, y+size),
-                      (x-size*2, y), (x-size, y-size)
-                  ], fill=(255, 255, 220))
+                      (sx, sy-size*2), (sx+size, sy-size), (sx+size*2, sy),
+                      (sx+size, sy+size), (sx, sy+size*2), (sx-size, sy+size),
+                      (sx-size*2, sy), (sx-size, sy-size)
+                  ], fill=(255, 255, 200))
+
+              # FLOWERS on ground
+              flower_colors = [(255, 100, 100), (255, 200, 100), (200, 100, 255), (100, 200, 255)]
+              for _ in range(20):
+                  fx = random.randint(50, 1230)
+                  fy = random.randint(550, 680)
+                  fc = random.choice(flower_colors)
+                  draw.ellipse([fx-8, fy-8, fx+8, fy+8], fill=fc)
+                  draw.ellipse([fx-3, fy-3, fx+3, fy+3], fill=(255, 255, 0))
 
               return img
-              return False
 
           def generate_story_with_groq(topic, num_scenes):
               """Generate story using Groq API"""
@@ -976,29 +1070,16 @@ jobs:
               # Add white banner for title
               draw.rectangle([80, 280, 1200, 450], fill=(255, 255, 255, 200), outline=(255, 215, 0), width=5)
 
-              # DRAW STORY TIME header
-              from PIL import ImageFont
-              font_paths = [
-                  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-                  "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-                  "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
-              ]
-              title_font = ImageFont.load_default()
-              header_font = ImageFont.load_default()
-              for fp in font_paths:
-                  if os.path.exists(fp):
-                      try:
-                          title_font = ImageFont.truetype(fp, 50)
-                          header_font = ImageFont.truetype(fp, 35)
-                          break
-                      except:
-                          pass
+              # DRAW STORY TIME header - use fonts that support Indian languages
+              has_indian_chars = any(ord(c) > 127 for c in title)
+              header_font = get_font(35, for_indian_lang=False)  # English header
+              title_font = get_font(45, for_indian_lang=has_indian_chars)  # May need Indian font
 
               # Draw "STORY TIME" header
               draw.text((450, 230), "★ STORY TIME ★", fill=(255, 100, 150), font=header_font)
 
-              # Draw the story title
-              display_title = title[:45] + "..." if len(title) > 45 else title
+              # Draw the story title (may be in Kannada, Hindi, etc.)
+              display_title = title[:40] + "..." if len(title) > 40 else title
               try:
                   bbox = draw.textbbox((0, 0), display_title, font=title_font)
                   text_width = bbox[2] - bbox[0]
@@ -1013,16 +1094,32 @@ jobs:
               img.save(output_path)
               return output_path
 
-          def get_font(size):
-              """Get a font that works on Linux/GitHub Actions"""
+          def get_font(size, for_indian_lang=False):
+              """Get a font that works on Linux/GitHub Actions, with Indian language support"""
               from PIL import ImageFont
-              font_paths = [
+
+              # Fonts that support Indian scripts (Kannada, Hindi, Tamil, etc.)
+              indian_font_paths = [
+                  "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/noto/NotoSansKannada-Bold.ttf",
+                  "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf",
+                  "/usr/share/fonts/truetype/lohit-kannada/Lohit-Kannada.ttf",
+                  "/usr/share/fonts/truetype/lohit-devanagari/Lohit-Devanagari.ttf",
+                  "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+              ]
+
+              # Standard fonts for English
+              standard_font_paths = [
                   "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
                   "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
                   "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
-                  "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
               ]
-              for font_path in font_paths:
+
+              # Try Indian fonts first if needed, then standard fonts
+              paths_to_try = indian_font_paths if for_indian_lang else (standard_font_paths + indian_font_paths)
+
+              for font_path in paths_to_try:
                   if os.path.exists(font_path):
                       try:
                           return ImageFont.truetype(font_path, size)
@@ -1058,10 +1155,11 @@ jobs:
                   x, y = random.randint(50, 1230), random.randint(30, 250)
                   draw.text((x, y), "★", fill=(255, 255, 0))
 
-              # DRAW THE TITLE TEXT
-              title_font = get_font(60)
+              # DRAW THE TITLE TEXT (use Indian language font for non-ASCII titles)
+              has_indian_chars = any(ord(c) > 127 for c in title)
+              title_font = get_font(50, for_indian_lang=has_indian_chars)
               # Truncate title if too long
-              display_title = title[:40] + "..." if len(title) > 40 else title
+              display_title = title[:35] + "..." if len(title) > 35 else title
               # Center the title
               try:
                   bbox = draw.textbbox((0, 0), display_title, font=title_font)
