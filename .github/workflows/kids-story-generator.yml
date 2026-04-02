@@ -304,70 +304,69 @@ jobs:
               # If all retries failed, raise the last exception
               raise Exception(f"Edge-TTS failed after {max_retries} attempts")
 
-          def download_image(prompt, output_path, retries=3):
-              """Download image using multiple AI image services with fallbacks"""
+          def download_image(prompt, output_path, retries=2):
+              """Download image using multiple services with fallbacks"""
               import time
+              from PIL import ImageEnhance, ImageFilter
 
-              # Shorter, simpler style modifier (long prompts cause issues)
-              style = ", cartoon kids style, colorful, cute, Pixar"
+              # Extract keyword for stock photos
+              keywords = ['india', 'colorful']
+              keyword_map = {
+                  'king': 'indian,king', 'queen': 'indian,queen', 'palace': 'palace,indian',
+                  'elephant': 'elephant,indian', 'temple': 'temple,hindu', 'forest': 'forest,green',
+                  'village': 'village,indian', 'children': 'children,happy', 'horse': 'horse',
+                  'ashoka': 'ancient,india', 'shivaji': 'warrior,indian', 'chola': 'temple,south'
+              }
+              for key, value in keyword_map.items():
+                  if key in prompt.lower():
+                      keywords = value.split(',')
+                      break
 
-              # Simplify prompt - take only first 100 chars to avoid URL length issues
-              short_prompt = prompt[:100] + style
+              # Shorter prompt for AI services
+              short_prompt = prompt[:60] + " cartoon colorful kids"
 
-              # Try multiple image generation services
-              def try_pollinations(prompt_text, seed):
-                  """Try Pollinations.ai"""
-                  safe_prompt = requests.utils.quote(prompt_text)
-                  # Use smaller size for faster response
-                  url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1024&height=576&seed={seed}&nologo=true"
-                  response = requests.get(url, timeout=120)
-                  return response
-
-              def try_pollinations_v2(prompt_text, seed):
-                  """Try Pollinations.ai with different model"""
-                  safe_prompt = requests.utils.quote(prompt_text)
-                  url = f"https://pollinations.ai/p/{safe_prompt}?width=1024&height=576&seed={seed}&model=turbo"
-                  response = requests.get(url, timeout=120)
-                  return response
-
-              # Main download loop with multiple services
               for attempt in range(retries):
-                  seed = random.randint(1, 99999)
                   print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
 
-                  # Add delay between requests to avoid rate limiting
-                  if attempt > 0:
-                      time.sleep(5)
-
+                  # Method 1: Try Pollinations.ai
                   try:
-                      # Try primary service
-                      response = try_pollinations(short_prompt, seed)
+                      safe_prompt = requests.utils.quote(short_prompt)
+                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1024&height=576&seed={random.randint(1,9999)}"
+                      response = requests.get(url, timeout=60)
 
                       if response.status_code == 200 and len(response.content) > 5000:
                           img = Image.open(BytesIO(response.content))
-                          img = img.convert('RGB')
-                          img = img.resize((1280, 720), Image.Resampling.LANCZOS)
+                          img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
                           img.save(output_path, quality=95)
-                          print(f"  ✓ Image saved ({os.path.getsize(output_path)} bytes)")
+                          print(f"  ✓ AI image saved ({os.path.getsize(output_path)} bytes)")
                           return True
-                      else:
-                          print(f"  ✗ Pollinations failed (status={response.status_code})")
-
-                      # Try backup service with simpler prompt
-                      time.sleep(2)
-                      simple_prompt = "cute cartoon " + prompt[:50] + ", colorful kids illustration"
-                      response = try_pollinations(simple_prompt, seed + 1000)
-
-                      if response.status_code == 200 and len(response.content) > 5000:
-                          img = Image.open(BytesIO(response.content))
-                          img = img.convert('RGB')
-                          img = img.resize((1280, 720), Image.Resampling.LANCZOS)
-                          img.save(output_path, quality=95)
-                          print(f"  ✓ Image saved with simple prompt ({os.path.getsize(output_path)} bytes)")
-                          return True
-
+                      print(f"  ✗ Pollinations: status={response.status_code}")
                   except Exception as e:
-                      print(f"  ✗ Error: {e}")
+                      print(f"  ✗ Pollinations error: {e}")
+
+                  time.sleep(1)
+
+                  # Method 2: Try LoremFlickr (stock photos)
+                  try:
+                      keyword = ','.join(keywords[:2])
+                      url = f"https://loremflickr.com/1280/720/{keyword}"
+                      response = requests.get(url, timeout=30, allow_redirects=True)
+
+                      if response.status_code == 200 and len(response.content) > 5000:
+                          img = Image.open(BytesIO(response.content))
+                          img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
+                          # Make more colorful/cartoon-like
+                          img = ImageEnhance.Color(img).enhance(1.4)
+                          img = ImageEnhance.Brightness(img).enhance(1.1)
+                          img = img.filter(ImageFilter.SMOOTH)
+                          img.save(output_path, quality=95)
+                          print(f"  ✓ Stock photo saved ({os.path.getsize(output_path)} bytes)")
+                          return True
+                      print(f"  ✗ LoremFlickr: status={response.status_code}")
+                  except Exception as e:
+                      print(f"  ✗ LoremFlickr error: {e}")
+
+                  time.sleep(1)
 
               # Fallback: Create an attractive illustrated placeholder
               print(f"  ⚠ Creating illustrated placeholder...")
@@ -1364,33 +1363,41 @@ jobs:
                       placeholder.save(str(img_path), quality=95)
                       print(f"  ✓ Placeholder created: {os.path.getsize(str(img_path))} bytes")
 
-                  # Create video clip - use simple approach first, then animated
+                  # Create video clip - USE SIMPLE ImageClip (most reliable for showing images)
                   clip = None
                   try:
-                      # First try: Simple ImageClip (most reliable)
+                      # Verify and prepare image
                       test_img = Image.open(str(img_path))
                       test_img = test_img.convert('RGB')
                       test_img = test_img.resize((1280, 720), Image.Resampling.LANCZOS)
                       test_img.save(str(img_path), quality=95)
+                      print(f"  ✓ Image verified: {os.path.getsize(str(img_path))} bytes")
 
-                      # Try animated clip
-                      clip = create_animated_clip(img_path, duration, effect)
+                      # USE SIMPLE ImageClip - this ALWAYS works
+                      clip = ImageClip(str(img_path))
+                      clip = clip.set_duration(duration)
+                      clip = clip.set_fps(30)
                       clip = clip.set_audio(audio)
-                      print(f"  ✓ Animated clip created")
+                      print(f"  ✓ Image clip created (duration: {duration:.1f}s)")
+
                   except Exception as e:
-                      print(f"  ⚠ Animation failed ({e}), using simple ImageClip...")
+                      print(f"  ⚠ ImageClip failed ({e}), trying numpy array...")
                       try:
-                          clip = ImageClip(str(img_path))
+                          # Fallback: Load image as numpy array
+                          import numpy as np
+                          test_img = Image.open(str(img_path)).convert('RGB').resize((1280, 720))
+                          img_array = np.array(test_img)
+                          clip = ImageClip(img_array)
                           clip = clip.set_duration(duration)
                           clip = clip.set_fps(30)
                           clip = clip.set_audio(audio)
-                          print(f"  ✓ Static clip created")
+                          print(f"  ✓ Numpy array clip created")
                       except Exception as e2:
-                          print(f"  ✗ ImageClip failed ({e2}), using ColorClip...")
+                          print(f"  ✗ All failed ({e2}), using ColorClip...")
                           clip = ColorClip(size=(1280, 720), color=(100, 150, 200), duration=duration)
                           clip = clip.set_fps(30)
                           clip = clip.set_audio(audio)
-                          print(f"  ✓ ColorClip created as fallback")
+                          print(f"  ✓ ColorClip fallback created")
 
                   if clip is not None:
                       clips.append(clip)
