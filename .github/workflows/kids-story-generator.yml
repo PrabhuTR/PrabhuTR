@@ -308,12 +308,22 @@ jobs:
               # If all retries failed, raise the last exception
               raise Exception(f"Edge-TTS failed after {max_retries} attempts")
 
-          def download_image(prompt, output_path, retries=2):
-              """Download image using multiple services with fallbacks"""
+          def download_image(prompt, output_path, retries=3):
+              """Download image from Pollinations.ai with child-friendly enhancements"""
               import time
               from PIL import ImageEnhance, ImageFilter
 
-              # Extract keyword for stock photos
+              # Enhanced style modifiers for more attractive children's images
+              style_modifiers = (
+                  ", cute adorable cartoon style, pixar disney animation style, "
+                  "vibrant bright rainbow colors, sparkles and stars, "
+                  "soft rounded shapes, big expressive eyes, happy cheerful mood, "
+                  "children's storybook illustration, magical dreamy atmosphere, "
+                  "pastel background, high quality, detailed, beautiful lighting, "
+                  "safe for kids, no scary elements, warm friendly feeling"
+              )
+
+              # Extract keyword for stock photos fallback
               keywords = ['india', 'colorful']
               keyword_map = {
                   'king': 'indian,king', 'queen': 'indian,queen', 'palace': 'palace,indian',
@@ -326,17 +336,14 @@ jobs:
                       keywords = value.split(',')
                       break
 
-              # Shorter prompt for AI services
-              short_prompt = prompt[:60] + " cartoon colorful kids"
-
               for attempt in range(retries):
                   print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
 
-                  # Method 1: Try Pollinations.ai
+                  # Method 1: Try Pollinations.ai with enhanced style
                   try:
-                      safe_prompt = requests.utils.quote(short_prompt)
-                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1024&height=576&seed={random.randint(1,9999)}"
-                      response = requests.get(url, timeout=60)
+                      safe_prompt = requests.utils.quote(prompt + style_modifiers)
+                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
+                      response = requests.get(url, timeout=120)
 
                       if response.status_code == 200 and len(response.content) > 5000:
                           img = Image.open(BytesIO(response.content))
@@ -348,31 +355,29 @@ jobs:
                   except Exception as e:
                       print(f"  ✗ Pollinations error: {e}")
 
-                  time.sleep(1)
+                  time.sleep(2)  # Small delay before retry
 
-                  # Method 2: Try LoremFlickr (stock photos)
-                  try:
-                      keyword = ','.join(keywords[:2])
-                      url = f"https://loremflickr.com/1280/720/{keyword}"
-                      response = requests.get(url, timeout=30, allow_redirects=True)
+              # Fallback: Try LoremFlickr (stock photos) if Pollinations fails completely
+              print(f"  ⚠ Trying stock photo fallback...")
+              try:
+                  keyword = ','.join(keywords[:2])
+                  url = f"https://loremflickr.com/1280/720/{keyword}"
+                  response = requests.get(url, timeout=30, allow_redirects=True)
 
-                      if response.status_code == 200 and len(response.content) > 5000:
-                          img = Image.open(BytesIO(response.content))
-                          img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
-                          # Make more colorful/cartoon-like
-                          img = ImageEnhance.Color(img).enhance(1.4)
-                          img = ImageEnhance.Brightness(img).enhance(1.1)
-                          img = img.filter(ImageFilter.SMOOTH)
-                          img.save(output_path, quality=95)
-                          print(f"  ✓ Stock photo saved ({os.path.getsize(output_path)} bytes)")
-                          return True
-                      print(f"  ✗ LoremFlickr: status={response.status_code}")
-                  except Exception as e:
-                      print(f"  ✗ LoremFlickr error: {e}")
+                  if response.status_code == 200 and len(response.content) > 5000:
+                      img = Image.open(BytesIO(response.content))
+                      img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
+                      # Make more colorful/cartoon-like
+                      img = ImageEnhance.Color(img).enhance(1.4)
+                      img = ImageEnhance.Brightness(img).enhance(1.1)
+                      img = img.filter(ImageFilter.SMOOTH)
+                      img.save(output_path, quality=95)
+                      print(f"  ✓ Stock photo saved ({os.path.getsize(output_path)} bytes)")
+                      return True
+              except Exception as e:
+                  print(f"  ✗ LoremFlickr error: {e}")
 
-                  time.sleep(1)
-
-              # Fallback: Create an attractive illustrated placeholder
+              # Final fallback: Create colorful illustrated placeholder
               print(f"  ⚠ Creating illustrated placeholder...")
               img = create_illustrated_placeholder(prompt)
               img.save(output_path, quality=95)
@@ -677,11 +682,22 @@ jobs:
           - Indian historical/folk tale theme
           - NO scary content
 
-          IMAGE PROMPTS (in English):
-          - Show DYNAMIC ACTION poses (running, jumping, gesturing)
-          - Multiple characters INTERACTING with each other
-          - Use: "cartoon action pose, dynamic movement, expressive faces, Pixar style"
-          - Show emotions: surprised, happy, excited, curious
+          IMAGE PROMPTS (in English) - VERY IMPORTANT FOR CARTOON LOOK:
+          - ALWAYS include: "cute cartoon style, Pixar Disney animation, 3D rendered"
+          - Characters must look like ANIMATED CARTOON characters with:
+            * Big round expressive eyes
+            * Soft rounded body shapes
+            * Colorful vibrant clothing
+            * Exaggerated happy expressions
+          - Show DYNAMIC ACTION poses like cartoons:
+            * Running with arms swinging
+            * Jumping with excitement
+            * Dancing and twirling
+            * Pointing and gesturing dramatically
+          - Multiple characters INTERACTING with each other in same scene
+          - Add movement effects: motion blur, sparkles, action lines
+          - Include: "bright colors, magical atmosphere, storybook illustration"
+          - Example: "cute cartoon Indian king with big eyes and crown running excitedly, Pixar style, vibrant colors, dynamic action pose"
 
           Return ONLY valid JSON:
           {{"title": "{LANG_NAME} title", "moral": "{LANG_NAME} moral", "characters": ["desc1", "desc2", "desc3"], "scenes": [{{"narration": "{LANG_NAME} text", "image_prompt": "English description with ACTION"}}]}}"""
