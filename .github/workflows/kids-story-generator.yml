@@ -304,66 +304,161 @@ jobs:
               # If all retries failed, raise the last exception
               raise Exception(f"Edge-TTS failed after {max_retries} attempts")
 
-          def download_image(prompt, output_path, retries=5):
-              """Download image from Pollinations.ai with child-friendly enhancements"""
-              # Enhanced style modifiers for more attractive children's images
-              style_modifiers = (
-                  ", cute adorable cartoon style, pixar disney animation style, "
-                  "vibrant bright rainbow colors, sparkles and stars, "
-                  "soft rounded shapes, big expressive eyes, happy cheerful mood, "
-                  "children's storybook illustration, magical dreamy atmosphere, "
-                  "pastel background, high quality, detailed, beautiful lighting, "
-                  "safe for kids, no scary elements, warm friendly feeling"
-              )
+          def download_image(prompt, output_path, retries=3):
+              """Download image using multiple AI image services with fallbacks"""
+              import time
 
+              # Shorter, simpler style modifier (long prompts cause issues)
+              style = ", cartoon kids style, colorful, cute, Pixar"
+
+              # Simplify prompt - take only first 100 chars to avoid URL length issues
+              short_prompt = prompt[:100] + style
+
+              # Try multiple image generation services
+              def try_pollinations(prompt_text, seed):
+                  """Try Pollinations.ai"""
+                  safe_prompt = requests.utils.quote(prompt_text)
+                  # Use smaller size for faster response
+                  url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1024&height=576&seed={seed}&nologo=true"
+                  response = requests.get(url, timeout=120)
+                  return response
+
+              def try_pollinations_v2(prompt_text, seed):
+                  """Try Pollinations.ai with different model"""
+                  safe_prompt = requests.utils.quote(prompt_text)
+                  url = f"https://pollinations.ai/p/{safe_prompt}?width=1024&height=576&seed={seed}&model=turbo"
+                  response = requests.get(url, timeout=120)
+                  return response
+
+              # Main download loop with multiple services
               for attempt in range(retries):
+                  seed = random.randint(1, 99999)
+                  print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
+
+                  # Add delay between requests to avoid rate limiting
+                  if attempt > 0:
+                      time.sleep(5)
+
                   try:
-                      # Use different seed for each retry
-                      seed = random.randint(1, 99999)
-                      safe_prompt = requests.utils.quote(prompt + style_modifiers)
-                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={seed}"
+                      # Try primary service
+                      response = try_pollinations(short_prompt, seed)
 
-                      print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
-                      response = requests.get(url, timeout=180)  # Longer timeout
-
-                      if response.status_code == 200 and len(response.content) > 10000:  # Verify size
+                      if response.status_code == 200 and len(response.content) > 5000:
                           img = Image.open(BytesIO(response.content))
                           img = img.convert('RGB')
                           img = img.resize((1280, 720), Image.Resampling.LANCZOS)
                           img.save(output_path, quality=95)
-                          # Verify the saved file
-                          if os.path.exists(output_path) and os.path.getsize(output_path) > 5000:
-                              print(f"  ✓ Image saved successfully ({os.path.getsize(output_path)} bytes)")
-                              return True
-                          else:
-                              print(f"  ✗ Saved file too small, retrying...")
+                          print(f"  ✓ Image saved ({os.path.getsize(output_path)} bytes)")
+                          return True
                       else:
-                          print(f"  ✗ Response invalid (status={response.status_code}, size={len(response.content)})")
+                          print(f"  ✗ Pollinations failed (status={response.status_code})")
+
+                      # Try backup service with simpler prompt
+                      time.sleep(2)
+                      simple_prompt = "cute cartoon " + prompt[:50] + ", colorful kids illustration"
+                      response = try_pollinations(simple_prompt, seed + 1000)
+
+                      if response.status_code == 200 and len(response.content) > 5000:
+                          img = Image.open(BytesIO(response.content))
+                          img = img.convert('RGB')
+                          img = img.resize((1280, 720), Image.Resampling.LANCZOS)
+                          img.save(output_path, quality=95)
+                          print(f"  ✓ Image saved with simple prompt ({os.path.getsize(output_path)} bytes)")
+                          return True
+
                   except Exception as e:
                       print(f"  ✗ Error: {e}")
 
-                  import time
-                  time.sleep(3)  # Delay before retry
+              # Fallback: Create an attractive illustrated placeholder
+              print(f"  ⚠ Creating illustrated placeholder...")
+              img = create_illustrated_placeholder(prompt)
+              img.save(output_path, quality=95)
+              print(f"  ✓ Placeholder created ({os.path.getsize(output_path)} bytes)")
+              return False
 
-              # Create a colorful placeholder with text if all retries fail
-              print(f"  ⚠ Creating placeholder image...")
-              colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185), (255, 255, 200), (230, 190, 255)]
+          def create_illustrated_placeholder(prompt):
+              """Create a nice illustrated placeholder when AI image fails"""
+              # Color themes based on prompt content
+              if any(word in prompt.lower() for word in ['king', 'palace', 'royal', 'emperor']):
+                  colors = [(255, 215, 0), (218, 165, 32), (255, 223, 186)]  # Gold theme
+              elif any(word in prompt.lower() for word in ['forest', 'tree', 'garden', 'nature']):
+                  colors = [(144, 238, 144), (60, 179, 113), (152, 251, 152)]  # Green theme
+              elif any(word in prompt.lower() for word in ['sky', 'cloud', 'bird', 'flying']):
+                  colors = [(135, 206, 250), (176, 224, 230), (173, 216, 230)]  # Blue theme
+              elif any(word in prompt.lower() for word in ['temple', 'statue', 'ancient']):
+                  colors = [(255, 228, 196), (245, 222, 179), (255, 218, 185)]  # Sand theme
+              else:
+                  colors = [(255, 182, 193), (255, 192, 203), (255, 228, 225)]  # Pink theme
+
               base_color = random.choice(colors)
               img = Image.new('RGB', (1280, 720), base_color)
               draw = ImageDraw.Draw(img)
-              # Add gradient effect
+
+              # Create gradient background
               for y in range(720):
-                  alpha = y / 720
-                  r = int(base_color[0] * (1 - alpha * 0.3))
-                  g = int(base_color[1] * (1 - alpha * 0.3))
-                  b = int(base_color[2] * (1 - alpha * 0.3))
+                  factor = 1 - (y / 720) * 0.4
+                  r = int(base_color[0] * factor)
+                  g = int(base_color[1] * factor)
+                  b = int(base_color[2] * factor)
                   draw.line([(0, y), (1280, y)], fill=(r, g, b))
-              # Add decorative elements
+
+              # Add sun/moon
+              sun_color = (255, 255, 200)
+              draw.ellipse([1050, 50, 1150, 150], fill=sun_color)
+
+              # Add clouds
+              for _ in range(5):
+                  x = random.randint(100, 1100)
+                  y = random.randint(50, 200)
+                  for dx in range(0, 80, 20):
+                      draw.ellipse([x+dx, y, x+dx+50, y+30], fill=(255, 255, 255))
+
+              # Add hills/mountains
+              hill_color = tuple(max(0, c - 50) for c in base_color)
+              for i in range(3):
+                  x1 = random.randint(-100, 800)
+                  points = [(x1, 720), (x1 + 300, 400 + i*50), (x1 + 600, 720)]
+                  draw.polygon(points, fill=hill_color)
+
+              # Add trees
+              tree_green = (34, 139, 34)
+              tree_brown = (139, 69, 19)
+              for _ in range(8):
+                  x = random.randint(50, 1200)
+                  y = random.randint(450, 650)
+                  # Trunk
+                  draw.rectangle([x-5, y, x+5, y+50], fill=tree_brown)
+                  # Leaves (triangle)
+                  draw.polygon([(x, y-40), (x-30, y+10), (x+30, y+10)], fill=tree_green)
+
+              # Add cartoon characters (simple circles with faces)
+              char_colors = [(255, 200, 150), (200, 150, 100), (255, 220, 180)]
+              for i in range(3):
+                  x = 300 + i * 250
+                  y = 500
+                  color = char_colors[i % len(char_colors)]
+                  # Body
+                  draw.ellipse([x-40, y, x+40, y+80], fill=color)
+                  # Head
+                  draw.ellipse([x-30, y-50, x+30, y+10], fill=color)
+                  # Eyes
+                  draw.ellipse([x-15, y-30, x-5, y-15], fill=(0, 0, 0))
+                  draw.ellipse([x+5, y-30, x+15, y-15], fill=(0, 0, 0))
+                  # Smile
+                  draw.arc([x-10, y-15, x+10, y], 0, 180, fill=(0, 0, 0), width=2)
+
+              # Add sparkles/stars
               for _ in range(20):
-                  x, y = random.randint(50, 1230), random.randint(50, 670)
-                  size = random.randint(5, 15)
-                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 255, 180))
-              img.save(output_path, quality=95)
+                  x = random.randint(50, 1230)
+                  y = random.randint(50, 300)
+                  size = random.randint(2, 5)
+                  draw.polygon([
+                      (x, y-size*2), (x+size, y-size), (x+size*2, y),
+                      (x+size, y+size), (x, y+size*2), (x-size, y+size),
+                      (x-size*2, y), (x-size, y-size)
+                  ], fill=(255, 255, 220))
+
+              return img
               return False
 
           def generate_story_with_groq(topic, num_scenes):
