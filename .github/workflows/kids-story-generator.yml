@@ -799,7 +799,7 @@ jobs:
               return story
 
           def create_opening_intro(title, moral, output_path):
-              """Create beautiful opening intro with gradient and decorations"""
+              """Create beautiful opening intro with gradient, decorations, and title"""
               img = Image.new('RGB', (1280, 720), (135, 206, 250))
               draw = ImageDraw.Draw(img)
 
@@ -810,25 +810,79 @@ jobs:
                   b = int(250 + (220 - 250) * y / 720)
                   draw.line([(0, y), (1280, y)], fill=(r, g, b))
 
-              # Add decorative stars
+              # Add decorative stars at top
               import random
               for _ in range(25):
-                  x, y = random.randint(50, 1230), random.randint(30, 250)
+                  x, y = random.randint(50, 1230), random.randint(30, 200)
                   size = random.randint(3, 10)
                   draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 200))
 
-              # Add sparkles
+              # Add sparkles at bottom
               for _ in range(15):
-                  x, y = random.randint(50, 1230), random.randint(500, 680)
+                  x, y = random.randint(50, 1230), random.randint(550, 680)
                   size = random.randint(2, 6)
                   draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 200, 255))
+
+              # Add white banner for title
+              draw.rectangle([80, 280, 1200, 450], fill=(255, 255, 255, 200), outline=(255, 215, 0), width=5)
+
+              # DRAW STORY TIME header
+              from PIL import ImageFont
+              font_paths = [
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+              ]
+              title_font = ImageFont.load_default()
+              header_font = ImageFont.load_default()
+              for fp in font_paths:
+                  if os.path.exists(fp):
+                      try:
+                          title_font = ImageFont.truetype(fp, 50)
+                          header_font = ImageFont.truetype(fp, 35)
+                          break
+                      except:
+                          pass
+
+              # Draw "STORY TIME" header
+              draw.text((450, 230), "★ STORY TIME ★", fill=(255, 100, 150), font=header_font)
+
+              # Draw the story title
+              display_title = title[:45] + "..." if len(title) > 45 else title
+              try:
+                  bbox = draw.textbbox((0, 0), display_title, font=title_font)
+                  text_width = bbox[2] - bbox[0]
+              except:
+                  text_width = len(display_title) * 25
+              x_pos = max(100, (1280 - text_width) // 2)
+              draw.text((x_pos, 330), display_title, fill=(50, 50, 150), font=title_font)
+
+              # Draw "FOR KIDS" label
+              draw.text((520, 500), "FOR KIDS", fill=(100, 150, 255), font=header_font)
 
               img.save(output_path)
               return output_path
 
+          def get_font(size):
+              """Get a font that works on Linux/GitHub Actions"""
+              from PIL import ImageFont
+              font_paths = [
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+                  "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+              ]
+              for font_path in font_paths:
+                  if os.path.exists(font_path):
+                      try:
+                          return ImageFont.truetype(font_path, size)
+                      except:
+                          pass
+              # Fallback to default
+              return ImageFont.load_default()
+
           def create_thumbnail(title, moral, output_path):
-              """Create eye-catching YouTube thumbnail"""
-              # Create colorful background
+              """Create eye-catching YouTube thumbnail with title text"""
               img = Image.new('RGB', (1280, 720), (255, 100, 150))
               draw = ImageDraw.Draw(img)
 
@@ -849,10 +903,27 @@ jobs:
               # Add white banner for title
               draw.rectangle([60, 280, 1220, 440], fill=(255, 255, 255), outline=(255, 215, 0), width=8)
 
-              # Add decorative elements
+              # Add decorative stars
               for _ in range(20):
                   x, y = random.randint(50, 1230), random.randint(30, 250)
                   draw.text((x, y), "★", fill=(255, 255, 0))
+
+              # DRAW THE TITLE TEXT
+              title_font = get_font(60)
+              # Truncate title if too long
+              display_title = title[:40] + "..." if len(title) > 40 else title
+              # Center the title
+              try:
+                  bbox = draw.textbbox((0, 0), display_title, font=title_font)
+                  text_width = bbox[2] - bbox[0]
+              except:
+                  text_width = len(display_title) * 30  # Estimate
+              x_pos = (1280 - text_width) // 2
+              draw.text((x_pos, 320), display_title, fill=(50, 50, 150), font=title_font)
+
+              # Add "KIDS STORY" label at top
+              label_font = get_font(40)
+              draw.text((480, 480), "★ KIDS STORY ★", fill=(255, 215, 0), font=label_font)
 
               img.save(output_path)
               return output_path
@@ -874,6 +945,26 @@ jobs:
                   x, y = random.randint(20, 1260), random.randint(20, 700)
                   size = random.randint(2, 7)
                   draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 220))
+
+              # DRAW THE END TEXT
+              title_font = get_font(100)
+              draw.text((450, 200), "THE END", fill=(255, 215, 0), font=title_font)
+
+              # Draw moral text
+              moral_font = get_font(36)
+              # Truncate moral if too long
+              display_moral = moral[:80] + "..." if len(moral) > 80 else moral
+              try:
+                  bbox = draw.textbbox((0, 0), display_moral, font=moral_font)
+                  text_width = bbox[2] - bbox[0]
+              except:
+                  text_width = len(display_moral) * 18
+              x_pos = max(50, (1280 - text_width) // 2)
+              draw.text((x_pos, 380), display_moral, fill=(255, 255, 255), font=moral_font)
+
+              # Add subscribe text
+              sub_font = get_font(30)
+              draw.text((400, 550), "★ SUBSCRIBE FOR MORE STORIES ★", fill=(255, 200, 100), font=sub_font)
 
               img.save(output_path)
               return output_path
@@ -1246,9 +1337,13 @@ jobs:
             LANGUAGE="English"
           fi
 
-          # Create tag-safe name (lowercase, no spaces, no special chars)
-          TAG_NAME=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
-          TAG_NAME="${TAG_NAME}-$(date +%Y%m%d-%H%M%S)"
+          # Create tag-safe name using language + date (works for all languages including non-Latin scripts)
+          LANG_SAFE=$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+          # If language is empty, use 'story' as fallback
+          if [ -z "$LANG_SAFE" ]; then
+            LANG_SAFE="story"
+          fi
+          TAG_NAME="story-${LANG_SAFE}-$(date +%Y%m%d-%H%M%S)"
 
           echo "title=$TITLE" >> $GITHUB_OUTPUT
           echo "moral=$MORAL" >> $GITHUB_OUTPUT
