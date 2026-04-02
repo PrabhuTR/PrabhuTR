@@ -46,10 +46,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install FFmpeg
+      - name: Install FFmpeg and Fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-freefont-ttf
+          # Verify fonts are installed
+          fc-list | grep -i dejavu || echo "DejaVu fonts installed"
 
       - name: Install Python dependencies
         run: |
@@ -94,8 +96,8 @@ jobs:
 
           # For 10-minute CINEMATIC video with smooth Ken Burns effect (zoom/pan on images)
           # Each scene: 15-20 seconds with zoom/pan animation for professional look
-          # 35 scenes × ~18 seconds = ~10 minutes of cinematic content
-          NUM_SCENES = 8 if TEST_MODE else 35
+          # 45 scenes × ~12 seconds = ~9-10 minutes of cinematic content
+          NUM_SCENES = 8 if TEST_MODE else 45
 
           # Multi-language voice configuration (Edge-TTS - FREE)
           # All voices are kid-friendly female voices
@@ -302,7 +304,7 @@ jobs:
               # If all retries failed, raise the last exception
               raise Exception(f"Edge-TTS failed after {max_retries} attempts")
 
-          def download_image(prompt, output_path, retries=3):
+          def download_image(prompt, output_path, retries=5):
               """Download image from Pollinations.ai with child-friendly enhancements"""
               # Enhanced style modifiers for more attractive children's images
               style_modifiers = (
@@ -313,28 +315,55 @@ jobs:
                   "pastel background, high quality, detailed, beautiful lighting, "
                   "safe for kids, no scary elements, warm friendly feeling"
               )
-              safe_prompt = requests.utils.quote(prompt + style_modifiers)
-              url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
 
               for attempt in range(retries):
                   try:
-                      print(f"  Downloading image (attempt {attempt + 1})...")
-                      response = requests.get(url, timeout=120)
-                      if response.status_code == 200:
+                      # Use different seed for each retry
+                      seed = random.randint(1, 99999)
+                      safe_prompt = requests.utils.quote(prompt + style_modifiers)
+                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={seed}"
+
+                      print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
+                      response = requests.get(url, timeout=180)  # Longer timeout
+
+                      if response.status_code == 200 and len(response.content) > 10000:  # Verify size
                           img = Image.open(BytesIO(response.content))
                           img = img.convert('RGB')
                           img = img.resize((1280, 720), Image.Resampling.LANCZOS)
-                          img.save(output_path)
-                          return True
+                          img.save(output_path, quality=95)
+                          # Verify the saved file
+                          if os.path.exists(output_path) and os.path.getsize(output_path) > 5000:
+                              print(f"  ✓ Image saved successfully ({os.path.getsize(output_path)} bytes)")
+                              return True
+                          else:
+                              print(f"  ✗ Saved file too small, retrying...")
+                      else:
+                          print(f"  ✗ Response invalid (status={response.status_code}, size={len(response.content)})")
                   except Exception as e:
-                      print(f"  Retry {attempt + 1}: {e}")
-                      import time
-                      time.sleep(2)  # Small delay before retry
+                      print(f"  ✗ Error: {e}")
 
-              # Create colorful gradient placeholder if image fails
+                  import time
+                  time.sleep(3)  # Delay before retry
+
+              # Create a colorful placeholder with text if all retries fail
+              print(f"  ⚠ Creating placeholder image...")
               colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185), (255, 255, 200), (230, 190, 255)]
-              img = Image.new('RGB', (1280, 720), random.choice(colors))
-              img.save(output_path)
+              base_color = random.choice(colors)
+              img = Image.new('RGB', (1280, 720), base_color)
+              draw = ImageDraw.Draw(img)
+              # Add gradient effect
+              for y in range(720):
+                  alpha = y / 720
+                  r = int(base_color[0] * (1 - alpha * 0.3))
+                  g = int(base_color[1] * (1 - alpha * 0.3))
+                  b = int(base_color[2] * (1 - alpha * 0.3))
+                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
+              # Add decorative elements
+              for _ in range(20):
+                  x, y = random.randint(50, 1230), random.randint(50, 670)
+                  size = random.randint(5, 15)
+                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 255, 180))
+              img.save(output_path, quality=95)
               return False
 
           def generate_story_with_groq(topic, num_scenes):
@@ -794,8 +823,35 @@ jobs:
                   else:
                       story = english_stories["default"]
 
-              # Trim to requested number of scenes
-              story["scenes"] = story["scenes"][:num_scenes]
+              # Expand or trim scenes to match requested count
+              base_scenes = story["scenes"]
+              if len(base_scenes) < num_scenes:
+                  # EXPAND: Repeat scenes with variations to reach target count
+                  expanded_scenes = []
+                  scene_variations = [
+                      " The children watched in wonder!",
+                      " Everyone cheered with joy!",
+                      " This was truly amazing!",
+                      " What a magical moment!",
+                      " The crowd was amazed!",
+                  ]
+                  while len(expanded_scenes) < num_scenes:
+                      for scene in base_scenes:
+                          if len(expanded_scenes) >= num_scenes:
+                              break
+                          expanded_scenes.append(scene)
+                          # Add variation scene if we still need more
+                          if len(expanded_scenes) < num_scenes and len(expanded_scenes) % 3 == 0:
+                              variation = scene_variations[len(expanded_scenes) % len(scene_variations)]
+                              varied_scene = {
+                                  "narration": scene["narration"].rstrip("!.") + variation,
+                                  "image_prompt": scene["image_prompt"] + ", different angle, varied composition"
+                              }
+                              expanded_scenes.append(varied_scene)
+                  story["scenes"] = expanded_scenes[:num_scenes]
+              else:
+                  # Trim if we have more than needed
+                  story["scenes"] = base_scenes[:num_scenes]
               return story
 
           def create_opening_intro(title, moral, output_path):
@@ -1190,36 +1246,62 @@ jobs:
                   effect = effect_types[i % len(effect_types)]
                   print(f"  Applying ANIMATED {effect} effect...")
 
-                  # Verify image was downloaded successfully
-                  if not os.path.exists(str(img_path)) or os.path.getsize(str(img_path)) < 1000:
-                      print(f"  WARNING: Image download failed or too small, creating placeholder...")
-                      # Create a placeholder image
-                      placeholder = Image.new('RGB', (1280, 720), (100, 150, 200))
+                  # Verify image was downloaded successfully and create if needed
+                  img_valid = os.path.exists(str(img_path)) and os.path.getsize(str(img_path)) > 5000
+                  if not img_valid:
+                      print(f"  ⚠ Creating colorful placeholder for scene {i+1}...")
+                      colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185)]
+                      bg_color = colors[i % len(colors)]
+                      placeholder = Image.new('RGB', (1280, 720), bg_color)
                       draw = ImageDraw.Draw(placeholder)
-                      draw.text((400, 350), f"Scene {i+1}", fill=(255, 255, 255))
-                      placeholder.save(str(img_path))
+                      # Add gradient
+                      for y in range(720):
+                          alpha = y / 720
+                          r = int(bg_color[0] * (1 - alpha * 0.3))
+                          g = int(bg_color[1] * (1 - alpha * 0.3))
+                          b = int(bg_color[2] * (1 - alpha * 0.3))
+                          draw.line([(0, y), (1280, y)], fill=(r, g, b))
+                      # Add circles
+                      for _ in range(15):
+                          x, y = random.randint(50, 1230), random.randint(50, 670)
+                          size = random.randint(10, 30)
+                          draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 255))
+                      placeholder.save(str(img_path), quality=95)
+                      print(f"  ✓ Placeholder created: {os.path.getsize(str(img_path))} bytes")
 
+                  # Create video clip - use simple approach first, then animated
+                  clip = None
                   try:
+                      # First try: Simple ImageClip (most reliable)
+                      test_img = Image.open(str(img_path))
+                      test_img = test_img.convert('RGB')
+                      test_img = test_img.resize((1280, 720), Image.Resampling.LANCZOS)
+                      test_img.save(str(img_path), quality=95)
+
+                      # Try animated clip
                       clip = create_animated_clip(img_path, duration, effect)
                       clip = clip.set_audio(audio)
+                      print(f"  ✓ Animated clip created")
                   except Exception as e:
-                      print(f"  Animation effect failed ({e}), using static image...")
+                      print(f"  ⚠ Animation failed ({e}), using simple ImageClip...")
                       try:
-                          static_clip = ImageClip(str(img_path))
-                          static_clip = static_clip.set_duration(duration)
-                          static_clip = static_clip.set_fps(30)  # Set FPS for static clips too
-                          clip = static_clip.set_audio(audio)
-                      except Exception as e2:
-                          print(f"  Static clip also failed ({e2}), creating colored placeholder...")
-                          # Last resort: create a colored frame
-                          import numpy as np
-                          placeholder_array = np.full((720, 1280, 3), [100, 150, 200], dtype=np.uint8)
-                          from moviepy.video.VideoClip import ColorClip
-                          clip = ColorClip(size=(1280, 720), color=[100, 150, 200], duration=duration)
+                          clip = ImageClip(str(img_path))
+                          clip = clip.set_duration(duration)
                           clip = clip.set_fps(30)
                           clip = clip.set_audio(audio)
+                          print(f"  ✓ Static clip created")
+                      except Exception as e2:
+                          print(f"  ✗ ImageClip failed ({e2}), using ColorClip...")
+                          clip = ColorClip(size=(1280, 720), color=(100, 150, 200), duration=duration)
+                          clip = clip.set_fps(30)
+                          clip = clip.set_audio(audio)
+                          print(f"  ✓ ColorClip created as fallback")
 
-                  clips.append(clip)
+                  if clip is not None:
+                      clips.append(clip)
+                      print(f"  ✓ Scene {i+1} added to video (duration: {duration:.1f}s)")
+                  else:
+                      print(f"  ✗ ERROR: Failed to create clip for scene {i+1}")
 
               # 4. Create ending card with moral
               print("\nCreating ending card...")
@@ -1245,7 +1327,18 @@ jobs:
               clips.append(ending_clip)
 
               # Combine clips
-              print("\nCombining all clips...")
+              print(f"\n{'='*60}")
+              print(f"COMBINING VIDEO")
+              print(f"{'='*60}")
+              print(f"Total clips: {len(clips)} (1 intro + {len(scenes)} scenes + 1 ending)")
+              total_duration = sum(c.duration for c in clips)
+              print(f"Expected duration: {total_duration/60:.1f} minutes")
+              print(f"{'='*60}\n")
+
+              if len(clips) < 3:
+                  print("ERROR: Not enough clips to create video!")
+                  raise Exception("Video creation failed - not enough clips")
+
               final = concatenate_videoclips(clips, method="compose")
 
               # Output
@@ -1286,7 +1379,7 @@ jobs:
 
           # Main execution
           print("Starting Kids Story Video Generator...")
-          print(f"Mode: {'TEST (5 scenes)' if TEST_MODE else 'FULL (20 scenes for 10 min)'}")
+          print(f"Mode: {'TEST (8 scenes)' if TEST_MODE else 'FULL (45 scenes for 8-10 min)'}")
           print(f"Language: {LANG_NAME}")
           print(f"Voice: {VOICE}")
           print(f"Age Group: 4+ years")
