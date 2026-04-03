@@ -35,7 +35,7 @@ permissions:
 jobs:
   generate-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # Increased for cinematic Ken Burns effects and quality
+    timeout-minutes: 120
 
     steps:
       - name: Checkout repository
@@ -46,16 +46,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install FFmpeg and Fonts (including Indian language support)
+      - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-freefont-ttf
-          # Install Indian language fonts (Noto supports all Indian scripts)
-          sudo apt-get install -y fonts-noto fonts-noto-core || true
-          sudo apt-get install -y fonts-lohit-knda fonts-lohit-deva fonts-lohit-taml fonts-lohit-telu || true
-          # Refresh font cache
-          fc-cache -fv
-          echo "Fonts installed"
+          sudo apt-get install -y ffmpeg
 
       - name: Install Python dependencies
         run: |
@@ -98,57 +92,21 @@ jobs:
           GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
           VIDEO_LANGUAGE = os.environ.get('VIDEO_LANGUAGE', 'english').lower()
 
-          # For 10-minute CINEMATIC video with smooth Ken Burns effect (zoom/pan on images)
-          # Each scene: 15-20 seconds with zoom/pan animation for professional look
-          # 45 scenes × ~12 seconds = ~9-10 minutes of cinematic content
-          NUM_SCENES = 8 if TEST_MODE else 45
+          # 35 scenes for ~10 minute video
+          NUM_SCENES = 8 if TEST_MODE else 35
 
           # Multi-language voice configuration (Edge-TTS - FREE)
-          # All voices are kid-friendly female voices
           LANGUAGE_CONFIG = {
-              "english": {
-                  "voice": "en-US-AnaNeural",  # Cheerful American voice
-                  "lang_code": "en",
-                  "name": "English"
-              },
-              "hindi": {
-                  "voice": "hi-IN-SwaraNeural",  # Hindi female voice
-                  "lang_code": "hi",
-                  "name": "Hindi"
-              },
-              "tamil": {
-                  "voice": "ta-IN-PallaviNeural",  # Tamil female voice
-                  "lang_code": "ta",
-                  "name": "Tamil"
-              },
-              "telugu": {
-                  "voice": "te-IN-ShrutiNeural",  # Telugu female voice
-                  "lang_code": "te",
-                  "name": "Telugu"
-              },
-              "kannada": {
-                  "voice": "kn-IN-SapnaNeural",  # Kannada female voice
-                  "lang_code": "kn",
-                  "name": "Kannada"
-              },
-              "malayalam": {
-                  "voice": "ml-IN-SobhanaNeural",  # Malayalam female voice
-                  "lang_code": "ml",
-                  "name": "Malayalam"
-              },
-              "bengali": {
-                  "voice": "bn-IN-TanishaaNeural",  # Bengali female voice
-                  "lang_code": "bn",
-                  "name": "Bengali"
-              },
-              "marathi": {
-                  "voice": "mr-IN-AarohiNeural",  # Marathi female voice
-                  "lang_code": "mr",
-                  "name": "Marathi"
-              }
+              "english": {"voice": "en-US-AnaNeural", "lang_code": "en", "name": "English"},
+              "hindi": {"voice": "hi-IN-SwaraNeural", "lang_code": "hi", "name": "Hindi"},
+              "tamil": {"voice": "ta-IN-PallaviNeural", "lang_code": "ta", "name": "Tamil"},
+              "telugu": {"voice": "te-IN-ShrutiNeural", "lang_code": "te", "name": "Telugu"},
+              "kannada": {"voice": "kn-IN-SapnaNeural", "lang_code": "kn", "name": "Kannada"},
+              "malayalam": {"voice": "ml-IN-SobhanaNeural", "lang_code": "ml", "name": "Malayalam"},
+              "bengali": {"voice": "bn-IN-TanishaaNeural", "lang_code": "bn", "name": "Bengali"},
+              "marathi": {"voice": "mr-IN-AarohiNeural", "lang_code": "mr", "name": "Marathi"}
           }
 
-          # Get language config
           LANG_CONFIG = LANGUAGE_CONFIG.get(VIDEO_LANGUAGE, LANGUAGE_CONFIG["english"])
           VOICE = LANG_CONFIG["voice"]
           LANG_CODE = LANG_CONFIG["lang_code"]
@@ -156,164 +114,41 @@ jobs:
 
           print(f"Language: {LANG_NAME} ({VOICE})")
 
-          # REAL INDIAN ANCIENT HISTORY STORIES (age 4+)
-          # 60+ Authentic stories from all great Indian dynasties and historical figures
+          # Indian Ancient History Stories
           TRENDING_TOPICS = [
-              # ===================== MAURYA EMPIRE STORIES =====================
-              "Young Chandragupta Maurya - Little Chandragupta, his wise guru Chanakya, friend Bindusara, and loyal guard Pushyamitra learn to build the great Maurya empire. They unite small kingdoms into one great India - MORAL: Unity makes us stronger than any enemy",
-              "Emperor Ashoka's transformation - Young warrior prince Ashoka, his wife Devi, advisor Radhagupta, and elephant friend Gajraj witness the Kalinga war. Ashoka learns that peace is better than war and becomes a kind ruler - MORAL: True victory is winning hearts with kindness, not swords",
-              "Chanakya's clever plan - Wise teacher Chanakya, young student Chandragupta, helper Sharangrav, and spy Ratnagupta work together to free India from the Greek king. They use intelligence instead of weapons - MORAL: Intelligence and planning defeat even the mightiest enemy",
-              "Ashoka builds hospitals - Kind Emperor Ashoka, doctor Jeevaka, nurse Sundari, and helper boy Ramu build hospitals for people and animals. They plant trees and dig wells for everyone - MORAL: A good leader cares for all living beings",
-              "Ashoka's lion pillar - Emperor Ashoka, craftsman Shilpakar, artist Chitrakara, and elephant Airavata create the magnificent lion pillar at Sarnath that becomes India's national symbol - MORAL: Great symbols inspire generations",
-              "Bindusara the brave prince - Young prince Bindusara, mother Helena, teacher Chanakya, and horse Shyam learn to rule wisely between his father Chandragupta and son Ashoka - MORAL: Every generation adds to the family's glory",
-
-              # ===================== CHOLA DYNASTY STORIES =====================
-              "Raja Raja Chola builds the great temple - Young prince Raja Raja, architect Kunjaramallan, sculptor Shilpi, and elephant Airavata work together to build the magnificent Brihadeeswarar Temple in Thanjavur - MORAL: Great dreams need great teamwork",
-              "Rajendra Chola's sea voyage - Brave king Rajendra, naval commander Arjuna, navigator Samudra, and parrot guide Kili sail across the ocean to bring glory to the Chola empire - MORAL: Courage and curiosity lead to great discoveries",
-              "The Chola bronze makers - Master craftsman Vishwakarma, his daughter Kamala, apprentice Rajan, and elephant Ganesha create beautiful bronze statues that are famous around the world - MORAL: Art and craftsmanship bring eternal glory",
-              "Karikala Chola builds the dam - Young king Karikala, engineer Kallanai, farmer Muthu, and buffalo Erumai build the great Kallanai dam on river Kaveri to help farmers - MORAL: Great leaders solve problems for their people",
-              "Chola navy conquers the seas - Admiral Rajendra, captain Samudran, sailor boy Kadal, and dolphin friend Oongal protect merchant ships and spread Indian culture across Asia - MORAL: Protecting trade brings prosperity to all",
-              "Sembiyan Mahadevi the queen builder - Wise queen Sembiyan, architect Perumthachan, sculptor Kannagi, and peacock Mayil build many temples and help the poor - MORAL: Women leaders make great contributions",
-
-              # ===================== HOYSALA DYNASTY STORIES =====================
-              "The Hoysala lion slayer - Young prince Sala, guru Sudatta, friend Lakshmi, and dog Simha face a fierce lion to protect their village. The Hoysala dynasty begins with this brave act - MORAL: Bravery protects the innocent",
-              "Queen Shantala's dance - Beautiful queen Shantala, king Vishnuvardhana, dance teacher Bharata, and musician Tansen build the famous Belur temple with dancing sculptures - MORAL: Art and beauty make the world wonderful",
-              "Hoysala temple builders - Architect Jakanachari, sculptor Dankanachari, painter Rani, and elephant helper Airavatam create the intricate Hoysala temples with thousand pillars - MORAL: Patience and skill create timeless masterpieces",
-              "Veera Ballala the warrior - Young king Ballala, general Singeya, elephant Gajapati, and spy Charana defend Karnataka from invaders - MORAL: Courage protects our homeland",
-
-              # ===================== GUPTA EMPIRE - GOLDEN AGE STORIES =====================
-              "Aryabhata counts the stars - Young mathematician Aryabhata, his teacher Narayana, friend Varahamihira, and owl Uluka discover that Earth is round and rotates. They invent zero and study the stars - MORAL: Curiosity and knowledge light up the world",
-              "Kalidasa the poet - Poor shepherd Kalidasa, princess Vidyottama, wise sage Vyasa, and peacock Mayura. Kalidasa becomes the greatest poet through hard work and dedication - MORAL: Hard work transforms anyone into a genius",
-              "Samudragupta the warrior king - Young prince Samudragupta, teacher Harishena, friend Chandragupta II, and horse Ashwamedh unite India and bring the Golden Age - MORAL: Wise leaders bring prosperity to all",
-              "Chandragupta II and the nine gems - Great king Vikramaditya, poet Kalidasa, astronomer Varahamihira, and physician Dhanvantari make the Gupta court shine with knowledge - MORAL: Surrounding yourself with wise people makes you wiser",
-              "Fa Hien visits India - Chinese traveler Fa Hien, guide boy Ananda, monk Buddhagupta, and elephant Hastini explore the peaceful and prosperous Gupta empire - MORAL: Welcoming visitors spreads our culture far",
-              "Prabhavati the Gupta princess - Princess Prabhavati, her father Chandragupta II, husband Rudrasena, and advisor Chandrashekhar rule wisely and spread learning - MORAL: Education makes rulers wise and just",
-
-              # ===================== VIJAYANAGARA EMPIRE STORIES =====================
-              "Krishnadevaraya the just king - Wise king Krishnadevaraya, court jester Tenali Rama, queen Tirumalamba, and elephant Bhadra bring justice and prosperity to Hampi - MORAL: A just ruler is loved by all",
-              "Tenali Rama's clever tricks - Witty Tenali Rama, king Krishnadevaraya, jealous minister Tathacharya, and parrot Shuka solve problems with humor and intelligence - MORAL: Wit and wisdom are mightier than swords",
-              "Harihara and Bukka found Vijayanagara - Brothers Harihara and Bukka, sage Vidyaranya, architect Sangama, and horse Vijaya build the magnificent city of Hampi - MORAL: Brothers working together achieve greatness",
-              "The diamond market of Hampi - Merchant Ratnakara, his daughter Manikyam, helper Heera, and dog Vajra trade precious diamonds and gems in the great Hampi bazaar - MORAL: Honest trade brings wealth and respect",
-              "Purandaradasa the musician - Singer Purandaradasa, his wife Saraswati, student Kanakadasa, and veena Saraswati create beautiful Carnatic music for all to enjoy - MORAL: Music is the language of the soul",
-
-              # ===================== PALLAVA DYNASTY STORIES =====================
-              "Mahendravarman the artist king - Creative king Mahendravarman, sculptor Mandagapattu, musician Rudracharya, and monkey friend Maruti carve beautiful temples in rock caves - MORAL: Creativity makes ordinary things extraordinary",
-              "Narasimhavarman defeats Chalukyas - Young king Narasimhavarman, general Paranjothi, elephant Airavata, and friend Hiuen Tsang bring glory to Pallava kingdom - MORAL: Defending your land is the greatest duty",
-              "Shore Temple at Mamallapuram - King Rajasimha, architect Mamalla, sculptor Sthapati, and waves friend Kadal build the beautiful Shore Temple by the sea - MORAL: Beauty lasts forever when built with love",
-              "Arjuna's Penance sculpture - Master sculptor Mamallan, apprentice Shilpi, elephant family Gajendra, and monkey troupe create the world's largest rock carving - MORAL: Patience creates wonders",
-
-              # ===================== CHALUKYA DYNASTY STORIES =====================
-              "Pulakeshin II the great - Brave king Pulakeshin, general Kubja, queen Kadambari, and elephant Jayasimha defeat Emperor Harsha and bring glory to Deccan - MORAL: Even small kingdoms can defeat mighty empires with courage",
-              "Badami cave temples - King Mangalesha, sculptor Shilpacharya, painter Chitrakar, and monkey helper Vayu create magnificent cave temples in red sandstone - MORAL: Art carved in stone lives forever",
-              "Aihole the temple city - Architect Revadi, sculptor Ovanna, princess Lokambika, and elephant Airavat build hundreds of temples in the cradle of Indian architecture - MORAL: Experimentation leads to perfection",
-              "Vikramaditya II rebuilds Kanchipuram - Noble king Vikramaditya, general Avanijanashraya, queen Lokamahadevi, and horse Vijay conquer but protect enemy temples - MORAL: True victory respects others' beliefs",
-
-              # ===================== RASHTRAKUTA DYNASTY STORIES =====================
-              "Amoghavarsha the scholar king - Wise king Amoghavarsha, poet Jinasena, mathematician Mahaviracharya, and elephant Airavata make Manyakheta a center of learning - MORAL: Knowledge is the greatest treasure",
-              "Kailasa temple at Ellora - King Krishna I, master architect Kokasa, sculptor Vishwakarma, and elephant Nandi carve an entire temple from a single mountain - MORAL: Impossible dreams become real with determination",
-              "Rashtrakuta gold coins - Minter Suvarnakara, his son Hiranya, quality checker Parikshaka, and parrot Sona create beautiful gold coins that trade across the world - MORAL: Quality work brings lasting fame",
-
-              # ===================== PANDYA DYNASTY STORIES =====================
-              "Madurai the temple city - King Kulasekara, architect Ariyanatha, queen Meenakshi, and elephant temple guardian Ganesha build the magnificent Meenakshi temple - MORAL: Devotion creates lasting monuments",
-              "Pandya pearl divers - Pearl diver Muthu, his daughter Mukta, friend Kadal, and dolphin Meen dive for precious pearls in the Gulf of Mannar - MORAL: Treasures come to those who work hard",
-              "Sangam poets of Madurai - Poet Avvaiyar, young prince Athiyaman, scribe Tamilselvan, and peacock Mayil create timeless Tamil poetry at the great Sangam - MORAL: Words written with heart live forever",
-              "Neduncheliyan the just Pandya - Fair king Neduncheliyan, innocent merchant Kovalan, dancer Madhavi, and elephant Karikal learn that justice must be perfect - MORAL: A single mistake in justice is a great sin",
-
-              # ===================== CHERA DYNASTY STORIES =====================
-              "Cheran Senguttuvan's expedition - Brave king Senguttuvan, queen Kannagi, general Villavan, and elephant Anai bring a stone from the Himalayas to honor a goddess - MORAL: Honoring the good brings blessings to all",
-              "Muziris the ancient port - Merchant Yavana, captain Kadalmagan, translator Vanigar, and parrot Kili trade pepper and spices with Romans and Greeks - MORAL: Trade connects the world in friendship",
-              "Kannagi the brave woman - Brave Kannagi, her husband Kovalan, friend Madhavi, and goddess Pattini seek justice and truth in ancient Tamil Nadu - MORAL: Truth always wins in the end",
-
-              # ===================== MARATHA EMPIRE STORIES =====================
-              "Young Shivaji's courage - Little Shivaji, mother Jijabai, guru Dadoji Konddev, and horse Vishwas learn about bravery and protecting people from injustice - MORAL: Even children can dream of greatness",
-              "Shivaji and Tanaji's friendship - King Shivaji, brave general Tanaji, soldier Suryaji, and horse Ranveer capture the impossible fort of Kondana - MORAL: True friends sacrifice everything for each other",
-              "Shivaji meets Afzal Khan - Clever king Shivaji, bodyguard Jiva Mahala, spy Bahirji Naik, and horse Moti outsmart the giant general with intelligence - MORAL: Brain defeats brawn every time",
-              "Jijabai the brave mother - Strong mother Jijabai, young Shivaji, teacher Dadoji, and elephant Gajraj raise a future king with stories of courage - MORAL: Mothers shape the destiny of nations",
-              "Tarabai the warrior queen - Queen Tarabai, young king Shivaji II, general Dhanaji Jadhav, and horse Bijli protect the Maratha kingdom from mighty enemies - MORAL: Women can lead armies and nations",
-              "Bajirao the undefeated - Young Peshwa Bajirao, brother Chimaji, wife Kashibai, and horse Shamsher never lose a single battle - MORAL: Strategy and speed win wars",
-
-              # ===================== RAJPUT STORIES =====================
-              "Prithviraj Chauhan the brave - Young king Prithviraj, friend Chand Bardai, horse Ranthambhor, and falcon Shyenaka defend India with unmatched archery skills - MORAL: True warriors fight for honor, not revenge",
+              "Young Chandragupta Maurya - Little Chandragupta, his wise guru Chanakya, friend Bindusara, and loyal guard Pushyamitra learn to build the great Maurya empire - MORAL: Unity makes us stronger",
+              "Emperor Ashoka's transformation - Young warrior prince Ashoka, his wife Devi, advisor Radhagupta, and elephant friend Gajraj witness the Kalinga war and learn peace is better than war - MORAL: True victory is winning hearts with kindness",
+              "Raja Raja Chola builds the great temple - Young prince Raja Raja, architect Kunjaramallan, sculptor Shilpi, and elephant Airavata work together to build the magnificent Brihadeeswarar Temple - MORAL: Great dreams need great teamwork",
+              "Young Shivaji's courage - Little Shivaji, mother Jijabai, guru Dadoji Konddev, and horse Vishwas learn about bravery and protecting people - MORAL: Even children can dream of greatness",
+              "Tenali Rama's clever tricks - Witty Tenali Rama, king Krishnadevaraya, jealous minister Tathacharya, and parrot Shuka solve problems with humor - MORAL: Wit and wisdom are mightier than swords",
+              "Aryabhata counts the stars - Young mathematician Aryabhata, his teacher Narayana, friend Varahamihira, and owl Uluka discover that Earth is round - MORAL: Curiosity and knowledge light up the world",
               "Rana Pratap's resistance - Brave Rana Pratap, loyal horse Chetak, general Hakim Khan, and friend Bhama Shah never give up their freedom - MORAL: Freedom is more precious than comfort",
-              "Padmini of Chittor - Beautiful queen Padmini, king Rawal Ratan Singh, friend Nagmati, and parrot Hiraman choose honor over surrender - MORAL: Honor is more valuable than life",
-              "Mira Bai the devotee - Princess Mira, her beloved Krishna, friend Raidasa, and cow Nandini sing songs of pure love and devotion - MORAL: True love knows no fear",
-              "Panna Dhai's sacrifice - Brave nurse Panna, prince Udai Singh, her son Chandan, and helper Mira save the future king by ultimate sacrifice - MORAL: True loyalty means giving everything",
-              "Rani Durgavati the warrior - Queen Durgavati, son Vir Narayan, elephant Sarman, and advisor Adhar Simha fight bravely to protect Gondwana - MORAL: Brave queens inspire generations",
-
-              # ===================== PALA AND SENA DYNASTY STORIES =====================
+              "Krishnadevaraya the just king - Wise king Krishnadevaraya, court jester Tenali Rama, queen Tirumalamba, and elephant Bhadra bring justice to Hampi - MORAL: A just ruler is loved by all",
+              "The Hoysala lion slayer - Young prince Sala, guru Sudatta, friend Lakshmi, and dog Simha face a fierce lion to protect their village - MORAL: Bravery protects the innocent",
+              "Kailasa temple at Ellora - King Krishna I, master architect Kokasa, sculptor Vishwakarma, and elephant Nandi carve an entire temple from a mountain - MORAL: Impossible dreams become real with determination",
+              "Konark Sun Temple - King Narasimhadeva, architect Bisu Maharana, sculptor Sadashiva, and twelve stone horses build the chariot temple - MORAL: Imagination creates wonders",
               "Nalanda University - Teacher Shilabhadra, student Xuanzang, librarian Dharmakirti, and elephant Bodhi study at the world's first university - MORAL: Education is the light that removes darkness",
-              "Dharmapala builds monasteries - Kind king Dharmapala, monk Santarakshita, artist Dhiman, and elephant Vajra spread Buddhist learning across Asia - MORAL: Sharing knowledge multiplies wisdom",
-              "Vikramashila the learning center - Teacher Atisha, student Rinchen, scribe Sukhavati, and peacock Mayur teach meditation and compassion - MORAL: Inner peace brings outer harmony",
-
-              # ===================== KAKATIYA DYNASTY STORIES =====================
-              "Rani Rudrama Devi the warrior queen - Queen Rudrama Devi, general Ganapatideva, elephant Ganapati, and horse Vijaya rule Warangal with wisdom and strength - MORAL: Women can rule as well as any king",
-              "Thousand pillar temple - King Rudradeva, architect Ramappa, sculptor Jakanna, and elephant helper build the stunning Ramappa temple - MORAL: Dedication creates eternal beauty",
-              "Warangal fort's gates - Engineer Ganapati, sculptor Siddhaya, guard Pratapa, and elephant Bhadra build four magnificent gateways facing four directions - MORAL: Strong defenses protect peaceful people",
-
-              # ===================== EASTERN GANGA DYNASTY STORIES =====================
-              "Konark Sun Temple - King Narasimhadeva, architect Bisu Maharana, sculptor Sadashiva, and twelve stone horses build the chariot temple for the Sun god - MORAL: Imagination creates wonders",
-              "Jagannath Temple of Puri - King Anantavarman, architect Sibei Samantaraya, priest Brahma, and elephant Airavata build the sacred home of Lord Jagannath - MORAL: Faith moves mountains",
-
-              # ===================== SATAVAHANA DYNASTY STORIES =====================
-              "Gautamiputra Satakarni - Brave king Gautamiputra, mother Gautami Balashri, general Vijayasena, and elephant Satakarnika restore the glory of the Satavahanas - MORAL: A mother's blessings lead to victory",
-              "Amaravati Stupa - King Pulumavi, sculptor Nagarjuna, monk Ananda, and elephant Dharmavahana build the magnificent Buddhist stupa with marble carvings - MORAL: Art speaks across centuries",
-              "The Satavahana coins - Minter Devavridhi, artist Nandika, quality tester Pariksha, and parrot Suvarna create coins that tell stories of the kings - MORAL: Small things carry big messages",
-
-              # ===================== ANCIENT SCHOLARS AND SCIENTISTS =====================
-              "Bhaskara invents mathematics - Mathematician Bhaskara, his daughter Lilavati, student Ganita, and parrot Shuka discover new ways of counting and measuring that help everyone - MORAL: Knowledge shared is knowledge multiplied",
-              "Sushruta the first surgeon - Doctor Sushruta, nurse Dhanwantari, helper Charaka, and elephant patient Gajendra perform the world's first surgeries and help sick people - MORAL: Healing others is the noblest profession",
-              "Brahmagupta and zero - Mathematician Brahmagupta, student Shunya, scribe Anka, and owl Uluka discover that nothing (zero) is actually something very important - MORAL: Even nothing has great value",
-              "Charaka writes Ayurveda - Physician Charaka, herb collector Dravyada, nurse Vaidyamata, and deer patient Mriga create the science of healthy living - MORAL: Prevention is better than cure",
-              "Panini writes grammar - Scholar Panini, student Katyayana, scribe Patanjali, and parrot Vyakarana create perfect rules for Sanskrit language - MORAL: Clear rules make communication perfect",
-              "Varahamihira reads the stars - Astronomer Varahamihira, student Jyotisha, princess Khagola, and owl Nakshatra predict eclipses and seasons accurately - MORAL: Observing nature reveals its secrets",
-
-              # ===================== KADAMBA DYNASTY STORIES =====================
-              "Mayurasharma the scholar warrior - Young brahmin Mayurasharma, teacher Virasharma, horse Kadamba, and elephant Gajapati establish the first Kannada kingdom - MORAL: Knowledge and courage together create kingdoms",
-              "Banavasi the ancient capital - King Kakusthavarman, queen Prabhavati, architect Shilpi, and peacock Mayura make Banavasi a beautiful capital city - MORAL: Beautiful cities attract scholars and artists",
-
-              # ===================== WESTERN GANGA DYNASTY STORIES =====================
-              "Gommateshwara statue - King Chavundaraya, sculptor Arishtanemi, mother Kalala, and elephant Bahubali build the giant statue of peace at Shravanabelagola - MORAL: Peace is the greatest victory",
-              "Ganga kings and Jainism - King Shivamara, teacher Jinasena, nun Padmavati, and elephant Chandraprabha spread the message of non-violence - MORAL: Not hurting any creature is the highest religion",
-
-              # ===================== AHOM KINGDOM STORIES =====================
-              "Lachit Borphukan's victory - General Lachit Borphukan, soldier Ismail, boatman Kalia, and elephant Airavat defeat the mighty Mughal army at Saraighat - MORAL: Love for motherland gives superhuman strength",
-              "Ahom rice farmers - Farmer Momai, his daughter Jonaki, buffalo Moh, and parrot Boga develop wet rice farming that feeds millions - MORAL: Feeding people is sacred work",
-
-              # ===================== INDUS VALLEY CIVILIZATION =====================
-              "The great bath of Mohenjo-daro - Engineer Sindhu, builder Harap, swimmer girl Jala, and elephant friend build the world's first swimming pool - MORAL: Cleanliness keeps everyone healthy",
-              "Harappan toy makers - Toy maker Khilauna, his daughter Gudiya, helper Chakra, and bull toy Nandi create toys that children play with 5000 years later - MORAL: Things made with love last forever",
-              "The Indus seals - Seal maker Mudra, artist Lipi, merchant Vanijar, and unicorn image create trading seals for the ancient cities - MORAL: Trust marks make trade honest"
+              "Chanakya's clever plan - Wise teacher Chanakya, young student Chandragupta, helper Sharangrav, and spy Ratnagupta work together to free India - MORAL: Intelligence defeats even the mightiest enemy",
+              "Rajendra Chola's sea voyage - Brave king Rajendra, naval commander Arjuna, navigator Samudra, and parrot guide Kili sail across the ocean - MORAL: Courage and curiosity lead to great discoveries",
+              "Gommateshwara statue - King Chavundaraya, sculptor Arishtanemi, mother Kalala, and elephant Bahubali build the giant statue of peace - MORAL: Peace is the greatest victory"
           ]
 
-          async def generate_voiceover(text, output_path, max_retries=5):
-              """Generate voiceover using Edge-TTS with retry logic for 503 errors"""
-              import asyncio as async_lib
-              for attempt in range(max_retries):
+          async def generate_voiceover(text, output_path, retries=3):
+              """Generate voiceover using Edge-TTS with retry"""
+              for attempt in range(retries):
                   try:
                       communicate = edge_tts.Communicate(text, VOICE)
                       await communicate.save(output_path)
-                      return  # Success, exit the function
+                      return True
                   except Exception as e:
-                      error_msg = str(e)
-                      if "503" in error_msg or "WSServerHandshakeError" in error_msg:
-                          wait_time = (attempt + 1) * 5  # 5, 10, 15, 20, 25 seconds
-                          print(f"  Edge-TTS service busy (attempt {attempt + 1}/{max_retries}), waiting {wait_time}s...")
-                          await async_lib.sleep(wait_time)
-                      else:
-                          print(f"  Edge-TTS error: {e}")
-                          if attempt < max_retries - 1:
-                              await async_lib.sleep(3)
-                          else:
-                              raise
-              # If all retries failed, raise the last exception
-              raise Exception(f"Edge-TTS failed after {max_retries} attempts")
+                      print(f"  TTS attempt {attempt + 1} failed: {e}")
+                      if attempt < retries - 1:
+                          import time
+                          time.sleep(5 * (attempt + 1))
+              return False
 
           def download_image(prompt, output_path, retries=3):
-              """Download image from Pollinations.ai with child-friendly enhancements"""
-              import time
-              from PIL import ImageEnhance, ImageFilter
-
-              # Enhanced style modifiers for more attractive children's images
+              """Download image from Pollinations.ai with child-friendly style"""
               style_modifiers = (
                   ", cute adorable cartoon style, pixar disney animation style, "
                   "vibrant bright rainbow colors, sparkles and stars, "
@@ -322,408 +157,89 @@ jobs:
                   "pastel background, high quality, detailed, beautiful lighting, "
                   "safe for kids, no scary elements, warm friendly feeling"
               )
-
-              # Extract keyword for stock photos fallback
-              keywords = ['india', 'colorful']
-              keyword_map = {
-                  'king': 'indian,king', 'queen': 'indian,queen', 'palace': 'palace,indian',
-                  'elephant': 'elephant,indian', 'temple': 'temple,hindu', 'forest': 'forest,green',
-                  'village': 'village,indian', 'children': 'children,happy', 'horse': 'horse',
-                  'ashoka': 'ancient,india', 'shivaji': 'warrior,indian', 'chola': 'temple,south'
-              }
-              for key, value in keyword_map.items():
-                  if key in prompt.lower():
-                      keywords = value.split(',')
-                      break
+              safe_prompt = requests.utils.quote(prompt + style_modifiers)
+              url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
 
               for attempt in range(retries):
-                  print(f"  Downloading image (attempt {attempt + 1}/{retries})...")
-
-                  # Method 1: Try Pollinations.ai with enhanced style
                   try:
-                      safe_prompt = requests.utils.quote(prompt + style_modifiers)
-                      url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=1280&height=720&seed={random.randint(1, 10000)}"
+                      print(f"  Downloading image (attempt {attempt + 1})...")
                       response = requests.get(url, timeout=120)
-
-                      if response.status_code == 200 and len(response.content) > 5000:
+                      if response.status_code == 200:
                           img = Image.open(BytesIO(response.content))
-                          img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
-                          img.save(output_path, quality=95)
-                          print(f"  ✓ AI image saved ({os.path.getsize(output_path)} bytes)")
+                          img = img.convert('RGB')
+                          img = img.resize((1280, 720), Image.Resampling.LANCZOS)
+                          img.save(output_path)
                           return True
-                      print(f"  ✗ Pollinations: status={response.status_code}")
                   except Exception as e:
-                      print(f"  ✗ Pollinations error: {e}")
+                      print(f"  Retry {attempt + 1}: {e}")
+                      import time
+                      time.sleep(2)
 
-                  time.sleep(2)  # Small delay before retry
-
-              # Fallback: Try LoremFlickr (stock photos) if Pollinations fails completely
-              print(f"  ⚠ Trying stock photo fallback...")
-              try:
-                  keyword = ','.join(keywords[:2])
-                  url = f"https://loremflickr.com/1280/720/{keyword}"
-                  response = requests.get(url, timeout=30, allow_redirects=True)
-
-                  if response.status_code == 200 and len(response.content) > 5000:
-                      img = Image.open(BytesIO(response.content))
-                      img = img.convert('RGB').resize((1280, 720), Image.Resampling.LANCZOS)
-                      # Make more colorful/cartoon-like
-                      img = ImageEnhance.Color(img).enhance(1.4)
-                      img = ImageEnhance.Brightness(img).enhance(1.1)
-                      img = img.filter(ImageFilter.SMOOTH)
-                      img.save(output_path, quality=95)
-                      print(f"  ✓ Stock photo saved ({os.path.getsize(output_path)} bytes)")
-                      return True
-              except Exception as e:
-                  print(f"  ✗ LoremFlickr error: {e}")
-
-              # Final fallback: Create colorful illustrated placeholder
-              print(f"  ⚠ Creating illustrated placeholder...")
-              img = create_illustrated_placeholder(prompt)
-              img.save(output_path, quality=95)
-              print(f"  ✓ Placeholder created ({os.path.getsize(output_path)} bytes)")
+              # Create colorful placeholder if image fails
+              colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185), (255, 255, 200), (230, 190, 255)]
+              img = Image.new('RGB', (1280, 720), random.choice(colors))
+              img.save(output_path)
               return False
-
-          def create_illustrated_placeholder(prompt):
-              """Create detailed cartoon illustration matching the story scene"""
-              prompt_lower = prompt.lower()
-              img = Image.new('RGB', (1280, 720), (135, 206, 250))  # Sky blue
-              draw = ImageDraw.Draw(img)
-
-              # Determine scene type and colors
-              is_palace = any(w in prompt_lower for w in ['palace', 'king', 'emperor', 'royal', 'throne'])
-              is_temple = any(w in prompt_lower for w in ['temple', 'pillar', 'statue'])
-              is_battle = any(w in prompt_lower for w in ['battle', 'war', 'army', 'fight'])
-              is_nature = any(w in prompt_lower for w in ['forest', 'garden', 'tree', 'river'])
-              is_village = any(w in prompt_lower for w in ['village', 'people', 'crowd', 'celebration'])
-              has_elephant = any(w in prompt_lower for w in ['elephant', 'gajraj', 'airavata'])
-              has_horse = any(w in prompt_lower for w in ['horse', 'vishwas', 'riding'])
-              is_happy = any(w in prompt_lower for w in ['happy', 'joy', 'celebration', 'cheer', 'smile'])
-              is_sad = any(w in prompt_lower for w in ['sad', 'cry', 'tear', 'hurt'])
-
-              # SKY GRADIENT
-              if is_battle:
-                  sky_top, sky_bottom = (255, 150, 100), (255, 200, 150)  # Orange/sunset
-              elif is_happy or is_village:
-                  sky_top, sky_bottom = (135, 206, 250), (255, 223, 186)  # Bright blue to warm
-              else:
-                  sky_top, sky_bottom = (135, 206, 250), (200, 230, 255)  # Blue gradient
-
-              for y in range(400):
-                  ratio = y / 400
-                  r = int(sky_top[0] + (sky_bottom[0] - sky_top[0]) * ratio)
-                  g = int(sky_top[1] + (sky_bottom[1] - sky_top[1]) * ratio)
-                  b = int(sky_top[2] + (sky_bottom[2] - sky_top[2]) * ratio)
-                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
-
-              # SUN with rays
-              sun_x, sun_y = 1100, 80
-              for i in range(12):
-                  angle = i * 30
-                  import math
-                  x2 = sun_x + int(80 * math.cos(math.radians(angle)))
-                  y2 = sun_y + int(80 * math.sin(math.radians(angle)))
-                  draw.line([(sun_x, sun_y), (x2, y2)], fill=(255, 255, 150), width=3)
-              draw.ellipse([sun_x-40, sun_y-40, sun_x+40, sun_y+40], fill=(255, 255, 0))
-
-              # CLOUDS
-              cloud_color = (255, 255, 255)
-              for cx in [150, 500, 900]:
-                  cy = random.randint(60, 150)
-                  for dx in range(0, 100, 25):
-                      draw.ellipse([cx+dx, cy, cx+dx+60, cy+35], fill=cloud_color)
-
-              # GROUND
-              if is_palace or is_temple:
-                  ground_color = (210, 180, 140)  # Tan/stone
-              elif is_nature:
-                  ground_color = (34, 139, 34)  # Green
-              else:
-                  ground_color = (139, 119, 101)  # Brown
-
-              draw.rectangle([0, 400, 1280, 720], fill=ground_color)
-
-              # BACKGROUND ELEMENTS based on scene
-              if is_palace:
-                  # Draw palace
-                  draw.rectangle([400, 200, 880, 400], fill=(255, 215, 0))  # Gold palace
-                  draw.rectangle([420, 220, 860, 380], fill=(255, 235, 150))
-                  # Domes
-                  draw.ellipse([500, 150, 600, 220], fill=(255, 215, 0))
-                  draw.ellipse([680, 150, 780, 220], fill=(255, 215, 0))
-                  # Windows
-                  for wx in [480, 580, 680, 780]:
-                      draw.rectangle([wx, 280, wx+40, 350], fill=(139, 69, 19))
-
-              elif is_temple:
-                  # Draw temple/pillar
-                  draw.rectangle([550, 180, 730, 400], fill=(245, 222, 179))
-                  draw.polygon([(640, 100), (520, 180), (760, 180)], fill=(255, 200, 150))
-                  # Pillar
-                  draw.rectangle([300, 250, 350, 400], fill=(220, 200, 180))
-                  draw.rectangle([930, 250, 980, 400], fill=(220, 200, 180))
-                  # Lion on pillar
-                  draw.ellipse([290, 200, 360, 250], fill=(255, 200, 100))
-
-              elif is_nature:
-                  # Trees
-                  for tx in [100, 300, 900, 1100]:
-                      ty = 350
-                      draw.rectangle([tx-10, ty, tx+10, ty+100], fill=(139, 69, 19))
-                      draw.ellipse([tx-50, ty-80, tx+50, ty+20], fill=(34, 139, 34))
-                      draw.ellipse([tx-40, ty-100, tx+40, ty-20], fill=(50, 160, 50))
-
-              # CHARACTERS
-              def draw_king(x, y, crown=True):
-                  # Body (royal robe)
-                  draw.ellipse([x-50, y, x+50, y+100], fill=(128, 0, 128))  # Purple robe
-                  # Head
-                  draw.ellipse([x-35, y-60, x+35, y+10], fill=(255, 200, 150))
-                  # Crown
-                  if crown:
-                      draw.polygon([(x-25, y-60), (x, y-90), (x+25, y-60)], fill=(255, 215, 0))
-                      draw.ellipse([x-5, y-95, x+5, y-85], fill=(255, 0, 0))  # Ruby
-                  # Face
-                  draw.ellipse([x-15, y-40, x-5, y-25], fill=(0, 0, 0))  # Eye
-                  draw.ellipse([x+5, y-40, x+15, y-25], fill=(0, 0, 0))  # Eye
-                  if is_happy:
-                      draw.arc([x-15, y-20, x+15, y], 0, 180, fill=(0, 0, 0), width=3)
-                  elif is_sad:
-                      draw.arc([x-15, y-10, x+15, y+10], 180, 360, fill=(0, 0, 0), width=3)
-                  else:
-                      draw.line([(x-10, y-10), (x+10, y-10)], fill=(0, 0, 0), width=2)
-
-              def draw_elephant(x, y):
-                  # Body
-                  draw.ellipse([x-80, y-30, x+80, y+70], fill=(128, 128, 128))
-                  # Head
-                  draw.ellipse([x+50, y-50, x+130, y+30], fill=(128, 128, 128))
-                  # Trunk
-                  draw.arc([x+80, y, x+140, y+80], 180, 360, fill=(100, 100, 100), width=15)
-                  # Ear
-                  draw.ellipse([x+40, y-60, x+90, y-10], fill=(150, 150, 150))
-                  # Eye
-                  draw.ellipse([x+85, y-25, x+100, y-10], fill=(0, 0, 0))
-                  # Legs
-                  for lx in [x-50, x-20, x+20, x+50]:
-                      draw.rectangle([lx-10, y+50, lx+10, y+100], fill=(100, 100, 100))
-                  # Decorations
-                  draw.rectangle([x-60, y-20, x+60, y+10], fill=(255, 0, 0))  # Red cloth
-
-              def draw_person(x, y, color=(255, 200, 150), dress_color=(255, 150, 50)):
-                  # Body/dress
-                  draw.polygon([(x, y), (x-40, y+80), (x+40, y+80)], fill=dress_color)
-                  # Head
-                  draw.ellipse([x-25, y-50, x+25, y+5], fill=color)
-                  # Eyes
-                  draw.ellipse([x-12, y-30, x-4, y-18], fill=(0, 0, 0))
-                  draw.ellipse([x+4, y-30, x+12, y-18], fill=(0, 0, 0))
-                  # Smile
-                  draw.arc([x-10, y-15, x+10, y+5], 0, 180, fill=(0, 0, 0), width=2)
-
-              # Place characters based on scene
-              if has_elephant:
-                  draw_elephant(640, 480)
-                  draw_king(400, 450)
-              elif is_palace or 'ashoka' in prompt_lower or 'king' in prompt_lower:
-                  draw_king(640, 450)
-                  draw_person(450, 480, dress_color=(255, 100, 100))
-                  draw_person(830, 480, dress_color=(100, 200, 100))
-              elif is_village or is_happy:
-                  for i, px in enumerate([300, 500, 700, 900]):
-                      colors = [(255, 150, 50), (50, 150, 255), (255, 100, 150), (100, 255, 150)]
-                      draw_person(px, 480, dress_color=colors[i % 4])
-              else:
-                  draw_king(500, 450)
-                  draw_person(750, 480, dress_color=(200, 100, 255))
-
-              # SPARKLES/STARS
-              for _ in range(15):
-                  sx = random.randint(50, 1230)
-                  sy = random.randint(50, 200)
-                  size = random.randint(3, 8)
-                  draw.polygon([
-                      (sx, sy-size*2), (sx+size, sy-size), (sx+size*2, sy),
-                      (sx+size, sy+size), (sx, sy+size*2), (sx-size, sy+size),
-                      (sx-size*2, sy), (sx-size, sy-size)
-                  ], fill=(255, 255, 200))
-
-              # FLOWERS on ground
-              flower_colors = [(255, 100, 100), (255, 200, 100), (200, 100, 255), (100, 200, 255)]
-              for _ in range(20):
-                  fx = random.randint(50, 1230)
-                  fy = random.randint(550, 680)
-                  fc = random.choice(flower_colors)
-                  draw.ellipse([fx-8, fy-8, fx+8, fy+8], fill=fc)
-                  draw.ellipse([fx-3, fy-3, fx+3, fy+3], fill=(255, 255, 0))
-
-              return img
 
           def generate_story_with_groq(topic, num_scenes):
               """Generate story using Groq API"""
               if not GROQ_API_KEY:
                   return generate_fallback_story(topic, num_scenes)
 
-              # Check if narration is in correct language (non-English check)
-              def is_correct_language(text, lang_code):
-                  """Check if text contains non-ASCII characters (indicating non-English)"""
-                  if lang_code == "en":
-                      return True
-                  # Check for non-ASCII characters (Indian scripts have Unicode > 127)
-                  non_ascii_count = sum(1 for c in text if ord(c) > 127)
-                  # At least 30% should be non-ASCII for Indian languages
-                  return non_ascii_count > len(text) * 0.3
-
-              # MANDATORY language instruction - story MUST be in selected language
               lang_instruction = ""
               if VIDEO_LANGUAGE != "english":
-                  # Language-specific full examples for better generation
                   lang_examples = {
-                      "kannada": {
-                          "narration1": "ಒಂದು ಕಾಲದಲ್ಲಿ ಭಾರತದಲ್ಲಿ ಒಬ್ಬ ಧೈರ್ಯಶಾಲಿ ರಾಜ ಇದ್ದನು. ಅವನ ಹೆಸರು ಅಶೋಕ.",
-                          "narration2": "ಅಶೋಕ ರಾಜ ತನ್ನ ಆನೆ ಗಜರಾಜನೊಂದಿಗೆ ಅರಮನೆಯಲ್ಲಿ ವಾಸಿಸುತ್ತಿದ್ದನು.",
-                          "title": "ಅಶೋಕ ಚಕ್ರವರ್ತಿಯ ಕಥೆ",
-                          "moral": "ದಯೆಯೇ ನಿಜವಾದ ಶಕ್ತಿ"
-                      },
-                      "hindi": {
-                          "narration1": "एक समय की बात है, भारत में एक बहादुर राजा था। उसका नाम अशोक था।",
-                          "narration2": "अशोक राजा अपने हाथी गजराज के साथ महल में रहता था।",
-                          "title": "सम्राट अशोक की कहानी",
-                          "moral": "दया ही असली ताकत है"
-                      },
-                      "tamil": {
-                          "narration1": "ஒரு காலத்தில் இந்தியாவில் ஒரு தைரியமான அரசன் இருந்தான். அவன் பெயர் அசோகன்.",
-                          "narration2": "அசோகன் அரசன் தன் யானை கஜராஜனுடன் அரண்மனையில் வாழ்ந்தான்.",
-                          "title": "அசோகர் மன்னரின் கதை",
-                          "moral": "கருணையே உண்மையான சக்தி"
-                      },
-                      "telugu": {
-                          "narration1": "ఒకప్పుడు భారతదేశంలో ఒక ధైర్యవంతుడైన రాజు ఉండేవాడు. అతని పేరు అశోకుడు.",
-                          "narration2": "అశోక రాజు తన ఏనుగు గజరాజుతో రాజభవనంలో నివసించేవాడు.",
-                          "title": "అశోక చక్రవర్తి కథ",
-                          "moral": "దయ నిజమైన శక్తి"
-                      },
-                      "malayalam": {
-                          "narration1": "ഒരിക്കൽ ഇന്ത്യയിൽ ഒരു ധീരനായ രാജാവ് ഉണ്ടായിരുന്നു. അദ്ദേഹത്തിന്റെ പേര് അശോകൻ.",
-                          "narration2": "അശോക രാജാവ് തന്റെ ആന ഗജരാജനോടൊപ്പം കൊട്ടാരത്തിൽ താമസിച്ചു.",
-                          "title": "അശോക ചക്രവർത്തിയുടെ കഥ",
-                          "moral": "കരുണയാണ് യഥാർത്ഥ ശക്തി"
-                      },
-                      "bengali": {
-                          "narration1": "এক সময় ভারতে এক সাহসী রাজা ছিলেন। তাঁর নাম অশোক।",
-                          "narration2": "অশোক রাজা তাঁর হাতি গজরাজের সঙ্গে প্রাসাদে থাকতেন।",
-                          "title": "সম্রাট অশোকের কাহিনী",
-                          "moral": "দয়াই প্রকৃত শক্তি"
-                      },
-                      "marathi": {
-                          "narration1": "एकेकाळी भारतात एक शूर राजा होता. त्याचे नाव अशोक होते.",
-                          "narration2": "अशोक राजा त्याच्या हत्ती गजराजसोबत राजवाड्यात राहत होता.",
-                          "title": "सम्राट अशोकाची गोष्ट",
-                          "moral": "दयाळूपणा हीच खरी ताकद"
-                      }
+                      "kannada": 'narration: "ಒಂದು ಕಾಲದಲ್ಲಿ ಭಾರತದಲ್ಲಿ ಒಬ್ಬ ಧೈರ್ಯಶಾಲಿ ರಾಜ ಇದ್ದನು."',
+                      "hindi": 'narration: "एक समय की बात है, भारत में एक बहादुर राजा था।"',
+                      "tamil": 'narration: "ஒரு காலத்தில் இந்தியாவில் ஒரு தைரியமான அரசன் இருந்தான்."',
+                      "telugu": 'narration: "ఒకప్పుడు భారతదేశంలో ఒక ధైర్యవంతుడైన రాజు ఉండేవాడు."',
+                      "malayalam": 'narration: "ഒരിക്കൽ ഇന്ത്യയിൽ ഒരു ധീരനായ രാജാവ് ഉണ്ടായിരുന്നു."',
+                      "bengali": 'narration: "এক সময় ভারতে এক সাহসী রাজা ছিলেন।"',
+                      "marathi": 'narration: "एकेकाळी भारतात एक शूर राजा होता."'
                   }
-                  example = lang_examples.get(VIDEO_LANGUAGE, lang_examples.get("kannada"))
-
+                  example = lang_examples.get(VIDEO_LANGUAGE, "")
                   lang_instruction = f"""
-          ############################################################
-          !!!!!!!! MOST IMPORTANT INSTRUCTION - READ CAREFULLY !!!!!!!!
-          ############################################################
-
-          YOU MUST WRITE EVERYTHING IN {LANG_NAME} LANGUAGE USING {LANG_NAME} SCRIPT.
-
-          DO NOT USE ENGLISH FOR NARRATION, TITLE, OR MORAL.
-          ONLY USE ENGLISH FOR image_prompt FIELD.
-
-          HERE ARE EXAMPLES OF CORRECT {LANG_NAME} OUTPUT:
-
-          SCENE 1:
-          "narration": "{example['narration1']}"
-          "image_prompt": "brave king Ashoka in golden palace with elephant, cute cartoon style"
-
-          SCENE 2:
-          "narration": "{example['narration2']}"
-          "image_prompt": "king playing with elephant in palace garden, Pixar animation style"
-
-          TITLE: "{example['title']}"
-          MORAL: "{example['moral']}"
-
-          WRONG EXAMPLE (DO NOT DO THIS):
-          "narration": "Once upon a time there was a king" ← WRONG! USE {LANG_NAME}!
-
-          EVERY SINGLE NARRATION MUST BE IN {LANG_NAME} SCRIPT LIKE THE EXAMPLES ABOVE.
-          IF YOU WRITE IN ENGLISH, THE VIDEO WILL FAIL.
-          ############################################################
+          CRITICAL: Write the ENTIRE story in {LANG_NAME} language.
+          - "narration" = 100% {LANG_NAME} script
+          - "title" = {LANG_NAME} script
+          - "moral" = {LANG_NAME} script
+          - ONLY "image_prompt" = English
+          Example: {example}
           """
 
               try:
-                  # Use better model for language generation
                   response = requests.post(
                       "https://api.groq.com/openai/v1/chat/completions",
-                      headers={
-                          "Authorization": f"Bearer {GROQ_API_KEY}",
-                          "Content-Type": "application/json"
-                      },
+                      headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
                       json={
-                          "model": "llama-3.3-70b-versatile",  # Better model for following instructions
+                          "model": "llama-3.1-8b-instant",
                           "messages": [
                               {
                                   "role": "system",
-                                  "content": f"""You are a children's story writer. You MUST write stories in {LANG_NAME} language.
-
+                                  "content": f"""You are a children's story writer for kids aged 4-8.
           {lang_instruction}
-
-          STORY REQUIREMENTS:
-          - Exactly {num_scenes} scenes for a 10-minute video
-          - 3-4 NAMED cartoon characters with DISTINCT appearances
-          - Each narration: 2-3 simple sentences in {LANG_NAME}
-          - Include ACTION words and MOVEMENT descriptions
-          - Characters should RUN, JUMP, DANCE, PLAY like in cartoons
-          - Add sound effects: धम्म! (thud), छप्प! (splash), झूम! (zoom)
-          - Indian historical/folk tale theme
-          - NO scary content
-
-          IMAGE PROMPTS (in English) - VERY IMPORTANT FOR CARTOON LOOK:
-          - ALWAYS include: "cute cartoon style, Pixar Disney animation, 3D rendered"
-          - Characters must look like ANIMATED CARTOON characters with:
-            * Big round expressive eyes
-            * Soft rounded body shapes
-            * Colorful vibrant clothing
-            * Exaggerated happy expressions
-          - Show DYNAMIC ACTION poses like cartoons:
-            * Running with arms swinging
-            * Jumping with excitement
-            * Dancing and twirling
-            * Pointing and gesturing dramatically
-          - Multiple characters INTERACTING with each other in same scene
-          - Add movement effects: motion blur, sparkles, action lines
-          - Include: "bright colors, magical atmosphere, storybook illustration"
-          - Example: "cute cartoon Indian king with big eyes and crown running excitedly, Pixar style, vibrant colors, dynamic action pose"
+          REQUIREMENTS:
+          - Story must have EXACTLY {num_scenes} scenes
+          - Each narration: 2-3 simple sentences
+          - Use 3-4 NAMED cartoon characters with distinct looks
+          - NO scary content, NO violence
+          - End with "The End!" and moral
 
           Return ONLY valid JSON:
-          {{"title": "{LANG_NAME} title", "moral": "{LANG_NAME} moral", "characters": ["desc1", "desc2", "desc3"], "scenes": [{{"narration": "{LANG_NAME} text", "image_prompt": "English description with ACTION"}}]}}"""
+          {{"title": "Story Title", "moral": "The moral", "scenes": [{{"narration": "Text", "image_prompt": "Description in English"}}]}}"""
                               },
-                              {
-                                  "role": "user",
-                                  "content": f"Create an exciting animated story in {LANG_NAME} language about: {topic}. Remember: ALL narrations must be in {LANG_NAME} script, not English!"
-                              }
+                              {"role": "user", "content": f"Create a story about: {topic}"}
                           ],
-                          "temperature": 0.7,
-                          "max_tokens": 8000
+                          "temperature": 0.85,
+                          "max_tokens": 6000
                       },
-                      timeout=120
+                      timeout=90
                   )
-
                   if response.status_code == 200:
                       content = response.json()['choices'][0]['message']['content']
                       content = content.replace('```json', '').replace('```', '').strip()
                       story = json.loads(content)
-
-                      # Validate language - check if narration is in correct language
                       if len(story.get('scenes', [])) >= num_scenes:
-                          first_narration = story['scenes'][0].get('narration', '')
-                          if VIDEO_LANGUAGE != "english" and not is_correct_language(first_narration, LANG_CODE):
-                              print(f"WARNING: Story generated in English, using {LANG_NAME} fallback")
-                              return generate_fallback_story(topic, num_scenes)
                           return story
               except Exception as e:
                   print(f"Groq API error: {e}")
@@ -731,996 +247,223 @@ jobs:
               return generate_fallback_story(topic, num_scenes)
 
           def generate_fallback_story(topic, num_scenes):
-              """Generate Indian history-based fallback story in the selected language"""
-
-              # Language-specific stories - each language has its own version
-              kannada_stories = {
-                  "title": "ಅಶೋಕ ಚಕ್ರವರ್ತಿಯ ಕಥೆ",
-                  "moral": "ದಯೆಯೇ ನಿಜವಾದ ಶಕ್ತಿ - ಯುದ್ಧದಿಂದ ಅಲ್ಲ, ಪ್ರೀತಿಯಿಂದ ಗೆಲ್ಲಿ",
+              """Generate fallback story"""
+              story = {
+                  "title": "Emperor Ashoka's Transformation",
+                  "moral": "True victory is winning hearts with kindness",
                   "scenes": [
-                      {"narration": "ಬಹಳ ಹಿಂದೆ, ಭಾರತದಲ್ಲಿ ಅಶೋಕ ಎಂಬ ಧೈರ್ಯಶಾಲಿ ರಾಜಕುಮಾರ ಇದ್ದನು. ಅವನು ತುಂಬಾ ಬಲಶಾಲಿಯಾಗಿದ್ದನು!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style, bright colors"},
-                      {"narration": "ಅಶೋಕನಿಗೆ ಮೂರು ಒಳ್ಳೆಯ ಸ್ನೇಹಿತರಿದ್ದರು - ದಯಾಳು ಪತ್ನಿ ದೇವಿ, ಬುದ್ಧಿವಂತ ಸಲಹೆಗಾರ ರಾಧಾಗುಪ್ತ, ಮತ್ತು ಆನೆ ಸ್ನೇಹಿತ ಗಜರಾಜ್!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses, Indian palace"},
-                      {"narration": "ಒಂದು ದಿನ, ಅಶೋಕ ಕಳಿಂಗದಲ್ಲಿ ಯುದ್ಧಕ್ಕೆ ಹೋದನು. ಅವನು ಗೆದ್ದು ಮಹಾನ್ ರಾಜನಾಗಬೇಕೆಂದು ಬಯಸಿದನು!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement, colorful army"},
-                      {"narration": "ಆದರೆ ಯುದ್ಧದ ನಂತರ, ಅಶೋಕ ತುಂಬಾ ದುಃಖಿತನಾದನು. ಜನರು ನೋವಿನಿಂದ ಅಳುತ್ತಿದ್ದರು. ಓಹ್!", "image_prompt": "sad cartoon Ashoka kneeling down with tears, elephant Gajraj wrapping trunk around him comfortingly"},
-                      {"narration": "ಅಶೋಕನ ಹೃದಯ ಮುರಿಯಿತು. ಅವನು ಹೇಳಿದನು - ನಾನು ಏನು ಮಾಡಿದೆ! ಇದು ಗೆಲುವು ಅಲ್ಲ, ಇದು ದುಃಖ!", "image_prompt": "cartoon Ashoka standing up dramatically with raised arms, emotional expression, Gajraj elephant looking concerned"},
-                      {"narration": "ದಯಾಳು ದೇವಿ ಅವನ ಕೈ ಹಿಡಿದು ಹೇಳಿದಳು - ಪ್ರಿಯ ಅಶೋಕ, ನಿಜವಾದ ರಾಜರು ಜನರಿಗೆ ಸಹಾಯ ಮಾಡುತ್ತಾರೆ!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm golden lighting, both characters in dynamic talking poses"},
-                      {"narration": "ಬುದ್ಧಿವಂತ ರಾಧಾಗುಪ್ತ ಹೇಳಿದರು - ಮಹಾರಾಜ, ನೀವು ಬದಲಾಗಬಹುದು! ಅತ್ಯಂತ ದಯಾಳು ರಾಜರಾಗಿ!", "image_prompt": "wise cartoon advisor Radhagupta gesturing enthusiastically to Ashoka, palace garden, animated talking pose"},
-                      {"narration": "ಆ ದಿನದಿಂದ, ಅಶೋಕ ಸಂಪೂರ್ಣವಾಗಿ ಬದಲಾದನು! ಅವನು ಎಂದಿಗೂ ಯುದ್ಧ ಮಾಡುವುದಿಲ್ಲ ಎಂದು ನಿರ್ಧರಿಸಿದನು!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart making promise, sparkles and light effects"},
-                      {"narration": "ಅಶೋಕ ಆಸ್ಪತ್ರೆಗಳನ್ನು ಕಟ್ಟಿದನು. ಜನರಿಗೆ ಮತ್ತು ಪ್ರಾಣಿಗಳಿಗೆ ಉಚಿತ ಔಷಧಿ ಸಿಕ್ಕಿತು! ಹುರ್ರೇ!", "image_prompt": "cartoon Ashoka happily building hospital, doctors running around helping people and animals, dynamic action scene"},
-                      {"narration": "ಅವನು ರಸ್ತೆಗಳ ಉದ್ದಕ್ಕೂ ಸಾವಿರಾರು ಮರಗಳನ್ನು ನೆಟ್ಟನು. ಎಲ್ಲರೂ ನೆರಳಿನಲ್ಲಿ ವಿಶ್ರಾಂತಿ ಪಡೆದರು!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically fast, birds flying around happily"},
-                      {"narration": "ಅಶೋಕ ಬಾವಿಗಳನ್ನು ತೋಡಿದನು. ಎಲ್ಲರಿಗೂ ಶುದ್ಧ ನೀರು ಸಿಕ್ಕಿತು! ಹಕ್ಕಿಗಳು ಕೂಡ ಸಂತೋಷದಿಂದ ಹಾರಿದವು!", "image_prompt": "cartoon Ashoka near well, villagers drinking water joyfully, birds splashing in water, dynamic water effects"},
-                      {"narration": "ಅವನು ಸಿಂಹದ ಕಂಬಗಳನ್ನು ಕಟ್ಟಿದನು. ಈ ಕಂಬಗಳಲ್ಲಿ ಶಾಂತಿ ಮತ್ತು ಪ್ರೀತಿಯ ಸಂದೇಶಗಳಿದ್ದವು!", "image_prompt": "cartoon Ashoka proudly pointing at lion pillar, four lions on top roaring, magical glow around pillar"},
-                      {"narration": "ಗಜರಾಜ್ ಆನೆ ತುಂಬಾ ಹೆಮ್ಮೆ ಪಟ್ಟಿತು! ಪೋಂ ಪೋಂ! ನನ್ನ ಸ್ನೇಹಿತ ಅತ್ಯಂತ ದಯಾಳು ರಾಜ!", "image_prompt": "happy cartoon elephant Gajraj trumpeting loudly, jumping with joy, Ashoka laughing, colorful flowers flying"},
-                      {"narration": "ದೂರದ ದೇಶಗಳಿಂದ ಜನರು ಶಾಂತಿಯ ರಾಜ್ಯವನ್ನು ನೋಡಲು ಬಂದರು. ಅವರು ಅಚ್ಚರಿಗೊಂಡರು!", "image_prompt": "cartoon visitors from different lands bowing to Ashoka, diverse characters with amazed expressions, dynamic poses"},
-                      {"narration": "ಅಶೋಕ ಪ್ರಪಂಚದಾದ್ಯಂತ ಶಾಂತಿ ಮತ್ತು ದಯೆಯ ಸಂದೇಶ ಕಳುಹಿಸಿದನು! ದೂತರು ಓಡಿದರು!", "image_prompt": "cartoon messengers running on horses and elephants, spreading scrolls, action movement, world map background"},
-                      {"narration": "ಮಕ್ಕಳು ಅಶೋಕ ಚಕ್ರವರ್ತಿಯನ್ನು ತುಂಬಾ ಪ್ರೀತಿಸುತ್ತಿದ್ದರು. ಅವನು ಅವರೊಂದಿಗೆ ಆಟವಾಡುತ್ತಿದ್ದನು!", "image_prompt": "cartoon Ashoka playing chase with happy children in palace garden, running and laughing, toys flying"},
-                      {"narration": "ಇಂದಿಗೂ, ನಾವು ಅಶೋಕನನ್ನು ಅತ್ಯಂತ ಮಹಾನ್ ಮತ್ತು ದಯಾಳು ರಾಜ ಎಂದು ನೆನಪಿಸಿಕೊಳ್ಳುತ್ತೇವೆ!", "image_prompt": "cartoon modern children excitedly reading about Ashoka in book, classroom setting, animated expressions"},
-                      {"narration": "ಅಶೋಕ ಕಟ್ಟಿದ ಸಿಂಹದ ಕಂಬ ಭಾರತದ ಸಂಕೇತವಾಯಿತು! ನೀವು ಅದನ್ನು ನಾಣ್ಯಗಳಲ್ಲಿ ನೋಡಬಹುದು!", "image_prompt": "cartoon showing Ashoka pillar transforming into Indian national emblem, patriotic colors, sparkle effects"},
-                      {"narration": "ನೆನಪಿಡಿ ಮಕ್ಕಳೇ - ನಿಜವಾದ ಗೆಲುವು ಹೋರಾಟದಲ್ಲಿ ಅಲ್ಲ. ಇತರರನ್ನು ಸಂತೋಷಪಡಿಸುವುದರಲ್ಲಿದೆ!", "image_prompt": "cartoon Ashoka with all friends waving, hearts and peace symbols floating, moral message scene"},
-                      {"narration": "ಇದು ಅಶೋಕ ಚಕ್ರವರ್ತಿಯ ಕಥೆ! ಅವನಂತೆ ಯಾವಾಗಲೂ ದಯಾಳುವಾಗಿರಿ. ಮುಗಿಯಿತು!", "image_prompt": "happy ending with Ashoka, Devi, Radhagupta, and Gajraj elephant dancing and waving, THE END text, fireworks"}
+                      {"narration": "Long ago in ancient India, there lived a young warrior prince named Ashoka. He was very brave and strong!", "image_prompt": "cute cartoon young Indian prince Ashoka in golden palace, bright colors, Pixar style"},
+                      {"narration": "Ashoka had three best friends - his wife Devi, his advisor Radhagupta, and his elephant friend Gajraj!", "image_prompt": "cartoon prince Ashoka with wife Devi, advisor, and cute elephant friend, Indian palace"},
+                      {"narration": "One day, Ashoka went to fight a big war. He wanted to win and be the greatest king!", "image_prompt": "cartoon prince Ashoka on elephant going to battle, colorful Indian army"},
+                      {"narration": "But after the war, Ashoka saw something that made him very sad. Many people were hurt.", "image_prompt": "sad cartoon Ashoka looking at aftermath, somber but child-friendly"},
+                      {"narration": "Ashoka's heart broke. He said - What have I done? This is not victory!", "image_prompt": "cartoon Ashoka with tears, elephant Gajraj comforting him"},
+                      {"narration": "Kind Devi said - Dear Ashoka, true kings help people, they don't hurt them.", "image_prompt": "cartoon wife Devi comforting Ashoka, warm lighting"},
+                      {"narration": "From that day, Ashoka changed! He decided to never fight wars again.", "image_prompt": "cartoon Ashoka making a promise, glowing aura, transformation"},
+                      {"narration": "Instead, Ashoka built hospitals for sick people and animals!", "image_prompt": "cartoon Ashoka building hospital, doctors helping people"},
+                      {"narration": "He planted thousands of trees so travelers could rest in the shade.", "image_prompt": "cartoon Ashoka planting trees with villagers, sunny day"},
+                      {"narration": "Ashoka dug wells so everyone had clean water to drink!", "image_prompt": "cartoon Ashoka near a well, villagers drinking water"},
+                      {"narration": "He built tall pillars with lion statues and messages of peace!", "image_prompt": "cartoon Ashoka with famous lion pillar, four lions on top"},
+                      {"narration": "Gajraj the elephant was so proud! My friend is the kindest king!", "image_prompt": "happy cartoon elephant Gajraj with Ashoka, celebrating"},
+                      {"narration": "People from far away came to see the peaceful kingdom!", "image_prompt": "cartoon visitors meeting Ashoka, diverse characters"},
+                      {"narration": "Children loved Emperor Ashoka. He would play with them!", "image_prompt": "cartoon Ashoka playing with happy children in garden"},
+                      {"narration": "Even today, the lion pillar is the symbol of India!", "image_prompt": "cartoon showing Ashoka pillar and Indian emblem"},
+                      {"narration": "Remember - true victory is making others happy!", "image_prompt": "cartoon Ashoka with friends, hearts and peace symbols"},
+                      {"narration": "And that is the story of Emperor Ashoka! The End!", "image_prompt": "happy ending with Ashoka and friends waving, THE END"}
                   ]
               }
-
-              hindi_stories = {
-                  "title": "सम्राट अशोक की कहानी",
-                  "moral": "दया ही असली ताकत है - तलवार से नहीं, प्यार से जीतो",
-                  "scenes": [
-                      {"narration": "बहुत पुराने समय में, भारत में अशोक नाम का एक बहादुर राजकुमार था। वह बहुत ताकतवर था!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "अशोक के तीन अच्छे दोस्त थे - दयालु पत्नी देवी, बुद्धिमान सलाहकार राधागुप्त, और हाथी दोस्त गजराज!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "एक दिन, अशोक कलिंग में युद्ध करने गया। वह जीतकर महान राजा बनना चाहता था!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "लेकिन युद्ध के बाद, अशोक बहुत दुखी हो गया। लोग दर्द से रो रहे थे। ओह!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "अशोक का दिल टूट गया। उसने कहा - मैंने क्या किया! यह जीत नहीं, यह दुख है!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "दयालु देवी ने उसका हाथ पकड़ा और कहा - प्रिय अशोक, सच्चे राजा लोगों की मदद करते हैं!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "बुद्धिमान राधागुप्त ने कहा - महाराज, आप बदल सकते हैं! सबसे दयालु राजा बनें!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "उस दिन से, अशोक पूरी तरह बदल गया! उसने फैसला किया कि वह कभी युद्ध नहीं करेगा!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "अशोक ने अस्पताल बनवाए। लोगों और जानवरों को मुफ्त दवाई मिली! हुर्रे!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "उसने सड़कों पर हजारों पेड़ लगाए। सब लोग छाया में आराम करते थे!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "अशोक ने कुएं खुदवाए। सबको साफ पानी मिला! चिड़ियाँ भी खुशी से नाची!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "उसने शेर के स्तंभ बनवाए। इन स्तंभों पर शांति और प्यार के संदेश थे!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "गजराज हाथी को बहुत गर्व हुआ! पों पों! मेरा दोस्त सबसे दयालु राजा है!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "दूर देशों से लोग शांति का राज्य देखने आए। वे हैरान रह गए!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "अशोक ने पूरी दुनिया में शांति और दया का संदेश भेजा! दूत दौड़े!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "बच्चे सम्राट अशोक को बहुत प्यार करते थे। वह उनके साथ खेलता था!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "आज भी, हम अशोक को सबसे महान और दयालु राजा के रूप में याद करते हैं!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "अशोक का शेर स्तंभ भारत का प्रतीक बन गया! आप इसे सिक्कों पर देख सकते हैं!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "याद रखो बच्चों - असली जीत लड़ाई में नहीं। दूसरों को खुश करने में है!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "यह थी सम्राट अशोक की कहानी! उनकी तरह हमेशा दयालु रहो। खत्म!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              tamil_stories = {
-                  "title": "அசோக சக்கரவர்த்தியின் கதை",
-                  "moral": "கருணையே உண்மையான சக்தி - வாளால் அல்ல, அன்பால் வெல்",
-                  "scenes": [
-                      {"narration": "மிக பழங்காலத்தில், இந்தியாவில் அசோகன் என்ற தைரியமான இளவரசன் இருந்தான். அவன் மிகவும் வலிமையானவன்!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "அசோகனுக்கு மூன்று நல்ல நண்பர்கள் இருந்தனர் - கருணையுள்ள மனைவி தேவி, புத்திசாலி ஆலோசகர் ராதாகுப்தா, யானை நண்பன் கஜராஜ்!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "ஒரு நாள், அசோகன் கலிங்கத்தில் போர் செய்ய சென்றான். வெற்றி பெற்று மாபெரும் மன்னனாக விரும்பினான்!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "ஆனால் போருக்குப் பிறகு, அசோகன் மிகவும் சோகமடைந்தான். மக்கள் வலியில் அழுதனர். ஐயோ!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "அசோகனின் இதயம் உடைந்தது. அவன் சொன்னான் - நான் என்ன செய்தேன்! இது வெற்றி அல்ல, இது துக்கம்!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "கருணையுள்ள தேவி அவன் கையைப் பிடித்து சொன்னாள் - அன்பான அசோகா, உண்மையான மன்னர்கள் மக்களுக்கு உதவுவார்கள்!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "புத்திசாலி ராதாகுப்தா சொன்னார் - மகாராஜா, நீங்கள் மாறலாம்! மிகவும் கருணையுள்ள மன்னராகுங்கள்!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "அந்த நாளிலிருந்து, அசோகன் முழுமையாக மாறினான்! போர் செய்ய மாட்டேன் என்று முடிவு செய்தான்!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "அசோகன் மருத்துவமனைகள் கட்டினான். மக்களுக்கும் விலங்குகளுக்கும் இலவச மருந்து கிடைத்தது! ஹுர்ரே!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "அவன் சாலைகளில் ஆயிரக்கணக்கான மரங்களை நட்டான். எல்லோரும் நிழலில் ஓய்வெடுத்தனர்!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "அசோகன் கிணறுகள் தோண்டினான். அனைவருக்கும் சுத்தமான நீர் கிடைத்தது! பறவைகளும் மகிழ்ச்சியாக பறந்தன!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "அவன் சிங்கத் தூண்களை நிறுவினான். இந்தத் தூண்களில் அமைதி மற்றும் அன்பின் செய்திகள் இருந்தன!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "கஜராஜ் யானைக்கு மிகவும் பெருமையாக இருந்தது! போம் போம்! என் நண்பன் மிகவும் கருணையுள்ள மன்னன்!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "தொலைதூர நாடுகளிலிருந்து மக்கள் அமைதியான ராஜ்ஜியத்தைப் பார்க்க வந்தனர். அவர்கள் ஆச்சரியப்பட்டனர்!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "அசோகன் உலகம் முழுவதும் அமைதி மற்றும் கருணையின் செய்தியை அனுப்பினான்! தூதர்கள் ஓடினார்கள்!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "குழந்தைகள் அசோக சக்கரவர்த்தியை மிகவும் நேசித்தனர். அவன் அவர்களுடன் விளையாடினான்!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "இன்றும், நாம் அசோகனை மிகச்சிறந்த மற்றும் கருணையுள்ள மன்னராக நினைவில் கொள்கிறோம்!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "அசோகனின் சிங்கத் தூண் இந்தியாவின் சின்னமாக மாறியது! நீங்கள் அதை நாணயங்களில் பார்க்கலாம்!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "நினைவில் கொள்ளுங்கள் குழந்தைகளே - உண்மையான வெற்றி சண்டையில் இல்லை. மற்றவர்களை மகிழ்விப்பதில் உள்ளது!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "இதுதான் அசோக சக்கரவர்த்தியின் கதை! அவரைப் போல எப்போதும் கருணையுடன் இருங்கள். முடிவு!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              telugu_stories = {
-                  "title": "అశోక చక్రవర్తి కథ",
-                  "moral": "దయ నిజమైన శక్తి - కత్తితో కాదు, ప్రేమతో గెలవండి",
-                  "scenes": [
-                      {"narration": "చాలా కాలం క్రితం, భారతదేశంలో అశోకుడు అనే ధైర్యవంతుడైన యువరాజు ఉండేవాడు. అతను చాలా బలవంతుడు!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "అశోకుడికి ముగ్గురు మంచి స్నేహితులు ఉన్నారు - దయగల భార్య దేవి, తెలివైన సలహాదారు రాధాగుప్త, ఏనుగు స్నేహితుడు గజరాజ్!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "ఒక రోజు, అశోకుడు కళింగంలో యుద్ధానికి వెళ్ళాడు. అతను గెలిచి గొప్ప రాజు కావాలని కోరుకున్నాడు!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "కానీ యుద్ధం తర్వాత, అశోకుడు చాలా బాధపడ్డాడు. ప్రజలు నొప్పితో ఏడుస్తున్నారు. అయ్యో!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "అశోకుడి హృదయం బద్దలైంది. అతను అన్నాడు - నేను ఏం చేశాను! ఇది విజయం కాదు, ఇది దుఃఖం!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "దయగల దేవి అతని చేయి పట్టుకుని చెప్పింది - ప్రియ అశోకా, నిజమైన రాజులు ప్రజలకు సహాయం చేస్తారు!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "తెలివైన రాధాగుప్త చెప్పాడు - మహారాజా, మీరు మారవచ్చు! అత్యంత దయగల రాజు అవ్వండి!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "ఆ రోజు నుండి, అశోకుడు పూర్తిగా మారిపోయాడు! యుద్ధం చేయనని నిర్ణయించుకున్నాడు!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "అశోకుడు ఆసుపత్రులు కట్టించాడు. ప్రజలకు మరియు జంతువులకు ఉచిత మందులు దొరికాయి! హుర్రే!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "అతను రోడ్ల వెంట వేలాది చెట్లు నాటాడు. అందరూ నీడలో విశ్రాంతి తీసుకున్నారు!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "అశోకుడు బావులు త్రవ్వించాడు. అందరికీ శుభ్రమైన నీరు దొరికింది! పక్షులు కూడా సంతోషంగా ఎగిరాయి!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "అతను సింహ స్తంభాలు నిర్మించాడు. ఈ స్తంభాలపై శాంతి మరియు ప్రేమ సందేశాలు ఉన్నాయి!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "గజరాజ్ ఏనుగుకు చాలా గర్వంగా ఉంది! పోం పోం! నా స్నేహితుడు అత్యంత దయగల రాజు!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "దూర దేశాల నుండి ప్రజలు శాంతియుత రాజ్యాన్ని చూడటానికి వచ్చారు. వారు ఆశ్చర్యపోయారు!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "అశోకుడు ప్రపంచమంతటా శాంతి మరియు దయ సందేశాన్ని పంపాడు! దూతలు పరిగెత్తారు!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "పిల్లలు అశోక చక్రవర్తిని చాలా ప్రేమించేవారు. అతను వారితో ఆడేవాడు!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "ఈ రోజు కూడా, మనం అశోకుడిని అత్యంత గొప్ప మరియు దయగల రాజుగా గుర్తుంచుకుంటాము!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "అశోకుడు నిర్మించిన సింహ స్తంభం భారతదేశ చిహ్నంగా మారింది! మీరు దానిని నాణేలపై చూడవచ్చు!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "గుర్తుంచుకోండి పిల్లలు - నిజమైన విజయం పోరాటంలో లేదు. ఇతరులను సంతోషపెట్టడంలో ఉంది!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "ఇది అశోక చక్రవర్తి కథ! ఆయనలా ఎల్లప్పుడూ దయగా ఉండండి. ముగింపు!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              malayalam_stories = {
-                  "title": "അശോക ചക്രവർത്തിയുടെ കഥ",
-                  "moral": "കരുണയാണ് യഥാർത്ഥ ശക്തി - വാളുകൊണ്ടല്ല, സ്നേഹത്താൽ ജയിക്കുക",
-                  "scenes": [
-                      {"narration": "വളരെക്കാലം മുമ്പ്, ഇന്ത്യയിൽ അശോകൻ എന്ന ധീരനായ യുവരാജാവ് ഉണ്ടായിരുന്നു. അദ്ദേഹം വളരെ ശക്തനായിരുന്നു!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "അശോകന് മൂന്ന് നല്ല സുഹൃത്തുക്കൾ ഉണ്ടായിരുന്നു - ദയയുള്ള ഭാര്യ ദേവി, ബുദ്ധിമാനായ ഉപദേഷ്ടാവ് രാധാഗുപ്ത, ആന സുഹൃത്ത് ഗജരാജ്!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "ഒരു ദിവസം, അശോകൻ കലിംഗയിൽ യുദ്ധത്തിന് പോയി. അദ്ദേഹം ജയിച്ച് മഹാനായ രാജാവാകാൻ ആഗ്രഹിച്ചു!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "പക്ഷേ യുദ്ധത്തിനുശേഷം, അശോകൻ വളരെ ദുഃഖിതനായി. ആളുകൾ വേദനയിൽ കരയുന്നു. അയ്യോ!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "അശോകന്റെ ഹൃദയം തകർന്നു. അദ്ദേഹം പറഞ്ഞു - ഞാൻ എന്താണ് ചെയ്തത്! ഇത് വിജയമല്ല, ഇത് ദുഃഖമാണ്!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "ദയയുള്ള ദേവി അദ്ദേഹത്തിന്റെ കൈ പിടിച്ചു പറഞ്ഞു - പ്രിയ അശോകാ, യഥാർത്ഥ രാജാക്കന്മാർ ജനങ്ങളെ സഹായിക്കുന്നു!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "ബുദ്ധിമാനായ രാധാഗുപ്ത പറഞ്ഞു - മഹാരാജാവ്, നിങ്ങൾക്ക് മാറാം! ഏറ്റവും ദയയുള്ള രാജാവാകൂ!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "ആ ദിവസം മുതൽ, അശോകൻ പൂർണ്ണമായും മാറി! യുദ്ധം ചെയ്യില്ലെന്ന് തീരുമാനിച്ചു!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "അശോകൻ ആശുപത്രികൾ പണിതു. ആളുകൾക്കും മൃഗങ്ങൾക്കും സൗജന്യ മരുന്ന് ലഭിച്ചു! ഹുർറേ!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "അദ്ദേഹം റോഡുകളിൽ ആയിരക്കണക്കിന് മരങ്ങൾ നട്ടു. എല്ലാവരും തണലിൽ വിശ്രമിച്ചു!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "അശോകൻ കിണറുകൾ കുഴിച്ചു. എല്ലാവർക്കും ശുദ്ധമായ വെള്ളം കിട്ടി! പക്ഷികളും സന്തോഷത്തോടെ പറന്നു!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "അദ്ദേഹം സിംഹ സ്തംഭങ്ങൾ നിർമ്മിച്ചു. ഈ സ്തംഭങ്ങളിൽ സമാധാനത്തിന്റെയും സ്നേഹത്തിന്റെയും സന്ദേശങ്ങൾ ഉണ്ടായിരുന്നു!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "ഗജരാജ് ആനയ്ക്ക് വളരെ അഭിമാനം തോന്നി! പോം പോം! എന്റെ സുഹൃത്ത് ഏറ്റവും ദയയുള്ള രാജാവ്!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "ദൂരദേശങ്ങളിൽ നിന്ന് ആളുകൾ സമാധാന രാജ്യം കാണാൻ വന്നു. അവർ അത്ഭുതപ്പെട്ടു!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "അശോകൻ ലോകമെമ്പാടും സമാധാനത്തിന്റെയും കരുണയുടെയും സന്ദേശം അയച്ചു! ദൂതന്മാർ ഓടി!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "കുട്ടികൾ അശോക ചക്രവർത്തിയെ വളരെ സ്നേഹിച്ചു. അദ്ദേഹം അവരോടൊപ്പം കളിച്ചു!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "ഇന്നും, നമ്മൾ അശോകനെ ഏറ്റവും മഹാനും ദയയുള്ളവനുമായ രാജാവായി ഓർക്കുന്നു!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "അശോകൻ നിർമ്മിച്ച സിംഹ സ്തംഭം ഇന്ത്യയുടെ ചിഹ്നമായി! നിങ്ങൾക്ക് അത് നാണയങ്ങളിൽ കാണാം!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "ഓർക്കുക കുട്ടികളേ - യഥാർത്ഥ വിജയം പോരാട്ടത്തിലല്ല. മറ്റുള്ളവരെ സന്തോഷിപ്പിക്കുന്നതിലാണ്!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "ഇതാണ് അശോക ചക്രവർത്തിയുടെ കഥ! അദ്ദേഹത്തെപ്പോലെ എപ്പോഴും ദയയുള്ളവരായിരിക്കുക. അവസാനം!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              bengali_stories = {
-                  "title": "সম্রাট অশোকের কাহিনী",
-                  "moral": "দয়াই প্রকৃত শক্তি - তলোয়ার দিয়ে নয়, ভালোবাসা দিয়ে জয় করো",
-                  "scenes": [
-                      {"narration": "অনেক দিন আগে, ভারতে অশোক নামে একজন সাহসী যুবরাজ ছিলেন। তিনি খুব শক্তিশালী ছিলেন!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "অশোকের তিনজন ভালো বন্ধু ছিল - দয়ালু স্ত্রী দেবী, বুদ্ধিমান উপদেষ্টা রাধাগুপ্ত, এবং হাতি বন্ধু গজরাজ!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "একদিন, অশোক কলিঙ্গে যুদ্ধ করতে গেলেন। তিনি জিতে মহান রাজা হতে চেয়েছিলেন!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "কিন্তু যুদ্ধের পর, অশোক খুব দুঃখিত হয়ে গেলেন। মানুষ কষ্টে কাঁদছিল। হায়!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "অশোকের হৃদয় ভেঙে গেল। তিনি বললেন - আমি কী করলাম! এটা জয় নয়, এটা দুঃখ!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "দয়ালু দেবী তাঁর হাত ধরে বললেন - প্রিয় অশোক, প্রকৃত রাজারা মানুষকে সাহায্য করেন!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "বুদ্ধিমান রাধাগুপ্ত বললেন - মহারাজ, আপনি বদলাতে পারেন! সবচেয়ে দয়ালু রাজা হন!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "সেই দিন থেকে, অশোক সম্পূর্ণ বদলে গেলেন! তিনি আর কখনো যুদ্ধ করবেন না বলে সিদ্ধান্ত নিলেন!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "অশোক হাসপাতাল তৈরি করলেন। মানুষ এবং পশুরা বিনামূল্যে ওষুধ পেল! হুররে!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "তিনি রাস্তায় হাজার হাজার গাছ লাগালেন। সবাই ছায়ায় বিশ্রাম নিল!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "অশোক কূপ খনন করলেন। সবাই পরিষ্কার জল পেল! পাখিরাও খুশিতে উড়ল!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "তিনি সিংহ স্তম্ভ নির্মাণ করলেন। এই স্তম্ভগুলিতে শান্তি ও ভালোবাসার বার্তা ছিল!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "গজরাজ হাতির খুব গর্ব হলো! পোঁ পোঁ! আমার বন্ধু সবচেয়ে দয়ালু রাজা!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "দূর দেশ থেকে মানুষ শান্তির রাজ্য দেখতে এল। তারা অবাক হয়ে গেল!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "অশোক সারা বিশ্বে শান্তি ও দয়ার বার্তা পাঠালেন! দূতরা দৌড়াল!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "শিশুরা সম্রাট অশোককে খুব ভালোবাসত। তিনি তাদের সাথে খেলতেন!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "আজও, আমরা অশোককে সবচেয়ে মহান ও দয়ালু রাজা হিসেবে মনে রাখি!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "অশোকের সিংহ স্তম্ভ ভারতের প্রতীক হয়ে গেল! তুমি এটা মুদ্রায় দেখতে পাবে!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "মনে রেখো শিশুরা - প্রকৃত জয় লড়াইয়ে নয়। অন্যদের সুখী করায় আছে!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "এটাই সম্রাট অশোকের গল্প! তাঁর মতো সবসময় দয়ালু থাকো। শেষ!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              marathi_stories = {
-                  "title": "सम्राट अशोकाची गोष्ट",
-                  "moral": "दयाळूपणा हीच खरी ताकद - तलवारीने नाही, प्रेमाने जिंका",
-                  "scenes": [
-                      {"narration": "फार पूर्वी, भारतात अशोक नावाचा एक शूर राजकुमार होता. तो खूप बलवान होता!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                      {"narration": "अशोकाचे तीन चांगले मित्र होते - दयाळू पत्नी देवी, बुद्धिमान सल्लागार राधागुप्त, आणि हत्ती मित्र गजराज!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                      {"narration": "एक दिवस, अशोक कलिंगात युद्ध करायला गेला. त्याला जिंकून महान राजा व्हायचे होते!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                      {"narration": "पण युद्धानंतर, अशोक खूप दुःखी झाला. लोक वेदनेने रडत होते. अरेरे!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                      {"narration": "अशोकाचे हृदय तुटले. तो म्हणाला - मी काय केले! हा विजय नाही, हे दुःख आहे!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                      {"narration": "दयाळू देवीने त्याचा हात धरला आणि म्हणाली - प्रिय अशोक, खरे राजे लोकांना मदत करतात!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                      {"narration": "बुद्धिमान राधागुप्त म्हणाले - महाराज, तुम्ही बदलू शकता! सर्वात दयाळू राजा व्हा!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                      {"narration": "त्या दिवसापासून, अशोक पूर्णपणे बदलला! त्याने कधीही युद्ध न करण्याचा निर्णय घेतला!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                      {"narration": "अशोकाने रुग्णालये बांधली. लोकांना आणि प्राण्यांना मोफत औषधे मिळाली! हुर्रे!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                      {"narration": "त्याने रस्त्यांवर हजारो झाडे लावली. सगळे सावलीत विसावले!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                      {"narration": "अशोकाने विहिरी खोदल्या. सगळ्यांना स्वच्छ पाणी मिळाले! पक्षीही आनंदाने उडाले!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                      {"narration": "त्याने सिंह स्तंभ बांधले. या स्तंभांवर शांती आणि प्रेमाचे संदेश होते!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                      {"narration": "गजराज हत्तीला खूप अभिमान वाटला! पों पों! माझा मित्र सर्वात दयाळू राजा आहे!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                      {"narration": "दूरच्या देशांतून लोक शांतीचे राज्य पाहायला आले. ते अचंबित झाले!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                      {"narration": "अशोकाने संपूर्ण जगात शांती आणि दयेचा संदेश पाठवला! दूत धावले!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                      {"narration": "मुलांना सम्राट अशोक खूप आवडत असे. तो त्यांच्याबरोबर खेळत असे!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                      {"narration": "आजही, आपण अशोकाला सर्वात महान आणि दयाळू राजा म्हणून लक्षात ठेवतो!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                      {"narration": "अशोकाचा सिंह स्तंभ भारताचे प्रतीक बनला! तुम्ही ते नाण्यांवर पाहू शकता!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                      {"narration": "लक्षात ठेवा मुलांनो - खरा विजय लढाईत नाही. इतरांना आनंदी करण्यात आहे!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                      {"narration": "ही होती सम्राट अशोकाची गोष्ट! त्याच्यासारखे नेहमी दयाळू राहा. समाप्त!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                  ]
-              }
-
-              # English fallback stories
-              english_stories = {
-                  "ashoka": {
-                      "title": "Emperor Ashoka's Transformation",
-                      "moral": "True victory is winning hearts with kindness, not swords",
-                      "scenes": [
-                          {"narration": "Long ago in ancient India, there lived a young warrior prince named Ashoka. He was very brave and strong!", "image_prompt": "cute cartoon young Indian prince Ashoka running excitedly in golden palace, action pose, Pixar style"},
-                          {"narration": "Ashoka had three best friends - his kind wife Devi, his wise advisor Radhagupta, and his elephant friend Gajraj!", "image_prompt": "cartoon Ashoka jumping with joy meeting friends Devi, advisor and cute elephant Gajraj, dynamic poses"},
-                          {"narration": "One day, Ashoka went to fight a big war in Kalinga. He wanted to win and be the greatest king!", "image_prompt": "cartoon Ashoka riding elephant Gajraj marching to battle, elephant trumpeting, action movement"},
-                          {"narration": "But after the war, Ashoka became very sad. People were hurt and crying. Oh no!", "image_prompt": "sad cartoon Ashoka kneeling with tears, elephant Gajraj comforting him with trunk"},
-                          {"narration": "Ashoka's heart broke. He said - What have I done! This is not victory. This is sadness!", "image_prompt": "cartoon Ashoka standing dramatically with raised arms, emotional, Gajraj looking concerned"},
-                          {"narration": "Kind Devi held his hand and said - Dear Ashoka, true kings help people, not hurt them!", "image_prompt": "cartoon Devi holding Ashoka's hand lovingly, warm lighting, dynamic talking poses"},
-                          {"narration": "Wise Radhagupta said - Great king, you can change! Become the kindest king ever!", "image_prompt": "wise advisor Radhagupta gesturing enthusiastically, palace garden, animated pose"},
-                          {"narration": "From that day, Ashoka changed completely! He decided to never fight wars again!", "image_prompt": "cartoon Ashoka transforming with glowing aura, hands on heart, sparkles and light"},
-                          {"narration": "Ashoka built hospitals. People and animals got free medicine! Hooray!", "image_prompt": "cartoon Ashoka building hospital, doctors running helping people and animals, action scene"},
-                          {"narration": "He planted thousands of trees along the roads. Everyone rested in the shade!", "image_prompt": "cartoon Ashoka planting trees with villagers, trees growing magically, birds flying"},
-                          {"narration": "Ashoka dug wells. Everyone got clean water! Even the birds danced happily!", "image_prompt": "cartoon Ashoka near well, villagers drinking joyfully, birds splashing, water effects"},
-                          {"narration": "He built lion pillars. These pillars had messages of peace and love!", "image_prompt": "cartoon Ashoka pointing at lion pillar, four lions roaring, magical glow"},
-                          {"narration": "Gajraj the elephant was so proud! Trumpet trumpet! My friend is the kindest king!", "image_prompt": "happy elephant Gajraj trumpeting, jumping with joy, Ashoka laughing, flowers flying"},
-                          {"narration": "People from faraway lands came to see the peaceful kingdom. They were amazed!", "image_prompt": "visitors from different lands bowing to Ashoka, amazed expressions, dynamic poses"},
-                          {"narration": "Ashoka sent messengers to spread peace and kindness to the whole world! They ran fast!", "image_prompt": "messengers running on horses and elephants, spreading scrolls, world map"},
-                          {"narration": "Children loved Emperor Ashoka. He played with them and told them stories!", "image_prompt": "cartoon Ashoka playing with happy children in garden, running and laughing"},
-                          {"narration": "Even today, we remember Ashoka as the greatest and kindest king ever!", "image_prompt": "modern children reading about Ashoka excitedly, classroom, animated expressions"},
-                          {"narration": "The lion pillar Ashoka built became India's symbol! You can see it on coins!", "image_prompt": "Ashoka pillar transforming into Indian emblem, patriotic colors, sparkles"},
-                          {"narration": "Remember children - true victory is not in fighting. It is in making others happy!", "image_prompt": "cartoon Ashoka with friends waving, hearts and peace symbols floating"},
-                          {"narration": "That is the story of Emperor Ashoka! Always be kind like him. The End!", "image_prompt": "happy ending with all characters dancing and waving, THE END text, fireworks"}
-                      ]
-                  },
-                  "shivaji": {
-                      "title": "Young Shivaji's Courage",
-                      "moral": "Even children can dream of greatness",
-                      "scenes": [
-                          {"narration": "In the beautiful hills of Maharashtra, there lived a brave little boy named Shivaji. He loved his homeland very much!", "image_prompt": "cute cartoon young Shivaji boy in Maharashtrian dress, green hills, forts in background"},
-                          {"narration": "Shivaji had the best mother in the world - Jijabai. She told him wonderful stories of brave kings and queens!", "image_prompt": "cartoon mother Jijabai telling stories to young Shivaji, warm home setting, oil lamp"},
-                          {"narration": "His teacher Dadoji Konddev taught him sword fighting, horse riding, and most importantly - to always protect the weak!", "image_prompt": "cartoon teacher Dadoji teaching young Shivaji, training ground, wooden swords"},
-                          {"narration": "Shivaji's best friend was his horse Vishwas. Together they would explore the mountains and valleys!", "image_prompt": "cartoon young Shivaji riding horse Vishwas, Sahyadri mountains, sunset"},
-                          {"narration": "One day, Shivaji saw some villagers looking very sad. Bad people had taken away their food!", "image_prompt": "cartoon Shivaji seeing sad villagers, sympathetic expression, village setting"},
-                          {"narration": "Little Shivaji said to his friends - We must help them! We are small but our hearts are big!", "image_prompt": "cartoon young Shivaji rallying his young friends, determined faces, hillfort"},
-                          {"narration": "Mother Jijabai smiled proudly. She said - My son, a true king protects all his people like his own family!", "image_prompt": "proud cartoon Jijabai blessing Shivaji, warm golden lighting, emotional scene"},
-                          {"narration": "Shivaji and his friends made a clever plan. They would get back the villagers' food!", "image_prompt": "cartoon Shivaji and friends planning together, map on ground, excited faces"},
-                          {"narration": "Using the secret paths in the mountains that only they knew, Shivaji's team moved quietly like cats!", "image_prompt": "cartoon Shivaji and friends sneaking through mountain paths, moonlight, adventure"},
-                          {"narration": "Whoosh! Before anyone knew what happened, Shivaji and his friends had returned the food to the happy villagers!", "image_prompt": "cartoon Shivaji returning food to cheering villagers, celebration, bright colors"},
-                          {"narration": "The villagers were so happy! They said - Little Shivaji is our hero! He will be a great king one day!", "image_prompt": "cartoon villagers celebrating Shivaji, flowers, garlands, joyful scene"},
-                          {"narration": "Teacher Dadoji was proud. He said - Shivaji, you have learned the most important lesson - always help others!", "image_prompt": "cartoon Dadoji praising Shivaji, other students watching admiringly"},
-                          {"narration": "Horse Vishwas neighed happily as if saying - My friend Shivaji is the bravest boy I know!", "image_prompt": "cartoon horse Vishwas nuzzling Shivaji affectionately, stable setting, warm"},
-                          {"narration": "From that day, more and more people joined Shivaji. Everyone wanted to help make their land safe and happy!", "image_prompt": "cartoon Shivaji with growing group of supporters, diverse people, hillfort"},
-                          {"narration": "Shivaji grew up to build many forts on the mountains. These forts kept everyone safe!", "image_prompt": "cartoon older Shivaji with magnificent hillforts, Raigad fort style, impressive"},
-                          {"narration": "He became one of the greatest kings of India - Chhatrapati Shivaji Maharaj!", "image_prompt": "cartoon adult Shivaji as king with crown and sword, royal but friendly, majestic"},
-                          {"narration": "But Shivaji never forgot his childhood friends, his mother's stories, or his teacher's lessons!", "image_prompt": "cartoon King Shivaji remembering childhood, thought bubbles with Jijabai and Dadoji"},
-                          {"narration": "Even today, people in Maharashtra celebrate Shivaji as their greatest hero!", "image_prompt": "cartoon modern children celebrating Shivaji Jayanti, flags, procession, happy"},
-                          {"narration": "Remember children - you are never too small to do something big! Dream big like Shivaji!", "image_prompt": "cartoon young Shivaji inspiring modern children, motivational scene, bright"},
-                          {"narration": "And that is the story of brave Shivaji! Always be courageous and help others. The End!", "image_prompt": "happy ending with young Shivaji, Jijabai, Dadoji, and Vishwas, THE END text"}
-                      ]
-                  },
-                  "default": {
-                      "title": "Raja Raja Chola Builds the Great Temple",
-                      "moral": "Great dreams need great teamwork",
-                      "scenes": [
-                          {"narration": "In the golden land of Tamil Nadu, there lived a wise king named Raja Raja Chola. He had a beautiful dream!", "image_prompt": "cute cartoon King Raja Raja Chola running excitedly, Tamil royal dress, Thanjavur palace, action pose"},
-                          {"narration": "Raja Raja wanted to build the tallest and most beautiful temple in the whole world for Lord Shiva!", "image_prompt": "cartoon Raja Raja jumping with excitement looking at temple plans, architects around, dynamic pose"},
-                          {"narration": "He called his best friend, the architect Kunjaramallan. He was the cleverest builder in all of India!", "image_prompt": "cartoon architect Kunjaramallan running in with building plans, Raja Raja welcoming him happily"},
-                          {"narration": "The sculptor Shilpi joined them too. He could carve stones into beautiful gods and goddesses!", "image_prompt": "cartoon sculptor Shilpi showing carvings excitedly, stone work coming to life, animated"},
-                          {"narration": "And of course, there was Airavata the elephant! He was the strongest helper of them all!", "image_prompt": "cute cartoon elephant Airavata trumpeting happily, jumping, royal decorations flying"},
-                          {"narration": "Raja Raja said - My friends, together we will build something that will make people happy for thousands of years!", "image_prompt": "cartoon Raja Raja pointing to sky dramatically, friends cheering, motivational action scene"},
-                          {"narration": "First, they needed giant stones! Airavata the elephant pulled huge stones from the mountains. Heave ho!", "image_prompt": "cartoon elephant Airavata pulling giant stones dynamically, workers running alongside"},
-                          {"narration": "Kunjaramallan designed a special ramp. The stones rolled up slowly, slowly, higher and higher! Zoom!", "image_prompt": "cartoon stones rolling up ramp with speed lines, workers pushing excitedly"},
-                          {"narration": "Sculptor Shilpi and his students carved beautiful dancers, flowers, and gods on every stone! Tap tap tap!", "image_prompt": "cartoon sculptors carving dynamically, stone carvings magically coming to life and dancing"},
-                          {"narration": "Day after day, month after month, the temple grew taller and taller! Everyone worked with love!", "image_prompt": "cartoon temple growing taller with magical sparkles, workers celebrating each level"},
-                          {"narration": "The tower needed a very special stone on top - a single giant stone weighing 80 tons! How will they lift it?", "image_prompt": "cartoon everyone looking up at massive stone with amazed expressions, dramatic poses"},
-                          {"narration": "Clever Kunjaramallan built a long ramp. Airavata and hundred elephants pushed the stone to the top! Push push push!", "image_prompt": "cartoon elephants pushing stone up ramp with effort, trunk muscles showing, action packed"},
-                          {"narration": "HOORAY! The great Brihadeshwara Temple was complete! It touched the clouds! Everyone jumped with joy!", "image_prompt": "cartoon completed temple with everyone jumping celebrating, confetti flying, victory poses"},
-                          {"narration": "The temple was so tall that its shadow never fell on the ground! It was magical! Wow!", "image_prompt": "cartoon temple with magical no shadow effect, sun rays, amazed people pointing and dancing"},
-                          {"narration": "Raja Raja was so happy! He gave gifts to all the workers and their families! Catch the gold coins!", "image_prompt": "cartoon Raja Raja throwing gold coins, workers catching excitedly, celebration chaos"},
-                          {"narration": "Kunjaramallan, Shilpi, and Airavata became famous all over the world for their amazing work! Hip hip hooray!", "image_prompt": "cartoon heroes being lifted on shoulders, garlands flying, crowd cheering wildly"},
-                          {"narration": "People from far away kingdoms came to see the beautiful temple. They couldn't believe their eyes! Amazing!", "image_prompt": "cartoon visitors from different lands running to see temple, amazed jaw-drop expressions"},
-                          {"narration": "Even today, after 1000 years, the Brihadeshwara Temple stands tall and beautiful in Thanjavur!", "image_prompt": "cartoon modern tourists taking selfies excitedly, comparing old and new, continuity"},
-                          {"narration": "Remember children - when friends work together with love, they can achieve anything! High five!", "image_prompt": "cartoon all characters doing high fives, jumping, hearts and stars floating"},
-                          {"narration": "And that is the story of the Great Temple! Teamwork makes dreams come true. The End!", "image_prompt": "happy ending with all characters dancing wildly, temple background, THE END text, fireworks"}
-                      ]
-                  }
-              }
-
-              # Select story based on language FIRST, then topic
-              # All supported Indian languages have native fallback stories
-              language_story_map = {
-                  "kannada": kannada_stories,
-                  "hindi": hindi_stories,
-                  "tamil": tamil_stories,
-                  "telugu": telugu_stories,
-                  "malayalam": malayalam_stories,
-                  "bengali": bengali_stories,
-                  "marathi": marathi_stories
-              }
-
-              if VIDEO_LANGUAGE in language_story_map:
-                  story = language_story_map[VIDEO_LANGUAGE]
-              else:
-                  # For English and any other unsupported languages, use English stories
-                  topic_lower = topic.lower()
-                  if "ashoka" in topic_lower or "maurya" in topic_lower or "chandragupta" in topic_lower:
-                      story = english_stories["ashoka"]
-                  else:
-                      story = english_stories["default"]
-
-              # Expand or trim scenes to match requested count
-              base_scenes = story["scenes"]
-              if len(base_scenes) < num_scenes:
-                  # EXPAND: Repeat scenes with variations to reach target count
-                  expanded_scenes = []
-                  scene_variations = [
-                      " The children watched in wonder!",
-                      " Everyone cheered with joy!",
-                      " This was truly amazing!",
-                      " What a magical moment!",
-                      " The crowd was amazed!",
-                  ]
-                  while len(expanded_scenes) < num_scenes:
-                      for scene in base_scenes:
-                          if len(expanded_scenes) >= num_scenes:
-                              break
-                          expanded_scenes.append(scene)
-                          # Add variation scene if we still need more
-                          if len(expanded_scenes) < num_scenes and len(expanded_scenes) % 3 == 0:
-                              variation = scene_variations[len(expanded_scenes) % len(scene_variations)]
-                              varied_scene = {
-                                  "narration": scene["narration"].rstrip("!.") + variation,
-                                  "image_prompt": scene["image_prompt"] + ", different angle, varied composition"
-                              }
-                              expanded_scenes.append(varied_scene)
-                  story["scenes"] = expanded_scenes[:num_scenes]
-              else:
-                  # Trim if we have more than needed
-                  story["scenes"] = base_scenes[:num_scenes]
+              story["scenes"] = story["scenes"][:num_scenes]
               return story
 
-          def create_opening_intro(title, moral, output_path):
-              """Create beautiful opening intro with gradient, decorations, and title"""
-              img = Image.new('RGB', (1280, 720), (135, 206, 250))
+          def create_intro_card(title, output_path):
+              """Create intro card"""
+              img = Image.new('RGB', (1280, 720), (255, 215, 0))
               draw = ImageDraw.Draw(img)
-
-              # Create gradient background (sky blue to soft pink)
-              for y in range(720):
-                  r = int(135 + (255 - 135) * y / 720)
-                  g = int(206 + (182 - 206) * y / 720)
-                  b = int(250 + (220 - 250) * y / 720)
-                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
-
-              # Add decorative stars at top
-              import random
-              for _ in range(25):
-                  x, y = random.randint(50, 1230), random.randint(30, 200)
-                  size = random.randint(3, 10)
-                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 200))
-
-              # Add sparkles at bottom
-              for _ in range(15):
-                  x, y = random.randint(50, 1230), random.randint(550, 680)
-                  size = random.randint(2, 6)
-                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 200, 255))
-
-              # Add white banner for title
-              draw.rectangle([80, 280, 1200, 450], fill=(255, 255, 255, 200), outline=(255, 215, 0), width=5)
-
-              # DRAW STORY TIME header - use fonts that support Indian languages
-              has_indian_chars = any(ord(c) > 127 for c in title)
-              header_font = get_font(35, for_indian_lang=False)  # English header
-              title_font = get_font(45, for_indian_lang=has_indian_chars)  # May need Indian font
-
-              # Draw "STORY TIME" header
-              draw.text((450, 230), "★ STORY TIME ★", fill=(255, 100, 150), font=header_font)
-
-              # Draw the story title (may be in Kannada, Hindi, etc.)
-              display_title = title[:40] + "..." if len(title) > 40 else title
               try:
-                  bbox = draw.textbbox((0, 0), display_title, font=title_font)
-                  text_width = bbox[2] - bbox[0]
+                  font_large = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 60)
+                  font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 30)
               except:
-                  text_width = len(display_title) * 25
-              x_pos = max(100, (1280 - text_width) // 2)
-              draw.text((x_pos, 330), display_title, fill=(50, 50, 150), font=title_font)
+                  font_large = font_small = ImageFont.load_default()
 
-              # Draw "FOR KIDS" label
-              draw.text((520, 500), "FOR KIDS", fill=(100, 150, 255), font=header_font)
-
-              img.save(output_path)
-              return output_path
-
-          def get_font(size, for_indian_lang=False):
-              """Get a font that works on Linux/GitHub Actions, with Indian language support"""
-              from PIL import ImageFont
-
-              # Fonts that support Indian scripts (Kannada, Hindi, Tamil, etc.)
-              indian_font_paths = [
-                  "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf",
-                  "/usr/share/fonts/truetype/noto/NotoSansKannada-Bold.ttf",
-                  "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf",
-                  "/usr/share/fonts/truetype/lohit-kannada/Lohit-Kannada.ttf",
-                  "/usr/share/fonts/truetype/lohit-devanagari/Lohit-Devanagari.ttf",
-                  "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-                  "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-              ]
-
-              # Standard fonts for English
-              standard_font_paths = [
-                  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-                  "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-                  "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
-              ]
-
-              # Try Indian fonts first if needed, then standard fonts
-              paths_to_try = indian_font_paths if for_indian_lang else (standard_font_paths + indian_font_paths)
-
-              for font_path in paths_to_try:
-                  if os.path.exists(font_path):
-                      try:
-                          return ImageFont.truetype(font_path, size)
-                      except:
-                          pass
-              # Fallback to default
-              return ImageFont.load_default()
-
-          def create_thumbnail(title, moral, output_path):
-              """Create eye-catching YouTube thumbnail with title text"""
-              img = Image.new('RGB', (1280, 720), (255, 100, 150))
-              draw = ImageDraw.Draw(img)
-
-              # Rainbow gradient
-              colors = [(255,100,100), (255,165,0), (255,255,0), (0,255,0), (0,150,255), (150,0,255)]
-              stripe_height = 720 // len(colors)
-              for i, color in enumerate(colors):
-                  y_start = i * stripe_height
-                  draw.rectangle([0, y_start, 1280, y_start + stripe_height], fill=color)
-
-              # Add semi-transparent overlay
-              overlay = Image.new('RGBA', (1280, 720), (0, 0, 0, 120))
-              img = img.convert('RGBA')
-              img = Image.alpha_composite(img, overlay)
-              img = img.convert('RGB')
-              draw = ImageDraw.Draw(img)
-
-              # Add white banner for title
-              draw.rectangle([60, 280, 1220, 440], fill=(255, 255, 255), outline=(255, 215, 0), width=8)
-
-              # Add decorative stars
+              draw.rectangle([20, 20, 1260, 700], outline=(139, 69, 19), width=10)
+              draw.text((640, 200), "Kids Story Time!", font=font_large, fill=(139, 69, 19), anchor="mm")
+              draw.text((640, 350), title[:50], font=font_small, fill=(0, 0, 0), anchor="mm")
               for _ in range(20):
-                  x, y = random.randint(50, 1230), random.randint(30, 250)
-                  draw.text((x, y), "★", fill=(255, 255, 0))
-
-              # DRAW THE TITLE TEXT (use Indian language font for non-ASCII titles)
-              has_indian_chars = any(ord(c) > 127 for c in title)
-              title_font = get_font(50, for_indian_lang=has_indian_chars)
-              # Truncate title if too long
-              display_title = title[:35] + "..." if len(title) > 35 else title
-              # Center the title
-              try:
-                  bbox = draw.textbbox((0, 0), display_title, font=title_font)
-                  text_width = bbox[2] - bbox[0]
-              except:
-                  text_width = len(display_title) * 30  # Estimate
-              x_pos = (1280 - text_width) // 2
-              draw.text((x_pos, 320), display_title, fill=(50, 50, 150), font=title_font)
-
-              # Add "KIDS STORY" label at top
-              label_font = get_font(40)
-              draw.text((480, 480), "★ KIDS STORY ★", fill=(255, 215, 0), font=label_font)
-
+                  x, y = random.randint(50, 1230), random.randint(50, 670)
+                  draw.text((x, y), "*", fill=(255, 255, 255), font=font_small)
               img.save(output_path)
-              return output_path
 
           def create_ending_card(moral, output_path):
-              """Create THE END card with moral lesson"""
-              img = Image.new('RGB', (1280, 720), (75, 0, 130))  # Indigo
+              """Create ending card"""
+              img = Image.new('RGB', (1280, 720), (255, 182, 193))
               draw = ImageDraw.Draw(img)
-
-              # Gradient
-              for y in range(720):
-                  r = int(75 + (138 - 75) * y / 720)
-                  g = int(0 + (43 - 0) * y / 720)
-                  b = int(130 + (226 - 130) * y / 720)
-                  draw.line([(0, y), (1280, y)], fill=(r, g, b))
-
-              # Add stars
-              for _ in range(40):
-                  x, y = random.randint(20, 1260), random.randint(20, 700)
-                  size = random.randint(2, 7)
-                  draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 220))
-
-              # DRAW THE END TEXT
-              title_font = get_font(100)
-              draw.text((450, 200), "THE END", fill=(255, 215, 0), font=title_font)
-
-              # Draw moral text
-              moral_font = get_font(36)
-              # Truncate moral if too long
-              display_moral = moral[:80] + "..." if len(moral) > 80 else moral
               try:
-                  bbox = draw.textbbox((0, 0), display_moral, font=moral_font)
-                  text_width = bbox[2] - bbox[0]
+                  font_large = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 50)
+                  font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 30)
               except:
-                  text_width = len(display_moral) * 18
-              x_pos = max(50, (1280 - text_width) // 2)
-              draw.text((x_pos, 380), display_moral, fill=(255, 255, 255), font=moral_font)
+                  font_large = font_small = ImageFont.load_default()
 
-              # Add subscribe text
-              sub_font = get_font(30)
-              draw.text((400, 550), "★ SUBSCRIBE FOR MORE STORIES ★", fill=(255, 200, 100), font=sub_font)
-
+              draw.rectangle([20, 20, 1260, 700], outline=(255, 105, 180), width=10)
+              draw.text((640, 200), "THE END", font=font_large, fill=(199, 21, 133), anchor="mm")
+              draw.text((640, 350), "Moral:", font=font_small, fill=(0, 0, 0), anchor="mm")
+              draw.text((640, 420), moral[:60], font=font_small, fill=(139, 0, 139), anchor="mm")
               img.save(output_path)
-              return output_path
 
-          def create_video(story):
-              """Create the full video with intro, thumbnail, and ending"""
-              title = story.get('title', 'Kids Story Time')
-              moral = story.get('moral', 'Be kind and good!')
+          def create_thumbnail(title, output_path):
+              """Create thumbnail"""
+              img = Image.new('RGB', (1280, 720), (135, 206, 250))
+              draw = ImageDraw.Draw(img)
+              try:
+                  font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 70)
+              except:
+                  font = ImageFont.load_default()
+
+              colors = [(255, 182, 193), (255, 218, 185), (144, 238, 144), (255, 255, 200)]
+              for i in range(8):
+                  draw.rectangle([i*160, 0, (i+1)*160, 720], fill=colors[i % len(colors)])
+              draw.text((644, 364), title[:30], font=font, fill=(0, 0, 0), anchor="mm")
+              draw.text((640, 360), title[:30], font=font, fill=(255, 255, 255), anchor="mm")
+              draw.rectangle([10, 10, 1270, 710], outline=(255, 215, 0), width=15)
+              img.save(output_path)
+
+          async def main():
+              print("=" * 60)
+              print("KIDS STORY VIDEO GENERATOR")
+              print("=" * 60)
+
+              topic = random.choice(TRENDING_TOPICS)
+              print(f"\nSelected topic: {topic[:80]}...")
+
+              print("\nGenerating story...")
+              story = generate_story_with_groq(topic, NUM_SCENES)
+
+              title = story.get('title', 'A Wonderful Story')
+              moral = story.get('moral', 'Be kind to everyone')
               scenes = story.get('scenes', [])
 
-              print(f"\n{'='*60}")
-              print(f"Creating: {title}")
+              print(f"Title: {title}")
               print(f"Moral: {moral}")
               print(f"Scenes: {len(scenes)}")
-              print(f"{'='*60}\n")
 
-              clips = []
+              video_clips = []
 
-              # 1. Create beautiful opening intro
-              print("Creating opening intro...")
-              intro_path = TEMP_DIR / "intro.jpg"
-              create_opening_intro(title, moral, intro_path)
-              intro_audio_path = TEMP_DIR / "intro_audio.mp3"
+              # Create intro
+              print("\nCreating intro...")
+              intro_img = TEMP_DIR / "intro.png"
+              intro_audio = TEMP_DIR / "intro.mp3"
+              create_intro_card(title, intro_img)
+              await generate_voiceover(f"Welcome to Kids Story Time! Today's story is: {title}", str(intro_audio))
+              audio = AudioFileClip(str(intro_audio))
+              clip = ImageClip(str(intro_img)).set_duration(audio.duration).set_audio(audio)
+              video_clips.append(clip)
 
-              # Language-specific intro
-              intro_texts = {
-                  "en": f"Welcome to Story Time! Today's story is: {title}. A wonderful moral story for children!",
-                  "hi": f"कहानी के समय में आपका स्वागत है! आज की कहानी है: {title}",
-                  "ta": f"கதை நேரத்திற்கு வரவேற்கிறோம்! இன்றைய கதை: {title}",
-                  "te": f"కథా సమయానికి స్వాగతం! నేటి కథ: {title}",
-                  "kn": f"ಕಥೆ ಸಮಯಕ್ಕೆ ಸ್ವಾಗತ! ಇಂದಿನ ಕಥೆ: {title}",
-                  "ml": f"കഥാ സമയത്തിലേക്ക് സ്വാഗതം! ഇന്നത്തെ കഥ: {title}",
-                  "bn": f"গল্পের সময়ে স্বাগতম! আজকের গল্প: {title}",
-                  "mr": f"गोष्टीच्या वेळेत स्वागत! आजची गोष्ट: {title}"
-              }
-              intro_text = intro_texts.get(LANG_CODE, intro_texts["en"])
-              asyncio.run(generate_voiceover(intro_text, str(intro_audio_path)))
-              intro_audio = AudioFileClip(str(intro_audio_path))
-              intro_clip = ImageClip(str(intro_path)).set_duration(intro_audio.duration + 1.5).set_fps(30).set_audio(intro_audio)
-              clips.append(intro_clip)
-
-              # 2. Create thumbnail (save separately for YouTube)
-              print("Creating thumbnail...")
-              thumb_path = OUTPUT_DIR / "thumbnail.jpg"
-              create_thumbnail(title, moral, thumb_path)
-              print(f"Thumbnail saved: {thumb_path}")
-
-              # Optimized Ken Burns effect - smoother and faster rendering
-              def create_cinematic_clip(img_path, duration, effect_type):
-                  """Create smooth cinematic Ken Burns effect with optimized performance"""
-                  w, h = 1280, 720
-
-                  # Load and resize image larger for zoom/pan headroom
-                  pil_img = Image.open(str(img_path))
-                  pil_img = pil_img.resize((1600, 900), Image.Resampling.LANCZOS)  # 25% larger
-
-                  # Convert to numpy for faster processing
-                  import numpy as np
-                  img_array = np.array(pil_img)
-
-                  def make_frame(t):
-                      progress = t / duration  # 0 to 1
-
-                      if effect_type == 'zoom_in':
-                          # Smooth zoom in: start at full view, end zoomed in
-                          scale = 1.0 + (0.15 * progress)  # 1.0 to 1.15
-                          crop_w = int(1600 / scale)
-                          crop_h = int(900 / scale)
-                          x1 = (1600 - crop_w) // 2
-                          y1 = (900 - crop_h) // 2
-
-                      elif effect_type == 'zoom_out':
-                          # Smooth zoom out: start zoomed in, end at full view
-                          scale = 1.15 - (0.15 * progress)  # 1.15 to 1.0
-                          crop_w = int(1600 / scale)
-                          crop_h = int(900 / scale)
-                          x1 = (1600 - crop_w) // 2
-                          y1 = (900 - crop_h) // 2
-
-                      elif effect_type == 'pan_right':
-                          # Smooth pan from left to right
-                          crop_w, crop_h = 1280, 720
-                          x1 = int((1600 - 1280) * progress)  # 0 to 320
-                          y1 = (900 - 720) // 2
-
-                      elif effect_type == 'pan_left':
-                          # Smooth pan from right to left
-                          crop_w, crop_h = 1280, 720
-                          x1 = int((1600 - 1280) * (1 - progress))  # 320 to 0
-                          y1 = (900 - 720) // 2
-
-                      elif effect_type == 'zoom_pan_right':
-                          # Zoom in while panning right
-                          scale = 1.0 + (0.1 * progress)
-                          crop_w = int(1600 / scale)
-                          crop_h = int(900 / scale)
-                          x1 = int((1600 - crop_w) * progress * 0.5)
-                          y1 = (900 - crop_h) // 2
-
-                      else:  # subtle
-                          # Very subtle zoom for calm scenes
-                          scale = 1.0 + (0.08 * progress)
-                          crop_w = int(1600 / scale)
-                          crop_h = int(900 / scale)
-                          x1 = (1600 - crop_w) // 2
-                          y1 = (900 - crop_h) // 2
-
-                      # Crop and resize to output dimensions
-                      cropped = img_array[y1:y1+crop_h, x1:x1+crop_w]
-                      # Use PIL for high-quality resize
-                      pil_cropped = Image.fromarray(cropped)
-                      pil_resized = pil_cropped.resize((w, h), Image.Resampling.LANCZOS)
-                      return np.array(pil_resized)
-
-                  from moviepy.video.VideoClip import VideoClip
-                  clip = VideoClip(make_frame, duration=duration)
-                  return clip
-
-              # ANIMATION STYLE: More dynamic effects for cartoon-like feel
-              # Faster movements, more variety, action-oriented
-              effect_types = [
-                  'zoom_in_fast', 'pan_right_bounce', 'zoom_out_fast', 'pan_left_bounce',
-                  'zoom_shake', 'pan_right_fast', 'zoom_in_bounce', 'pan_left_fast'
-              ]
-
-              def create_animated_clip(img_path, duration, effect_type):
-                  """Create DYNAMIC animated clip with faster movements like cartoons"""
-                  w, h = 1280, 720
-                  import numpy as np
-                  import math
-
-                  # Verify image exists and load it
-                  if not os.path.exists(str(img_path)):
-                      raise FileNotFoundError(f"Image not found: {img_path}")
-
-                  pil_img = Image.open(str(img_path))
-                  pil_img = pil_img.convert('RGB')  # Ensure RGB mode
-                  pil_img = pil_img.resize((1920, 1080), Image.Resampling.LANCZOS)
-                  img_array = np.array(pil_img)
-
-                  # Pre-compute the base frame for efficiency
-                  base_h, base_w = img_array.shape[:2]
-
-                  def make_frame(t):
-                      progress = t / max(duration, 0.001)  # Avoid division by zero
-                      bounce = math.sin(progress * math.pi * 4) * 0.02
-
-                      speed = 0.25 if 'fast' in effect_type else 0.18
-
-                      if 'zoom_in' in effect_type:
-                          scale = 1.0 + (speed * progress) + bounce
-                          crop_w = int(base_w / scale)
-                          crop_h = int(base_h / scale)
-                          x1 = (base_w - crop_w) // 2
-                          y1 = (base_h - crop_h) // 2
-                      elif 'zoom_out' in effect_type:
-                          scale = 1.0 + speed - (speed * progress) + bounce
-                          crop_w = int(base_w / scale)
-                          crop_h = int(base_h / scale)
-                          x1 = (base_w - crop_w) // 2
-                          y1 = (base_h - crop_h) // 2
-                      elif 'pan_right' in effect_type:
-                          crop_w, crop_h = 1280, 720
-                          x1 = int((base_w - 1280) * progress)
-                          y1 = (base_h - 720) // 2 + int(bounce * 50)
-                      elif 'pan_left' in effect_type:
-                          crop_w, crop_h = 1280, 720
-                          x1 = int((base_w - 1280) * (1 - progress))
-                          y1 = (base_h - 720) // 2 + int(bounce * 50)
-                      elif 'shake' in effect_type:
-                          scale = 1.1 + bounce * 2
-                          crop_w = int(base_w / scale)
-                          crop_h = int(base_h / scale)
-                          shake_x = int(math.sin(progress * math.pi * 8) * 20)
-                          shake_y = int(math.cos(progress * math.pi * 8) * 15)
-                          x1 = (base_w - crop_w) // 2 + shake_x
-                          y1 = (base_h - crop_h) // 2 + shake_y
-                      else:  # bounce default
-                          scale = 1.0 + (0.1 * progress) + bounce
-                          crop_w = int(base_w / scale)
-                          crop_h = int(base_h / scale)
-                          x1 = (base_w - crop_w) // 2
-                          y1 = (base_h - crop_h) // 2
-
-                      # Clamp values to valid range
-                      crop_w = max(100, min(crop_w, base_w))
-                      crop_h = max(100, min(crop_h, base_h))
-                      x1 = max(0, min(x1, base_w - crop_w))
-                      y1 = max(0, min(y1, base_h - crop_h))
-
-                      cropped = img_array[y1:y1+crop_h, x1:x1+crop_w]
-                      pil_cropped = Image.fromarray(cropped)
-                      pil_resized = pil_cropped.resize((w, h), Image.Resampling.LANCZOS)
-                      return np.array(pil_resized)
-
-                  from moviepy.video.VideoClip import VideoClip
-                  clip = VideoClip(make_frame, duration=duration)
-                  clip = clip.set_fps(30)  # IMPORTANT: Set FPS for proper video output
-                  return clip
-
-              # Process each scene with ANIMATED effects
+              # Process scenes
+              print("\nProcessing scenes...")
               for i, scene in enumerate(scenes):
-                  narration_preview = scene['narration'][:60].replace('\n', ' ')
-                  print(f"\nScene {i+1}/{len(scenes)}: {narration_preview}...")
+                  print(f"\nScene {i+1}/{len(scenes)}")
+                  narration = scene.get('narration', '')
+                  image_prompt = scene.get('image_prompt', '')
 
-                  # Add ACTION modifiers to image prompt for more dynamic images
-                  action_modifiers = ", dynamic action pose, character in motion, expressive animation, cartoon movement, squash and stretch, action lines"
-                  enhanced_prompt = scene['image_prompt'] + action_modifiers
+                  img_path = TEMP_DIR / f"scene_{i}.png"
+                  audio_path = TEMP_DIR / f"scene_{i}.mp3"
 
-                  # Download image with action-enhanced prompt
-                  img_path = TEMP_DIR / f"scene_{i}.jpg"
-                  download_image(enhanced_prompt, str(img_path))
+                  download_image(image_prompt, img_path)
+                  await generate_voiceover(narration, str(audio_path))
 
-                  # Generate voiceover
-                  audio_path = TEMP_DIR / f"audio_{i}.mp3"
-                  asyncio.run(generate_voiceover(scene['narration'], str(audio_path)))
-
-                  # Create ANIMATED clip with bounce/shake effects
                   audio = AudioFileClip(str(audio_path))
-                  duration = audio.duration + 1.0  # Shorter pause for faster pacing
+                  clip = ImageClip(str(img_path)).set_duration(audio.duration).set_audio(audio)
+                  video_clips.append(clip)
+                  print(f"  Done ({audio.duration:.1f}s)")
 
-                  # Select effect type (cycles through different effects)
-                  effect = effect_types[i % len(effect_types)]
-                  print(f"  Applying ANIMATED {effect} effect...")
-
-                  # Verify image was downloaded successfully and create if needed
-                  img_valid = os.path.exists(str(img_path)) and os.path.getsize(str(img_path)) > 5000
-                  if not img_valid:
-                      print(f"  ⚠ Creating colorful placeholder for scene {i+1}...")
-                      colors = [(255, 182, 193), (173, 216, 230), (144, 238, 144), (255, 218, 185)]
-                      bg_color = colors[i % len(colors)]
-                      placeholder = Image.new('RGB', (1280, 720), bg_color)
-                      draw = ImageDraw.Draw(placeholder)
-                      # Add gradient
-                      for y in range(720):
-                          alpha = y / 720
-                          r = int(bg_color[0] * (1 - alpha * 0.3))
-                          g = int(bg_color[1] * (1 - alpha * 0.3))
-                          b = int(bg_color[2] * (1 - alpha * 0.3))
-                          draw.line([(0, y), (1280, y)], fill=(r, g, b))
-                      # Add circles
-                      for _ in range(15):
-                          x, y = random.randint(50, 1230), random.randint(50, 670)
-                          size = random.randint(10, 30)
-                          draw.ellipse([x-size, y-size, x+size, y+size], fill=(255, 255, 255))
-                      placeholder.save(str(img_path), quality=95)
-                      print(f"  ✓ Placeholder created: {os.path.getsize(str(img_path))} bytes")
-
-                  # Create video clip - USE SIMPLE ImageClip (most reliable for showing images)
-                  clip = None
-                  try:
-                      # Verify and prepare image
-                      test_img = Image.open(str(img_path))
-                      test_img = test_img.convert('RGB')
-                      test_img = test_img.resize((1280, 720), Image.Resampling.LANCZOS)
-                      test_img.save(str(img_path), quality=95)
-                      print(f"  ✓ Image verified: {os.path.getsize(str(img_path))} bytes")
-
-                      # USE SIMPLE ImageClip - this ALWAYS works
-                      clip = ImageClip(str(img_path))
-                      clip = clip.set_duration(duration)
-                      clip = clip.set_fps(30)
-                      clip = clip.set_audio(audio)
-                      print(f"  ✓ Image clip created (duration: {duration:.1f}s)")
-
-                  except Exception as e:
-                      print(f"  ⚠ ImageClip failed ({e}), trying numpy array...")
-                      try:
-                          # Fallback: Load image as numpy array
-                          import numpy as np
-                          test_img = Image.open(str(img_path)).convert('RGB').resize((1280, 720))
-                          img_array = np.array(test_img)
-                          clip = ImageClip(img_array)
-                          clip = clip.set_duration(duration)
-                          clip = clip.set_fps(30)
-                          clip = clip.set_audio(audio)
-                          print(f"  ✓ Numpy array clip created")
-                      except Exception as e2:
-                          print(f"  ✗ All failed ({e2}), using ColorClip...")
-                          clip = ColorClip(size=(1280, 720), color=(100, 150, 200), duration=duration)
-                          clip = clip.set_fps(30)
-                          clip = clip.set_audio(audio)
-                          print(f"  ✓ ColorClip fallback created")
-
-                  if clip is not None:
-                      clips.append(clip)
-                      print(f"  ✓ Scene {i+1} added to video (duration: {duration:.1f}s)")
-                  else:
-                      print(f"  ✗ ERROR: Failed to create clip for scene {i+1}")
-
-              # 4. Create ending card with moral
-              print("\nCreating ending card...")
-              ending_path = TEMP_DIR / "ending.jpg"
-              create_ending_card(moral, ending_path)
-              ending_audio_path = TEMP_DIR / "ending_audio.mp3"
-
-              # Language-specific ending
-              ending_texts = {
-                  "en": f"And that's the end of our story! Remember children: {moral}. Please like and subscribe for more wonderful stories. See you next time! Goodbye!",
-                  "hi": f"और यह हमारी कहानी का अंत है! याद रखें बच्चों: {moral}. अगली कहानी के लिए सब्सक्राइब करें! अलविदा!",
-                  "ta": f"இது எங்கள் கதையின் முடிவு! நினைவில் கொள்ளுங்கள்: {moral}. மேலும் கதைகளுக்கு சந்தா செலுத்துங்கள்!",
-                  "te": f"ఇది మా కథ ముగింపు! గుర్తుంచుకోండి: {moral}. మరిన్ని కథలకు సబ్స్క్రైబ్ చేయండి!",
-                  "kn": f"ಇದು ನಮ್ಮ ಕಥೆಯ ಕೊನೆ! ನೆನಪಿಡಿ: {moral}. ಹೆಚ್ಚಿನ ಕಥೆಗಳಿಗೆ ಚಂದಾದಾರರಾಗಿ!",
-                  "ml": f"ഇത് നമ്മുടെ കഥയുടെ അവസാനം! ഓർക്കുക: {moral}. കൂടുതൽ കഥകൾക്കായി സബ്സ്ക്രൈബ് ചെയ്യുക!",
-                  "bn": f"এই আমাদের গল্পের শেষ! মনে রেখো: {moral}. আরও গল্পের জন্য সাবস্ক্রাইব করো!",
-                  "mr": f"ही आमच्या गोष्टीचा शेवट! लक्षात ठेवा: {moral}. अधिक गोष्टींसाठी सबस्क्राइब करा!"
-              }
-              ending_text = ending_texts.get(LANG_CODE, ending_texts["en"])
-              asyncio.run(generate_voiceover(ending_text, str(ending_audio_path)))
-              ending_audio = AudioFileClip(str(ending_audio_path))
-              ending_clip = ImageClip(str(ending_path)).set_duration(ending_audio.duration + 2).set_fps(30).set_audio(ending_audio)
-              clips.append(ending_clip)
+              # Create ending
+              print("\nCreating ending...")
+              ending_img = TEMP_DIR / "ending.png"
+              ending_audio = TEMP_DIR / "ending.mp3"
+              create_ending_card(moral, ending_img)
+              await generate_voiceover(f"The End! Remember: {moral}. See you next time!", str(ending_audio))
+              audio = AudioFileClip(str(ending_audio))
+              clip = ImageClip(str(ending_img)).set_duration(audio.duration).set_audio(audio)
+              video_clips.append(clip)
 
               # Combine clips
-              print(f"\n{'='*60}")
-              print(f"COMBINING VIDEO")
-              print(f"{'='*60}")
-              print(f"Total clips: {len(clips)} (1 intro + {len(scenes)} scenes + 1 ending)")
-              total_duration = sum(c.duration for c in clips)
-              print(f"Expected duration: {total_duration/60:.1f} minutes")
-              print(f"{'='*60}\n")
+              print("\nCombining clips...")
+              final_video = concatenate_videoclips(video_clips, method="compose")
 
-              if len(clips) < 3:
-                  print("ERROR: Not enough clips to create video!")
-                  raise Exception("Video creation failed - not enough clips")
-
-              final = concatenate_videoclips(clips, method="compose")
-
-              # Output
               timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-              safe_title = "".join(c for c in title if c.isalnum() or c in " -_").strip()[:50]
-              output_path = OUTPUT_DIR / f"{safe_title}_{timestamp}.mp4"
+              safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_'))[:50]
+              output_path = OUTPUT_DIR / f"kids_story_{safe_title}_{timestamp}.mp4"
 
-              print(f"\nRendering HIGH QUALITY video to {output_path}...")
-              final.write_videofile(
-                  str(output_path),
-                  fps=30,  # Higher frame rate for smoother motion
-                  codec='libx264',
-                  audio_codec='aac',
-                  bitrate='8000k',  # Higher bitrate for better quality
-                  audio_bitrate='192k',  # Better audio quality
-                  preset='medium',  # Balance between quality and speed
-                  ffmpeg_params=['-crf', '18'],  # High quality encoding
-                  verbose=False,
-                  logger=None
-              )
+              print(f"\nRendering video...")
+              final_video.write_videofile(str(output_path), fps=24, codec='libx264', audio_codec='aac', preset='medium', threads=4)
 
-              # Get video duration
-              duration_mins = final.duration / 60
-              print(f"\nVideo duration: {duration_mins:.1f} minutes")
+              thumbnail_path = OUTPUT_DIR / f"thumbnail_{timestamp}.png"
+              create_thumbnail(title, thumbnail_path)
 
-              # Cleanup temp files
-              for f in TEMP_DIR.glob("*"):
-                  try:
-                      f.unlink()
-                  except:
-                      pass
+              total_duration = final_video.duration
+              minutes = int(total_duration // 60)
+              seconds = int(total_duration % 60)
 
-              print(f"\n{'='*60}")
-              print(f"VIDEO CREATED: {output_path}")
-              print(f"{'='*60}\n")
+              print("\n" + "=" * 60)
+              print("VIDEO GENERATION COMPLETE!")
+              print(f"Title: {title}")
+              print(f"Duration: {minutes}m {seconds}s")
+              print(f"Video: {output_path}")
 
-              return str(output_path), title
+              metadata = {
+                  "title": title,
+                  "moral": moral,
+                  "duration_seconds": total_duration,
+                  "duration_formatted": f"{minutes}m {seconds}s",
+                  "video_path": str(output_path),
+                  "thumbnail_path": str(thumbnail_path),
+                  "language": LANG_NAME,
+                  "timestamp": timestamp
+              }
+              with open(OUTPUT_DIR / "metadata.json", 'w') as f:
+                  json.dump(metadata, f, indent=2)
 
-          # Main execution
-          print("Starting Kids Story Video Generator...")
-          print(f"Mode: {'TEST (8 scenes)' if TEST_MODE else 'FULL (45 scenes for 8-10 min)'}")
-          print(f"Language: {LANG_NAME}")
-          print(f"Voice: {VOICE}")
-          print(f"Age Group: 4+ years")
+              final_video.close()
+              for clip in video_clips:
+                  clip.close()
 
-          # Select random topic
-          topic = random.choice(TRENDING_TOPICS)
-          print(f"Selected topic: {topic}")
+              print("\nDone!")
 
-          # Generate story
-          print("\nGenerating moral story...")
-          story = generate_story_with_groq(topic, NUM_SCENES)
-          print(f"Story title: {story.get('title', 'Unknown')}")
-          print(f"Moral: {story.get('moral', 'Be kind and good')}")
-          print(f"Number of scenes: {len(story.get('scenes', []))}")
-
-          # Create video
-          video_path, video_title = create_video(story)
-
-          # Save metadata for upload step
-          metadata = {
-              "video_path": video_path,
-              "title": video_title,
-              "topic": topic,
-              "language": LANG_NAME,
-              "lang_code": LANG_CODE,
-              "moral": story.get('moral', 'Be kind and good')
-          }
-          with open("video_metadata.json", "w") as f:
-              json.dump(metadata, f)
-
-          print("Video generation complete!")
+          asyncio.run(main())
           SCRIPT
 
-      # YouTube upload is disabled - use youtube-uploader.yml workflow instead
-      # To enable: run the separate "Upload to YouTube" workflow after reviewing the video
-
-      - name: Prepare release files
-        id: prepare-release
-        run: |
-          # Get video info from metadata
-          if [ -f video_metadata.json ]; then
-            TITLE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('title', 'Unknown'))")
-            MORAL=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('moral', 'Be kind!'))")
-            LANGUAGE=$(cat video_metadata.json | python3 -c "import sys, json; print(json.load(sys.stdin).get('language', 'English'))")
-          else
-            TITLE="Kids-Story"
-            MORAL="Be kind and good!"
-            LANGUAGE="English"
-          fi
-
-          # Create tag-safe name using language + date (works for all languages including non-Latin scripts)
-          LANG_SAFE=$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
-          # If language is empty, use 'story' as fallback
-          if [ -z "$LANG_SAFE" ]; then
-            LANG_SAFE="story"
-          fi
-          TAG_NAME="story-${LANG_SAFE}-$(date +%Y%m%d-%H%M%S)"
-
-          echo "title=$TITLE" >> $GITHUB_OUTPUT
-          echo "moral=$MORAL" >> $GITHUB_OUTPUT
-          echo "language=$LANGUAGE" >> $GITHUB_OUTPUT
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-
-          # Find video file
-          VIDEO_FILE=$(find ./output -name "*.mp4" -type f | head -1)
-          echo "video_file=$VIDEO_FILE" >> $GITHUB_OUTPUT
-
-          echo "Tag: $TAG_NAME"
-          echo "Title: $TITLE"
-          echo "Video: $VIDEO_FILE"
-
-      - name: Upload video and thumbnail as artifact (backup)
-        uses: actions/upload-artifact@v4
-        with:
-          name: kids-story-video
-          path: |
-            output/*.mp4
-            output/thumbnail.jpg
-            video_metadata.json
-          retention-days: 7
-
-      - name: Create GitHub Release with video
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.prepare-release.outputs.tag_name }}
-          name: "🎬 ${{ steps.prepare-release.outputs.title }}"
-          body: |
-            ## 📖 Kids Story Video
-
-            **Title:** ${{ steps.prepare-release.outputs.title }}
-            **Language:** ${{ steps.prepare-release.outputs.language }}
-            **Moral:** ${{ steps.prepare-release.outputs.moral }}
-            **Age Group:** 4+ years
-
-            ---
-
-            ### 📥 Download the video and thumbnail below
-
-            ### 📺 To upload to YouTube:
-            1. Go to **Actions** → **Upload to YouTube**
-            2. Enter tag: `${{ steps.prepare-release.outputs.tag_name }}`
-            3. Click **Run workflow**
-          files: |
-            ${{ steps.prepare-release.outputs.video_file }}
-            output/thumbnail.jpg
-            video_metadata.json
+      - name: Upload to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Summary
         run: |
-          echo "## Kids Story Video Generator" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Video generated successfully!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📖 **Story:** ${{ steps.prepare-release.outputs.title }}" >> $GITHUB_STEP_SUMMARY
-          echo "🎓 **Moral:** ${{ steps.prepare-release.outputs.moral }}" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 **Language:** ${{ steps.prepare-release.outputs.language }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📦 Release Created" >> $GITHUB_STEP_SUMMARY
-          echo "**Tag:** \`${{ steps.prepare-release.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📺 To Upload to YouTube:" >> $GITHUB_STEP_SUMMARY
-          echo "1. Go to **Actions** → **Upload to YouTube**" >> $GITHUB_STEP_SUMMARY
-          echo "2. Enter tag: \`${{ steps.prepare-release.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "3. Click **Run workflow**" >> $GITHUB_STEP_SUMMARY
+          if [ -f "./output/metadata.json" ]; then
+            TITLE=$(python -c "import json; print(json.load(open('./output/metadata.json'))['title'])")
+            DURATION=$(python -c "import json; print(json.load(open('./output/metadata.json'))['duration_formatted'])")
+            LANGUAGE=$(python -c "import json; print(json.load(open('./output/metadata.json'))['language'])")
+
+            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+            TAG="story-${LANGUAGE,,}-${TIMESTAMP}"
+
+            VIDEO_FILE=$(ls ./output/*.mp4 2>/dev/null | head -1)
+            THUMBNAIL_FILE=$(ls ./output/thumbnail_*.png 2>/dev/null | head -1)
+
+            if [ -n "$VIDEO_FILE" ]; then
+              echo "Creating GitHub Release: $TAG"
+              gh release create "$TAG" \
+                --title "Kids Story: $TITLE" \
+                --notes "## $TITLE
+
+          **Duration:** $DURATION
+          **Language:** $LANGUAGE
+
+          Download the video and thumbnail below." \
+                "$VIDEO_FILE" \
+                ${THUMBNAIL_FILE:+"$THUMBNAIL_FILE"}
+
+              echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG"
+            else
+              echo "No video file found"
+              exit 1
+            fi
+          else
+            echo "No metadata.json found"
+            exit 1
+          fi
