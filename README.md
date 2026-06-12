@@ -23,7 +23,7 @@ name: Prabhu P
 role: DevOps Engineer | Site Reliability Engineer
 company: Thomson Reuters
 location: Bengaluru, India
-experience: 3.5+ years
+experience: 3.7+ years
 
 certifications:
   - AWS Solutions Architect Associate (Score: 930/1000)
@@ -283,7 +283,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=500&lines=Let's+build+reliable%2C+scalable+systems+together!" alt="Footer" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=650&lines=Let's+build+reliable%2C+scalable+systems+together!" alt="Footer" />
 </p>
 
 ---
