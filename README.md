@@ -228,11 +228,24 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## GitHub Trophies
+## GitHub Achievements
 
 <p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=PrabhuTR&theme=tokyonight&no-frame=true&no-bg=false&column=4&margin-w=15&margin-h=15" alt="GitHub Trophies"/>
+  <a href="https://github.com/PrabhuTR">
+    <img src="https://github-profile-trophy.vercel.app/?username=PrabhuTR&theme=algolia&no-frame=true&row=1&column=6" alt="GitHub Trophies"/>
+  </a>
 </p>
+
+<!-- Alternative if trophies don't load -->
+<details>
+<summary>View Achievement Badges</summary>
+<p align="center">
+  <img src="https://img.shields.io/badge/Commits-1696+-blue?style=for-the-badge&logo=github"/>
+  <img src="https://img.shields.io/badge/Streak-13_Days-orange?style=for-the-badge&logo=github"/>
+  <img src="https://img.shields.io/badge/Repos-6+-green?style=for-the-badge&logo=github"/>
+  <img src="https://img.shields.io/badge/PRs-Open-brightgreen?style=for-the-badge&logo=github"/>
+</p>
+</details>
 
 ---
 
