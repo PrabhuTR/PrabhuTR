@@ -45,17 +45,10 @@ currently_learning:
 
 ---
 
-## GitHub Stats
-
-<!-- Note: Stats only show PUBLIC repo activity. Work contributions in private/enterprise repos are not included -->
+## GitHub Activity
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&hide=issues" alt="GitHub Stats" height="170"/>
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak" height="170"/>
-</p>
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=PrabhuTR&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top Languages" height="180"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak"/>
 </p>
 
 <!-- Activity Graph -->
@@ -63,14 +56,14 @@ currently_learning:
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=PrabhuTR&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
 </p>
 
-<!-- Actual Professional Stats (includes enterprise work) -->
-<h3 align="center">📊 Professional Impact (Including Enterprise Work)</h3>
+<!-- Professional Stats -->
+<h3 align="center">Professional Impact</h3>
 <table align="center">
 <tr>
-<td align="center"><b>500+</b><br>CI/CD Pipelines Built</td>
-<td align="center"><b>100+</b><br>Applications Deployed</td>
+<td align="center"><b>1,696+</b><br>Total Contributions</td>
+<td align="center"><b>500+</b><br>CI/CD Pipelines</td>
+<td align="center"><b>100+</b><br>Apps Deployed</td>
 <td align="center"><b>200+</b><br>Servers Managed</td>
-<td align="center"><b>3.5+</b><br>Years Experience</td>
 </tr>
 </table>
 
