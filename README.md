@@ -48,18 +48,26 @@ currently_learning:
 ## Real-Time GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub Stats" height="180"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=PrabhuTR&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top Languages" height="180"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=PrabhuTR&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top Languages" height="180"/>
 </p>
 
 <!-- Activity Graph -->
 <p align="center">
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=PrabhuTR&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
 </p>
+
+<!-- Stats Summary -->
+<table align="center">
+<tr>
+<td align="center"><b>1,696+</b><br>Total Contributions</td>
+<td align="center"><b>13</b><br>Longest Streak</td>
+<td align="center"><b>Apr 2024</b><br>Active Since</td>
+</tr>
+</table>
 
 ---
 
@@ -207,48 +215,34 @@ currently_learning:
 
 ---
 
-## Weekly Development Breakdown
+## What I Work With Daily
 
-<!--START_SECTION:waka-->
 ```text
-YAML         8 hrs 30 mins   ████████████░░░░░░░░░░░░░   48.2%
-Python       4 hrs 15 mins   ██████░░░░░░░░░░░░░░░░░░░   24.1%
-Bash         2 hrs 45 mins   ████░░░░░░░░░░░░░░░░░░░░░   15.6%
-Terraform    1 hr 20 mins    ██░░░░░░░░░░░░░░░░░░░░░░░   7.6%
-Dockerfile   48 mins         █░░░░░░░░░░░░░░░░░░░░░░░░   4.5%
+YAML/Pipelines   ████████████████████░░░░░   80% - GitHub Actions, Jenkins
+Python           ████████████░░░░░░░░░░░░░   50% - Automation Scripts
+Bash/Shell       ██████████░░░░░░░░░░░░░░░   40% - Deployment Scripts
+Terraform        ████████░░░░░░░░░░░░░░░░░   30% - Infrastructure as Code
+Docker           ██████░░░░░░░░░░░░░░░░░░░   25% - Containerization
+Java             ████░░░░░░░░░░░░░░░░░░░░░   15% - Backend Development
 ```
-<!--END_SECTION:waka-->
 
 ---
 
 ## GitHub Trophies
 
 <p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=PrabhuTR&theme=tokyonight&no-frame=true&no-bg=true&column=7" alt="GitHub Trophies"/>
+  <img src="https://github-profile-trophy.vercel.app/?username=PrabhuTR&theme=tokyonight&no-frame=true&no-bg=false&column=4&margin-w=15&margin-h=15" alt="GitHub Trophies"/>
 </p>
 
 ---
 
-## Recent Activity
+## Career Timeline
 
-<!--START_SECTION:activity-->
-<!-- This section auto-updates with GitHub Actions -->
-<!--END_SECTION:activity-->
-
----
-
-## Experience Timeline
-
-```mermaid
-gantt
-    title Career Timeline
-    dateFormat  YYYY-MM
-    section Thomson Reuters
-    Associate DevOps Engineer    :2022-12, 2026-03
-    DevOps Engineer              :2026-03, 2026-06
-    section Education
-    B.E. (VTU)                   :2017-08, 2021-06
-```
+| Period | Role | Company |
+|--------|------|---------|
+| **Mar 2026 - Present** | DevOps Engineer | Thomson Reuters |
+| **Dec 2022 - Mar 2026** | Associate DevOps Engineer | Thomson Reuters |
+| **2017 - 2021** | B.E. (Electrical & Electronics) | VTU |
 
 ---
 
