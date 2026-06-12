@@ -45,10 +45,13 @@ currently_learning:
 
 ---
 
-## Real-Time GitHub Stats
+## GitHub Stats
+
+<!-- Note: Stats only show PUBLIC repo activity. Work contributions in private/enterprise repos are not included -->
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
+  <img src="https://github-readme-stats.vercel.app/api?username=PrabhuTR&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&hide=issues" alt="GitHub Stats" height="170"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak" height="170"/>
 </p>
 
 <p align="center">
@@ -60,12 +63,14 @@ currently_learning:
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=PrabhuTR&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
 </p>
 
-<!-- Stats Summary -->
+<!-- Actual Professional Stats (includes enterprise work) -->
+<h3 align="center">📊 Professional Impact (Including Enterprise Work)</h3>
 <table align="center">
 <tr>
-<td align="center"><b>1,696+</b><br>Total Contributions</td>
-<td align="center"><b>13</b><br>Longest Streak</td>
-<td align="center"><b>Apr 2024</b><br>Active Since</td>
+<td align="center"><b>500+</b><br>CI/CD Pipelines Built</td>
+<td align="center"><b>100+</b><br>Applications Deployed</td>
+<td align="center"><b>200+</b><br>Servers Managed</td>
+<td align="center"><b>3.5+</b><br>Years Experience</td>
 </tr>
 </table>
 
