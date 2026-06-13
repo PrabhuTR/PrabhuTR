@@ -2,8 +2,14 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi+%F0%9F%91%8B%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer" alt="Typing SVG" />
 </h1>
 
+<!-- Portfolio Highlight -->
 <p align="center">
-  <a href="https://prabhutr.github.io"><img src="https://img.shields.io/badge/Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
+  <a href="https://prabhutr.github.io">
+    <img src="https://img.shields.io/badge/🚀_View_My_3D_Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e" alt="Portfolio"/>
+  </a>
+</p>
+
+<p align="center">
   <a href="mailto:prabhuyadavdvg@gmail.com"><img src="https://img.shields.io/badge/Email-prabhuyadavdvg%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white"></a>
   <a href="https://linkedin.com/in/prabhu-devops"><img src="https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>
   <img src="https://komarev.com/ghpvc/?username=PrabhuTR&color=7C3AED&style=for-the-badge&label=Profile+Views" alt="Profile Views">
