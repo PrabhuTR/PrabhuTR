@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
+  <a href="https://prabhutr.github.io"><img src="https://img.shields.io/badge/Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
   <a href="mailto:prabhuyadavdvg@gmail.com"><img src="https://img.shields.io/badge/Email-prabhuyadavdvg%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white"></a>
-  <a href="https://github.com/PrabhuTR"><img src="https://img.shields.io/badge/GitHub-PrabhuTR-181717?style=for-the-badge&logo=github&logoColor=white"></a>
   <a href="https://linkedin.com/in/prabhu-devops"><img src="https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>
   <img src="https://komarev.com/ghpvc/?username=PrabhuTR&color=7C3AED&style=for-the-badge&label=Profile+Views" alt="Profile Views">
 </p>
@@ -23,7 +23,7 @@ name: Prabhu P
 role: DevOps Engineer | Site Reliability Engineer
 company: Thomson Reuters
 location: Bengaluru, India
-experience: 3.7+ years
+experience: 3.5+ years
 
 certifications:
   - AWS Solutions Architect Associate (Score: 930/1000)
@@ -260,8 +260,8 @@ Java             ████░░░░░░░░░░░░░░░░░
 ## Connect With Me
 
 <p align="center">
-  <a href="tel:+919741094872">
-    <img src="https://img.shields.io/badge/Phone-%2B91--9741094872-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Phone"/>
+  <a href="https://prabhutr.github.io">
+    <img src="https://img.shields.io/badge/Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Portfolio"/>
   </a>
   <a href="mailto:prabhuyadavdvg@gmail.com">
     <img src="https://img.shields.io/badge/Email-prabhuyadavdvg%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
