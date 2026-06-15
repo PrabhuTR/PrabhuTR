@@ -5,20 +5,20 @@
 
 <h1 align="center">
   <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35px"/>
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
 </h1>
 
 <!-- Portfolio Highlight -->
 <p align="center">
   <a href="https://prabhutr.github.io">
-    <img src="https://img.shields.io/badge/🚀_View_My_3D_Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e" alt="Portfolio"/>
+    <img src="https://img.shields.io/badge/🚀_View_My_3D_Portfolio-prabhutr.github.io-6366F1?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e" alt="Portfolio"/>
   </a>
 </p>
 
 <p align="center">
   <a href="mailto:prabhuyadavdvg@gmail.com"><img src="https://img.shields.io/badge/Email-prabhuyadavdvg%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white"></a>
   <a href="https://linkedin.com/in/prabhu-devops"><img src="https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>
-  <img src="https://komarev.com/ghpvc/?username=PrabhuTR&color=7C3AED&style=for-the-badge&label=Profile+Views" alt="Profile Views">
+  <img src="https://komarev.com/ghpvc/?username=PrabhuTR&color=6366F1&style=for-the-badge&label=Profile+Views" alt="Profile Views">
 </p>
 
 <p align="center">
@@ -284,7 +284,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 <p align="center">
   <a href="https://prabhutr.github.io">
-    <img src="https://img.shields.io/badge/Portfolio-prabhutr.github.io-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Portfolio"/>
+    <img src="https://img.shields.io/badge/Portfolio-prabhutr.github.io-6366F1?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Portfolio"/>
   </a>
   <a href="mailto:prabhuyadavdvg@gmail.com">
     <img src="https://img.shields.io/badge/Email-prabhuyadavdvg%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
@@ -306,7 +306,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=650&lines=Let's+build+reliable%2C+scalable+systems+together!" alt="Footer" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=650&lines=Let's+build+reliable%2C+scalable+systems+together!" alt="Footer" />
 </p>
 
 ---
@@ -315,7 +315,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 <div align="center">
   <img src="https://img.shields.io/badge/🎽_RCB-2x%20Champions%20(2025%20%26%202026)-E53935?style=for-the-badge&labelColor=1a1a2e" />
   <br><br>
-  <b>"✌️ SALA CUP NAMDU!" 🏆🏆</b>
+  <b>✌️ "SALA CUP NAMDU!" 🏆🏆</b>
 </div>
 
 ---
