@@ -594,7 +594,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 <div align="center">
   <img src="https://img.shields.io/badge/🎽_RCB-2x%20IPL%20Champions%20(2025%20%26%202026)-E53935?style=for-the-badge&labelColor=1a1a2e" />
   <br><br>
-  <h3>✌️ "SALA CUP NAMDU!" 🏆🏆</h3>
+  <h3> "✌️ SALA CUP NAMDU!" 🏆🏆</h3>
 
 ```
   Years of supporting RCB:  ████████████████████ 16+ years
@@ -602,10 +602,10 @@ Java             ████░░░░░░░░░░░░░░░░░
   Loyalty level:            ████████████████████ Unbreakable
   Cups won:                 ██████████           2 (FINALLY! 🎉)
 
-  Status: From "Ee Sala Cup Namde" (meme) → "SALA CUP NAMDU" (reality!)
+  Status: From "Ee Sala Cup Namde" (meme) → "✌️SALA CUP NAMDU" (reality!)
 ```
 
-  <i>Waited 16 years. Heart attacks every season. And then we won. TWICE. 🔥</i>
+  <i>Waited 18 years. Heart attacks every season. And then we won. TWICE. 🔥</i>
   <br>
   <i>My pipeline success rate is 99.9%, but my faith in RCB? 100%. Always.</i>
   <br><br>
