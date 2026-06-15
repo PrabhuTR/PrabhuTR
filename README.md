@@ -5,7 +5,7 @@
 
 <h1 align="center">
   <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35px"/>
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;✌️+Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
 </h1>
 
 <!-- Portfolio Highlight -->
@@ -31,47 +31,122 @@
 ## <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="40"> About Me
 
 > *"I don't just deploy code - I build the highways that code travels on."*
+>
+> *"In a world of 'it works on my machine', I am the 'it works everywhere' guy."*
 
-I'm a **DevOps Engineer** who believes that **automation is the ultimate superpower**. At **Thomson Reuters**, I'm the person teams call when they need their deployment pipeline to go from "it works on my machine" to "it works everywhere, every time."
+<p align="center">
+  <img src="https://img.shields.io/badge/☕_Powered_by-Coffee_&_Yaml-6F4E37?style=flat-square"/>
+  <img src="https://img.shields.io/badge/🔥_Status-Automating_Everything-FF6B6B?style=flat-square"/>
+  <img src="https://img.shields.io/badge/🐛_Bugs_Fixed-More_Than_I_Created-4CAF50?style=flat-square"/>
+</p>
 
-🔥 **My Mission:** Eliminate toil, automate everything, and make developers' lives easier.
+I'm a **DevOps Engineer** who believes that **laziness is the mother of automation** (hear me out - I automate things so I don't have to do them twice!). At **Thomson Reuters**, I'm the person teams call at 3 AM when production is on fire 🔥 and also the person who builds systems so that 3 AM calls become rare.
+
+🔥 **My Mission:** Eliminate toil, automate everything, and ensure I never have to say "let me SSH into the server real quick" ever again.
 
 ```yaml
-name: Prabhu P
-role: DevOps Engineer | SRE | Automation Enthusiast
-company: Thomson Reuters (Fortune 500)
-location: Bengaluru, India 🇮🇳
-experience: 3.5+ years of breaking & fixing production (legally 😄)
+# prabhu_config.yaml - Do not edit in production! 😅
+apiVersion: devops/v1
+kind: Engineer
+metadata:
+  name: Prabhu P
+  labels:
+    role: DevOps Engineer | SRE | YAML Whisperer
+    company: Thomson Reuters (Fortune 500)
+    location: Bengaluru, India 🇮🇳
+    coffee_dependency: critical
+spec:
+  experience: "3.5+ years of breaking & fixing production (legally 😄)"
 
-daily_life:
-  morning: "☕ Coffee + checking overnight alerts"
-  afternoon: "🔧 Building pipelines, debugging deployments"
-  evening: "📊 Optimizing infrastructure, writing automation"
-  night: "📚 Learning new tech + side projects"
+  daily_life:
+    - time: "09:00"
+      action: "☕ Coffee ritual + reading overnight alerts with anxiety"
+    - time: "10:00"
+      action: "🔧 Building pipelines, pretending to understand YAML"
+    - time: "14:00"
+      action: "🐛 Debugging why it worked yesterday but not today"
+    - time: "17:00"
+      action: "📊 Creating dashboards nobody will look at"
+    - time: "23:00"
+      action: "📚 Learning new tech because sleep is overrated"
 
-superpowers:
-  - 🚀 Turning 4-hour tasks into 45-minute automations
-  - 🔥 Managing 400+ apps without losing sleep
-  - 🎯 AWS SAA certified (930/1000 - yes, I'm proud!)
-  - 🛠️ Building tools that save 40+ hours/month
+  superpowers:
+    - "🚀 Turning 4-hour tasks into 45-minute automations"
+    - "🔥 Managing 400+ apps without (visibly) panicking"
+    - "🎯 AWS SAA certified (930/1000 - flexing responsibly)"
+    - "🛠️ Building tools that save 40+ hours/month"
+    - "🔮 Predicting deployment failures before they happen (intuition = experience)"
 
-currently_obsessed_with:
-  - Platform Engineering
-  - GitOps & ArgoCD
-  - Service Mesh (Istio)
-  - Making dashboards prettier than they need to be
+  bugs_created: "We don't talk about that"
+  bugs_fixed: "More than created (I hope)"
 
-fun_fact: "I automate my coffee breaks. Just kidding... or am I? 🤖"
+  currently_obsessed_with:
+    - Platform Engineering
+    - GitOps & ArgoCD
+    - Service Mesh (Istio)
+    - Making dashboards prettier than they need to be
+    - Convincing devs that "works on my machine" is not valid
+
+  favorite_excuse: "It's a DNS issue"
+  backup_excuse: "Have you tried clearing the cache?"
+
+  fun_fact: "I automate my coffee breaks. Just kidding... or am I? 🤖"
+
+  status: Running  # Please don't kubectl delete me
 ```
 
 ### 💡 My DevOps Philosophy
 
 | Principle | How I Apply It |
 |-----------|----------------|
-| **Automate First** | If I do it twice, I script it. If I do it thrice, it becomes a pipeline. |
-| **Fail Fast, Learn Faster** | Every incident is a lesson. I've written 50+ RCAs - each one made systems better. |
-| **Infrastructure as Code** | If it's not in Git, it doesn't exist. Period. |
-| **Observability > Monitoring** | Don't just know WHAT failed - know WHY before users notice. |
+| **Automate First** | If I do it twice, I script it. If I do it thrice, it becomes a pipeline. The fourth time? I've already forgotten I automated it. |
+| **Fail Fast, Learn Faster** | Every incident is a lesson. I've written 50+ RCAs - each one made systems better. And me? A little more paranoid. |
+| **Infrastructure as Code** | If it's not in Git, it doesn't exist. ClickOps? We don't do that here. |
+| **Observability > Monitoring** | Don't just know WHAT failed - know WHY before users notice. And preferably before your manager notices. |
+| **KISS Principle** | Keep It Simple, Stupid. But also, Keep It Scriptable, Sailor! |
+
+### 🧘 DevOps Wisdom (Things I Learned the Hard Way)
+
+<details>
+<summary><b>📜 Click to unlock ancient DevOps secrets...</b></summary>
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  "The best time to write documentation was when you wrote the  │
+│   code. The second best time is before someone pages you at    │
+│   3 AM asking how it works."                                   │
+│                                              - Me, after 3 AM  │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  "In DevOps, we don't say 'it's not my job'.                   │
+│   We say 'let me automate that so it's nobody's job'."         │
+│                                              - Also Me         │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  "A deployment without rollback is like a                       │
+│   parachute jump without a parachute.                          │
+│   Exciting, but not recommended."                              │
+│                                              - Experience      │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  "The difference between a junior and senior DevOps engineer   │
+│   is that the senior knows which commands to NOT run           │
+│   on Friday at 5 PM."                                          │
+│                                              - Survival Guide  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**The Five Stages of a Production Incident:**
+1. 😎 "This is fine"
+2. 🤔 "Wait, what's happening?"
+3. 😰 "Oh no"
+4. 🔥 "EVERYTHING IS ON FIRE"
+5. 😌 "I knew it was a config issue all along"
+
+</details>
 
 ---
 
@@ -119,10 +194,24 @@ fun_fact: "I automate my coffee breaks. Just kidding... or am I? 🤖"
 
 ### 🎯 The Story Behind the Numbers
 
-- **400+ Applications** → That's like managing a small city of microservices. Each with its own personality (and bugs).
-- **500+ Pipelines** → If pipelines were children, I'd need a very large school.
-- **99.9% Uptime** → The 0.1%? We don't talk about that. (JK, every incident became an RCA and improvement)
-- **930 AWS Score** → Studied while on-call. Multitasking level: Expert.
+- **400+ Applications** → That's like managing a small city of microservices. Each with its own personality, ego, and existential crisis at 3 AM.
+- **500+ Pipelines** → If pipelines were children, I'd need a very large school. And therapy. Mostly therapy.
+- **99.9% Uptime** → The 0.1%? Let's just say those incidents have excellent RCAs and I have excellent PTSD. (JK, we turned every failure into a learning!)
+- **930 AWS Score** → Studied while on-call. The adrenaline from production alerts really helps with focus. Who needs coffee?
+- **40+ Hours Saved** → That's like getting a free week every month. I use it to create more automation. It's a beautiful, nerdy cycle.
+
+### 🎭 The Two Types of DevOps Engineers
+
+```
+           Me at 10 AM                    Me at 3 AM during incident
+        ┌─────────────────┐            ┌─────────────────┐
+        │   😎            │            │   🔥😰🔥        │
+        │  "I've got      │            │  "WHY IS        │
+        │   this under    │            │   EVERYTHING    │
+        │   control"      │            │   ON FIRE"      │
+        └─────────────────┘            └─────────────────┘
+                    Same person. Same skills. Different coffee levels.
+```
 
 ---
 
@@ -364,22 +453,41 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## <img src="https://media.giphy.com/media/UqxVRm1IaaIGk/giphy.gif" width="30"> My Journey
+## <img src="https://media.giphy.com/media/UqxVRm1IaaIGk/giphy.gif" width="30"> My Journey (A Comedy in 3 Acts)
 
 ```
-🎓 2017-2021    B.E. Electrical & Electronics @ VTU
-                └── Where I discovered that software > hardware (sorry, EEE friends!)
+🎓 ACT I: The Origin Story (2017-2021)
+   ┌────────────────────────────────────────────────────────────────┐
+   │  B.E. Electrical & Electronics @ VTU                          │
+   │  └── "I'll work with circuits and transformers!"              │
+   │  └── *Discovers programming*                                   │
+   │  └── "Wait, software doesn't give electric shocks!"           │
+   │  └── *Switches to IT* (sorry, EEE friends, software go brrr)  │
+   └────────────────────────────────────────────────────────────────┘
 
-💼 Dec 2022     Joined Thomson Reuters as Associate DevOps Engineer
-                └── Started managing Jenkins pipelines for 100+ apps
-                └── Built my first automation tool (Universal Patch Scheduler)
-                └── Resolved 500+ ServiceNow tickets (SLA compliance: 98%)
+💼 ACT II: The Awakening (Dec 2022)
+   ┌────────────────────────────────────────────────────────────────┐
+   │  Joined Thomson Reuters as Associate DevOps Engineer          │
+   │  └── Day 1: "What's Jenkins?" Day 30: "I AM Jenkins."         │
+   │  └── Built Universal Patch Scheduler (my baby! 👶)             │
+   │  └── Resolved 500+ tickets (SLA: 98%, Sanity: still intact)   │
+   │  └── Learned that "urgent" means different things to people   │
+   └────────────────────────────────────────────────────────────────┘
 
-🚀 Mar 2026     Promoted to DevOps Engineer
-                └── Now leading CI/CD for 400+ enterprise applications
-                └── Managing 30+ microservices on Kubernetes
-                └── Handling F5 load balancers with 1M+ daily requests
-                └── On-call warrior: 100+ P1/P2 incidents resolved
+🚀 ACT III: The Ascension (Mar 2026 - Present)
+   ┌────────────────────────────────────────────────────────────────┐
+   │  Promoted to DevOps Engineer (Mom was proud, I was terrified) │
+   │  └── Leading CI/CD for 400+ apps (send help... and coffee)    │
+   │  └── Managing 30+ microservices on K8s (they're like pets now)│
+   │  └── F5 load balancers: 1M+ requests (no pressure!)           │
+   │  └── On-call warrior: 100+ P1/P2 incidents (battle scars 💪)  │
+   │  └── Still haven't mass-deleted production (achievement!)     │
+   └────────────────────────────────────────────────────────────────┘
+
+🔮 EPILOGUE: The Future
+   └── Platform Engineering Arc loading...
+   └── More certifications incoming...
+   └── World domination through automation (ethically, of course)
 ```
 
 ### 🎖️ Battle Scars (aka Achievements)
@@ -419,28 +527,52 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ## 🎮 Beyond the Terminal
 
+> *"Work hard, automate harder, nap strategically."*
+
 <table>
 <tr>
 <td width="50%">
 
 ### 🧠 What Drives Me
-- **Problem Solving** - That dopamine hit when a complex automation works
-- **Continuous Learning** - Tech moves fast, I move faster
-- **Helping Others** - Mentoring juniors, writing docs, sharing knowledge
-- **Building at Scale** - Small scripts that save thousands of hours
+- **Problem Solving** - That dopamine hit when a complex automation works first time (lies, it never works first time)
+- **Continuous Learning** - Tech moves fast, I move faster (except before coffee)
+- **Helping Others** - Mentoring juniors, writing docs, sharing knowledge (and memes)
+- **Building at Scale** - Small scripts that save thousands of hours (and my sanity)
+- **The Thrill** - Of seeing `kubectl get pods` return all `Running` states 😍
 
 </td>
 <td width="50%">
 
-### ⚡ Fun Facts
-- 🏏 **Die-hard RCB fan** - Witnessed back-to-back IPL wins!
-- ☕ **Coffee consumption** - Directly proportional to incident severity
-- 🎮 **Debugging philosophy** - "It's not a bug, it's an undocumented feature"
-- 🌙 **Best code written** - Between 11 PM and 2 AM (don't @ me)
+### ⚡ Fun Facts & Confessions
+- 🏏 **Die-hard RCB fan** - My commit frequency increases after RCB wins
+- ☕ **Coffee equation** - `productivity = coffee * (1 - meetings)`
+- 🎮 **Debugging motto** - "It's not a bug, it's a feature request from production"
+- 🌙 **Peak coding hours** - 11 PM to 2 AM (the code just hits different)
+- 🔄 **Favorite loop** - `while(true) { learn(); build(); break_prod(); fix(); }`
+- 💬 **Most said phrase** - "But it worked in dev!"
 
 </td>
 </tr>
 </table>
+
+### 🤣 DevOps Memes I Live By
+
+```
+        Monday                    Friday
+     ┌─────────┐              ┌─────────┐
+     │ kubectl │              │ kubectl │
+     │ apply   │    ──────>   │ delete  │
+     │   -f    │              │   -f    │
+     └─────────┘              └─────────┘
+     "Let's deploy            "Let's rollback
+      new features!"           everything."
+```
+
+<p align="center">
+  <img src="https://img.shields.io/badge/🚫_No_Deployments-On_Fridays-FF0000?style=flat-square"/>
+  <img src="https://img.shields.io/badge/✅_Tested_in-Production-00FF00?style=flat-square"/>
+  <img src="https://img.shields.io/badge/📝_Documentation-Coming_Soon™-FFD700?style=flat-square"/>
+</p>
 
 ### 📬 Let's Connect!
 
@@ -462,10 +594,23 @@ Java             ████░░░░░░░░░░░░░░░░░
 <div align="center">
   <img src="https://img.shields.io/badge/🎽_RCB-2x%20IPL%20Champions%20(2025%20%26%202026)-E53935?style=for-the-badge&labelColor=1a1a2e" />
   <br><br>
-  <h3> "✌️ SALA CUP NAMDU!" 🏆🏆</h3>
-  <i>Waited 18 years for this. Then got greedy and won again! 🔥</i>
+  <h3>✌️ "SALA CUP NAMDU!" 🏆🏆</h3>
+
+```
+  Years of supporting RCB:  ████████████████████ 16+ years
+  Emotional damage:         ████████████████████ Maximum
+  Loyalty level:            ████████████████████ Unbreakable
+  Cups won:                 ██████████           2 (FINALLY! 🎉)
+
+  Status: From "Ee Sala Cup Namde" (meme) → "SALA CUP NAMDU" (reality!)
+```
+
+  <i>Waited 16 years. Heart attacks every season. And then we won. TWICE. 🔥</i>
+  <br>
+  <i>My pipeline success rate is 99.9%, but my faith in RCB? 100%. Always.</i>
   <br><br>
   <img src="https://img.shields.io/badge/Play_Bold-🦁_RCB_Forever-E53935?style=flat-square"/>
+  <img src="https://img.shields.io/badge/❤️_Kohli-Forever_King-E53935?style=flat-square"/>
 </div>
 
 ---
