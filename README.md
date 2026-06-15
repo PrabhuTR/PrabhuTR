@@ -1,5 +1,11 @@
+<!-- Animated Header Banner -->
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,19&height=180&section=header&text=Prabhu%20P&fontSize=50&fontAlignY=35&desc=DevOps%20Engineer%20%7C%20SRE%20%7C%20Cloud%20Enthusiast&descAlignY=55&descSize=18&animation=fadeIn" alt="Header"/>
+</p>
+
 <h1 align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi+%F0%9F%91%8B%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer" alt="Typing SVG" />
+  <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35px"/>
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;E+Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
 </h1>
 
 <!-- Portfolio Highlight -->
@@ -22,7 +28,7 @@
 
 ---
 
-## About Me
+## <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="40"> About Me
 
 ```yaml
 name: Prabhu P
@@ -51,7 +57,7 @@ currently_learning:
 
 ---
 
-## GitHub Activity
+## <img src="https://media.giphy.com/media/iY8CRBdQXODJSCERIr/giphy.gif" width="30"> GitHub Activity
 
 <p align="center">
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=PrabhuTR&theme=tokyonight&hide_border=true" alt="GitHub Streak"/>
@@ -75,7 +81,7 @@ currently_learning:
 
 ---
 
-## Key Achievements
+## <img src="https://media.giphy.com/media/3orifgYbnsq43eFsdO/giphy.gif" width="30"> Key Achievements
 
 <table align="center">
 <tr>
@@ -94,7 +100,16 @@ currently_learning:
 
 ---
 
-## Tech Stack
+## <img src="https://media.giphy.com/media/QssGEmpkyEOhBCb7e1/giphy.gif" width="30"> Tech Stack
+
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=aws,kubernetes,docker,terraform,jenkins,githubactions,python,java,linux,bash,prometheus,grafana&theme=dark&perline=6" />
+  </a>
+</p>
+
+<details>
+<summary><b>View Detailed Tech Stack</b></summary>
 
 ### Cloud & Infrastructure
 <p>
@@ -153,9 +168,11 @@ currently_learning:
   <img src="https://img.shields.io/badge/Confluence-%23172B4D.svg?style=for-the-badge&logo=confluence&logoColor=white"/>
 </p>
 
+</details>
+
 ---
 
-## Certifications
+## <img src="https://media.giphy.com/media/3orifgYbnsq43eFsdO/giphy.gif" width="30"> Certifications
 
 <table align="center">
 <tr>
@@ -178,7 +195,7 @@ currently_learning:
 
 ---
 
-## Featured Projects
+## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="30"> Featured Projects
 
 ### Universal Patch Scheduler
 > Automated server patching for 200+ servers
@@ -219,7 +236,7 @@ currently_learning:
 
 ---
 
-## What I Work With Daily
+## <img src="https://media.giphy.com/media/WFZvB7VIXBgiz3oDXE/giphy.gif" width="30"> What I Work With Daily
 
 ```text
 YAML/Pipelines   ████████████████████░░░░░   80% - GitHub Actions, Jenkins
@@ -232,7 +249,19 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## GitHub Achievements
+## <img src="https://media.giphy.com/media/cIn5fTcjnKhStIeAef/giphy.gif" width="30"> Contribution Snake
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake.svg" />
+  <img alt="github-snake" src="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake.svg" />
+</picture>
+
+> To enable the snake: Add [this GitHub Action workflow](https://github.com/Platane/snk) to your PrabhuTR repo
+
+---
+
+## <img src="https://media.giphy.com/media/IdyAQJVN2kVPNUrojM/giphy.gif" width="30"> GitHub Achievements
 
 <p align="center">
   <a href="https://github.com/PrabhuTR">
@@ -253,7 +282,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## Career Timeline
+## <img src="https://media.giphy.com/media/UqxVRm1IaaIGk/giphy.gif" width="30"> Career Timeline
 
 | Period | Role | Company |
 |--------|------|---------|
@@ -263,7 +292,7 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## Connect With Me
+## <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="30"> Connect With Me
 
 <p align="center">
   <a href="https://prabhutr.github.io">
@@ -291,6 +320,15 @@ Java             ████░░░░░░░░░░░░░░░░░
 <p align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=650&lines=Let's+build+reliable%2C+scalable+systems+together!" alt="Footer" />
 </p>
+
+---
+
+<!-- RCB Fan Section -->
+<div align="center">
+  <img src="https://img.shields.io/badge/RCB-2x%20Champions%20(2024%20%26%202025)-E53935?style=for-the-badge&labelColor=1a1a2e" />
+  <br><br>
+  <b>✌️ "E SALA CUP NAMDU!" 🏆🏆</b>
+</div>
 
 ---
 
