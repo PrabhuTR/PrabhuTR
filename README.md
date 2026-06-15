@@ -5,7 +5,7 @@
 
 <h1 align="center">
   <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35px"/>
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;E+Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7C3AED&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
 </h1>
 
 <!-- Portfolio Highlight -->
@@ -249,18 +249,6 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## <img src="https://media.giphy.com/media/cIn5fTcjnKhStIeAef/giphy.gif" width="30"> Contribution Snake
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake.svg" />
-  <img alt="github-snake" src="https://raw.githubusercontent.com/PrabhuTR/PrabhuTR/output/github-snake.svg" />
-</picture>
-
-> To enable the snake: Add [this GitHub Action workflow](https://github.com/Platane/snk) to your PrabhuTR repo
-
----
-
 ## <img src="https://media.giphy.com/media/IdyAQJVN2kVPNUrojM/giphy.gif" width="30"> GitHub Achievements
 
 <p align="center">
@@ -325,9 +313,9 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 <!-- RCB Fan Section -->
 <div align="center">
-  <img src="https://img.shields.io/badge/RCB-2x%20Champions%20(2024%20%26%202025)-E53935?style=for-the-badge&labelColor=1a1a2e" />
+  <img src="https://img.shields.io/badge/🎽_RCB-2x%20Champions%20(2025%20%26%202026)-E53935?style=for-the-badge&labelColor=1a1a2e" />
   <br><br>
-  <b>✌️ "E SALA CUP NAMDU!" 🏆🏆</b>
+  <b>"✌️ SALA CUP NAMDU!" 🏆🏆</b>
 </div>
 
 ---
