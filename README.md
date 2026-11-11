@@ -5,7 +5,7 @@
 
 <h1 align="center">
   <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35px"/>
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Java+Full+Stack+Developer;Sala+Cup+Namdu!+%E2%9C%8C%EF%B8%8F%F0%9F%8F%86" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=28&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=600&lines=Hi%2C+I'm+Prabhu+P;DevOps+Engineer+%7C+SRE;AWS+Certified+(930%2F1000);Cloud+Automation+Engineer;Platform+Reliability+Builder" alt="Typing SVG" />
 </h1>
 
 <!-- Portfolio Highlight -->
@@ -30,21 +30,11 @@
 
 ## <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="40"> About Me
 
-> *"I don't just deploy code - I build the highways that code travels on."*
->
-> *"In a world of 'it works on my machine', I am the 'it works everywhere' guy."*
+I am a **DevOps Engineer** with experience in **cloud operations, release automation, platform engineering, and site reliability practices**. I design and implement systems that improve deployment velocity, reduce operational overhead, and strengthen service reliability across enterprise environments.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/☕_Powered_by-Coffee_&_Yaml-6F4E37?style=flat-square"/>
-  <img src="https://img.shields.io/badge/🔥_Status-Automating_Everything-FF6B6B?style=flat-square"/>
-  <img src="https://img.shields.io/badge/🐛_Bugs_Fixed-More_Than_I_Created-4CAF50?style=flat-square"/>
-</p>
+At **Thomson Reuters**, I work across CI/CD, automation, observability, and infrastructure operations to support large-scale application delivery with a focus on stability, governance, and continuous improvement.
 
-I'm a **DevOps Engineer** and **SRE-focused automation specialist** with hands-on experience designing resilient delivery pipelines, modernizing infrastructure, and building operational tooling that reduces toil at scale.
-
-At **Thomson Reuters**, I work across cloud, release engineering, automation, and observability to help teams ship faster without compromising stability. I enjoy turning complex operational problems into simple, repeatable systems that teams can trust.
-
-🔥 **My Mission:** eliminate repetitive toil, improve platform reliability, and turn fragile deployment workflows into secure, scalable, and measurable engineering systems.
+My work centers on building resilient delivery pipelines, automating operational workflows, and improving visibility into environment health and patch readiness across distributed systems.
 
 <div align="center">
   <img src="https://img.shields.io/badge/Cloud%20Ops-AWS%20%7C%20Kubernetes-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
@@ -63,48 +53,13 @@ At **Thomson Reuters**, I work across cloud, release engineering, automation, an
 | **Observability > Monitoring** | Don't just know WHAT failed - know WHY before users notice. And preferably before your manager notices. |
 | **KISS Principle** | Keep It Simple, Stupid. But also, Keep It Scriptable, Sailor! |
 
-### 🧘 DevOps Wisdom (Things I Learned the Hard Way)
+### � Core Engineering Principles
 
-<details>
-<summary><b>📜 Click to unlock ancient DevOps secrets...</b></summary>
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  "The best time to write documentation was when you wrote the  │
-│   code. The second best time is before someone pages you at    │
-│   3 AM asking how it works."                                   │
-│                                              - Me, after 3 AM  │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│  "In DevOps, we don't say 'it's not my job'.                   │
-│   We say 'let me automate that so it's nobody's job'."         │
-│                                              - Also Me         │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│  "A deployment without rollback is like a                       │
-│   parachute jump without a parachute.                          │
-│   Exciting, but not recommended."                              │
-│                                              - Experience      │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│  "The difference between a junior and senior DevOps engineer   │
-│   is that the senior knows which commands to NOT run           │
-│   on Friday at 5 PM."                                          │
-│                                              - Survival Guide  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-**The Five Stages of a Production Incident:**
-1. 😎 "This is fine"
-2. 🤔 "Wait, what's happening?"
-3. 😰 "Oh no"
-4. 🔥 "EVERYTHING IS ON FIRE"
-5. 😌 "I knew it was a config issue all along"
-
-</details>
+- **Automation first**: eliminate repetitive operational work through scalable, repeatable workflows.
+- **Reliability over speed**: improve platform stability while enabling faster delivery cycles.
+- **Infrastructure as code**: maintain environment consistency, governance, and auditability through versioned configuration.
+- **Observability-driven operations**: reduce mean time to detect and resolve issues with actionable telemetry and clear alerts.
+- **Operational discipline**: standardize processes, document dependencies, and reduce manual coordination risk.
 
 ---
 
@@ -167,26 +122,13 @@ At **Thomson Reuters**, I work across cloud, release engineering, automation, an
 
 </div>
 
-### 🎯 The Story Behind the Numbers
+### 🎯 Operational Impact Summary
 
-- **400+ Applications** → That's like managing a small city of microservices. Each with its own personality, ego, and existential crisis at 3 AM.
-- **500+ Pipelines** → If pipelines were children, I'd need a very large school. And therapy. Mostly therapy.
-- **99.9% Uptime** → The 0.1%? Let's just say those incidents have excellent RCAs and I have excellent PTSD. (JK, we turned every failure into a learning!)
-- **930 AWS Score** → Studied while on-call. The adrenaline from production alerts really helps with focus. Who needs coffee?
-- **40+ Hours Saved** → That's like getting a free week every month. I use it to create more automation. It's a beautiful, nerdy cycle.
-
-### 🎭 The Two Types of DevOps Engineers
-
-```
-           Me at 10 AM                    Me at 3 AM during incident
-        ┌─────────────────┐            ┌─────────────────┐
-        │   😎            │            │   🔥😰🔥        │
-        │  "I've got      │            │  "WHY IS        │
-        │   this under    │            │   EVERYTHING    │
-        │   control"      │            │   ON FIRE"      │
-        └─────────────────┘            └─────────────────┘
-                    Same person. Same skills. Different coffee levels.
-```
+- **400+ applications** supported across enterprise delivery pipelines and shared platform operations.
+- **500+ CI/CD workflows** standardized and automated to reduce deployment friction and improve repeatability.
+- **99.9% service reliability** maintained through focused improvements in observability, rollback readiness, and process discipline.
+- **930/1000 AWS SAA score** achieved through structured cloud learning and hands-on operational execution.
+- **40+ engineering hours saved monthly** by automating repeatable tasks and reducing manual coordination effort.
 
 ---
 
