@@ -40,60 +40,18 @@
   <img src="https://img.shields.io/badge/🐛_Bugs_Fixed-More_Than_I_Created-4CAF50?style=flat-square"/>
 </p>
 
-I'm a **DevOps Engineer** who believes that **laziness is the mother of automation** (hear me out - I automate things so I don't have to do them twice!). At **Thomson Reuters**, I'm the person teams call at 3 AM when production is on fire 🔥 and also the person who builds systems so that 3 AM calls become rare.
+I'm a **DevOps Engineer** and **SRE-focused automation specialist** with hands-on experience designing resilient delivery pipelines, modernizing infrastructure, and building operational tooling that reduces toil at scale.
 
-🔥 **My Mission:** Eliminate toil, automate everything, and ensure I never have to say "let me SSH into the server real quick" ever again.
+At **Thomson Reuters**, I work across cloud, release engineering, automation, and observability to help teams ship faster without compromising stability. I enjoy turning complex operational problems into simple, repeatable systems that teams can trust.
 
-```yaml
-# prabhu_config.yaml - Do not edit in production! 😅
-apiVersion: devops/v1
-kind: Engineer
-metadata:
-  name: Prabhu P
-  labels:
-    role: DevOps Engineer | SRE | YAML Whisperer
-    company: Thomson Reuters (Fortune 500)
-    location: Bengaluru, India 🇮🇳
-    coffee_dependency: critical
-spec:
-  experience: "3.5+ years of breaking & fixing production (legally 😄)"
+🔥 **My Mission:** eliminate repetitive toil, improve platform reliability, and turn fragile deployment workflows into secure, scalable, and measurable engineering systems.
 
-  daily_life:
-    - time: "09:00"
-      action: "☕ Coffee ritual + reading overnight alerts with anxiety"
-    - time: "10:00"
-      action: "🔧 Building pipelines, pretending to understand YAML"
-    - time: "14:00"
-      action: "🐛 Debugging why it worked yesterday but not today"
-    - time: "17:00"
-      action: "📊 Creating dashboards nobody will look at"
-    - time: "23:00"
-      action: "📚 Learning new tech because sleep is overrated"
-
-  superpowers:
-    - "🚀 Turning 4-hour tasks into 45-minute automations"
-    - "🔥 Managing 400+ apps without (visibly) panicking"
-    - "🎯 AWS SAA certified (930/1000 - flexing responsibly)"
-    - "🛠️ Building tools that save 40+ hours/month"
-    - "🔮 Predicting deployment failures before they happen (intuition = experience)"
-
-  bugs_created: "We don't talk about that"
-  bugs_fixed: "More than created (I hope)"
-
-  currently_obsessed_with:
-    - Platform Engineering
-    - GitOps & ArgoCD
-    - Service Mesh (Istio)
-    - Making dashboards prettier than they need to be
-    - Convincing devs that "works on my machine" is not valid
-
-  favorite_excuse: "It's a DNS issue"
-  backup_excuse: "Have you tried clearing the cache?"
-
-  fun_fact: "I automate my coffee breaks. Just kidding... or am I? 🤖"
-
-  status: Running  # Please don't kubectl delete me
-```
+<div align="center">
+  <img src="https://img.shields.io/badge/Cloud%20Ops-AWS%20%7C%20Kubernetes-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Platform-Engineering-3B82F6?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/SRE-Observability%20%26%20Reliability-10B981?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Automation-IaC%20%26%20CI%2FCD-8B5CF6?style=for-the-badge"/>
+</div>
 
 ### 💡 My DevOps Philosophy
 
@@ -171,6 +129,23 @@ spec:
 <td align="center"><b>200+</b><br>Servers Managed</td>
 </tr>
 </table>
+
+---
+
+## <img src="https://media.giphy.com/media/3orifgYbnsq43eFsdO/giphy.gif" width="30"> Current Focus
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform%20Engineering-Current-F59E0B?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/GitOps-ArgoCD%20%26%20Helm-7C3AED?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Cloud%20Automation-Terraform%20%26%20AWS-22C55E?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Observability-Prometheus%20%26%20Grafana-EF4444?style=for-the-badge"/>
+</p>
+
+- Building and scaling platform-level automation for large enterprise environments
+- Improving deployment reliability with CI/CD, GitOps, and rollback-driven workflows
+- Creating operational dashboards for patch visibility, ownership, and compliance checks
+- Strengthening infrastructure governance through IaC, dashboards, and process automation
+- Turning manual operational tasks into resilient, repeatable engineering workflows
 
 ---
 
@@ -312,6 +287,38 @@ spec:
 
 ## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="30"> Featured Projects
 
+### 🧩 PatchCentral-SCM
+> **Live patch visibility and operational dashboard for a large server estate**
+
+Built a centralized dashboard to provide engineering and operations teams with a single source of truth for server ownership, environment mapping, patch schedules, and GitHub automation coverage across a large enterprise estate.
+
+**🎯 What it delivers:**
+- Centralized server-to-application ownership visibility
+- Environment and site mapping for Dev, QA, UAT, and Prod
+- Patch profile and schedule tracking for operational readiness
+- Workflow and scheduler association for GitHub-based automation
+- Drift detection for unmanaged or out-of-policy systems
+- Searchable, operational dashboard for faster patch review and auditability
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Monitoring-Dashboard-0EA5E9?style=flat-square"/>
+</p>
+
+<p align="left">
+  <a href="https://github.com/PrabhuTR/PatchCentral-SCM">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="PatchCentral-SCM Repository"/>
+  </a>
+  <a href="http://patchcentral.int.thomsonreuters.com:8080/">
+    <img src="https://img.shields.io/badge/Live-Dashboard-0EA5E9?style=for-the-badge&logo=rocket&logoColor=white" alt="Patch Central Dashboard"/>
+  </a>
+</p>
+
+---
+
 ### 🔧 Universal Patch Scheduler
 > **Automated Server Patching Platform**
 
@@ -419,6 +426,40 @@ Built observability platform with **50+ custom dashboards** and **200+ alerts** 
 
 ---
 
+### 🧩 PatchCentral-SCM
+> **Live Patch Visibility Dashboard for a Large Server Estate**
+
+Built and deployed a centralized patch operations dashboard to give engineering and operations teams a single operational view of server ownership, environment mapping, site grouping, patch schedules, and workflow automation across a large infrastructure footprint.
+
+**🎯 Key Highlights:**
+- 📍 Centralized server-to-application mapping for audit and ownership clarity
+- 🧭 Environment and site tracking across Dev, QA, UAT, and Prod
+- 🕒 Patch profile and schedule visibility for better operational readiness
+- 🔄 GitHub workflow and scheduler association for each app/environment/site
+- 🛡️ Drift detection for unmanaged or out-of-policy servers
+- ⚡ Searchable dashboard for faster patch reviews and operational decision-making
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Monitoring-Dashboard-0EA5E9?style=flat-square"/>
+</p>
+
+<p align="left">
+  <a href="https://github.com/PrabhuTR/PatchCentral-SCM">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="PatchCentral-SCM Repository"/>
+  </a>
+  <a href="http://patchcentral.int.thomsonreuters.com:8080/">
+    <img src="https://img.shields.io/badge/Live-Dashboard-0EA5E9?style=for-the-badge&logo=rocket&logoColor=white" alt="Patch Central Dashboard"/>
+  </a>
+</p>
+
+This live project is designed to reduce spreadsheet drift, improve patch auditability, and give teams a more reliable operational view before patch windows begin.
+
+---
+
 ## <img src="https://media.giphy.com/media/WFZvB7VIXBgiz3oDXE/giphy.gif" width="30"> What I Work With Daily
 
 ```text
@@ -453,51 +494,21 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## <img src="https://media.giphy.com/media/UqxVRm1IaaIGk/giphy.gif" width="30"> My Journey (A Comedy in 3 Acts)
+## <img src="https://media.giphy.com/media/IdyAQJVN2kVPNUrojM/giphy.gif" width="30"> Career Journey
 
-```
-🎓 ACT I: The Origin Story (2017-2021)
-   ┌────────────────────────────────────────────────────────────────┐
-   │  B.E. Electrical & Electronics @ VTU                          │
-   │  └── "I'll work with circuits and transformers!"              │
-   │  └── *Discovers programming*                                   │
-   │  └── "Wait, software doesn't give electric shocks!"           │
-   │  └── *Switches to IT* (sorry, EEE friends, software go brrr)  │
-   └────────────────────────────────────────────────────────────────┘
+- **2017-2021**: Completed B.E. in Electrical & Electronics Engineering at VTU, building a strong foundation in system thinking, troubleshooting, and technical problem-solving.
+- **Dec 2022**: Joined Thomson Reuters as an Associate DevOps Engineer, where I began working on CI/CD automation, operational tooling, and release enablement.
+- **2023-2024**: Took ownership of patch automation, deployment workflows, and operational dashboards, reducing manual effort and improving reliability across enterprise workloads.
+- **2025-Present**: Progressed to DevOps Engineer, leading automation and platform reliability initiatives across a large application portfolio with a focus on scale, governance, and observability.
 
-💼 ACT II: The Awakening (Dec 2022)
-   ┌────────────────────────────────────────────────────────────────┐
-   │  Joined Thomson Reuters as Associate DevOps Engineer          │
-   │  └── Day 1: "What's Jenkins?" Day 30: "I AM Jenkins."         │
-   │  └── Built Universal Patch Scheduler (my baby! 👶)             │
-   │  └── Resolved 500+ tickets (SLA: 98%, Sanity: still intact)   │
-   │  └── Learned that "urgent" means different things to people   │
-   └────────────────────────────────────────────────────────────────┘
+### 🎖️ Selected Achievements
 
-🚀 ACT III: The Ascension (Mar 2026 - Present)
-   ┌────────────────────────────────────────────────────────────────┐
-   │  Promoted to DevOps Engineer (Mom was proud, I was terrified) │
-   │  └── Leading CI/CD for 400+ apps (send help... and coffee)    │
-   │  └── Managing 30+ microservices on K8s (they're like pets now)│
-   │  └── F5 load balancers: 1M+ requests (no pressure!)           │
-   │  └── On-call warrior: 100+ P1/P2 incidents (battle scars 💪)  │
-   │  └── Still haven't mass-deleted production (achievement!)     │
-   └────────────────────────────────────────────────────────────────┘
-
-🔮 EPILOGUE: The Future
-   └── Platform Engineering Arc loading...
-   └── More certifications incoming...
-   └── World domination through automation (ethically, of course)
-```
-
-### 🎖️ Battle Scars (aka Achievements)
-
-| What I Did | Impact |
+| Initiative | Outcome |
 |------------|--------|
 | Built Universal Patch Scheduler | **80% reduction** in patching time (4hrs → 45min) |
-| Created 25+ reusable GitHub Actions | **Standardized deployments** for 15+ teams |
-| Deployed 30+ microservices on EKS | **99.9% deployment success** with GitOps |
-| Built observability platform | **60% faster** incident detection |
+| Created 25+ reusable GitHub Actions | **Standardized deployments** across 15+ teams |
+| Deployed 30+ microservices on EKS | **99.9% deployment success** with GitOps practices |
+| Built observability platform | **60% faster** incident detection and triage |
 | Resolved 100+ P1/P2 incidents | **40% reduction** in MTTR |
 
 ---
@@ -525,54 +536,12 @@ Java             ████░░░░░░░░░░░░░░░░░
 
 ---
 
-## 🎮 Beyond the Terminal
+## 💼 Professional Summary
 
-> *"Work hard, automate harder, nap strategically."*
-
-<table>
-<tr>
-<td width="50%">
-
-### 🧠 What Drives Me
-- **Problem Solving** - That dopamine hit when a complex automation works first time (lies, it never works first time)
-- **Continuous Learning** - Tech moves fast, I move faster (except before coffee)
-- **Helping Others** - Mentoring juniors, writing docs, sharing knowledge (and memes)
-- **Building at Scale** - Small scripts that save thousands of hours (and my sanity)
-- **The Thrill** - Of seeing `kubectl get pods` return all `Running` states 😍
-
-</td>
-<td width="50%">
-
-### ⚡ Fun Facts & Confessions
-- 🏏 **Die-hard RCB fan** - My commit frequency increases after RCB wins
-- ☕ **Coffee equation** - `productivity = coffee * (1 - meetings)`
-- 🎮 **Debugging motto** - "It's not a bug, it's a feature request from production"
-- 🌙 **Peak coding hours** - 11 PM to 2 AM (the code just hits different)
-- 🔄 **Favorite loop** - `while(true) { learn(); build(); break_prod(); fix(); }`
-- 💬 **Most said phrase** - "But it worked in dev!"
-
-</td>
-</tr>
-</table>
-
-### 🤣 DevOps Memes I Live By
-
-```
-        Monday                    Friday
-     ┌─────────┐              ┌─────────┐
-     │ kubectl │              │ kubectl │
-     │ apply   │    ──────>   │ delete  │
-     │   -f    │              │   -f    │
-     └─────────┘              └─────────┘
-     "Let's deploy            "Let's rollback
-      new features!"           everything."
-```
-
-<p align="center">
-  <img src="https://img.shields.io/badge/🚫_No_Deployments-On_Fridays-FF0000?style=flat-square"/>
-  <img src="https://img.shields.io/badge/✅_Tested_in-Production-00FF00?style=flat-square"/>
-  <img src="https://img.shields.io/badge/📝_Documentation-Coming_Soon™-FFD700?style=flat-square"/>
-</p>
+- Built and maintained automation across large-scale enterprise environments, improving deployment reliability and reducing operational toil.
+- Experienced in CI/CD design, cloud infrastructure management, patch automation, and observability-driven troubleshooting.
+- Focused on building systems that are scalable, auditable, secure, and easy for teams to operate.
+- Strong ownership mindset with experience supporting production systems, incident response, and process automation.
 
 ### 📬 Let's Connect!
 
@@ -581,37 +550,12 @@ Java             ████░░░░░░░░░░░░░░░░░
 </p>
 
 <p align="center">
-  <i>"Looking for someone who can turn your infrastructure chaos into automated poetry? Let's talk!"</i>
+  <i>Interested in solving complex infrastructure and delivery challenges at scale.</i>
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=650&lines=Let's+build+reliable%2C+scalable+systems+together!;Automate+everything.+Sleep+peacefully.;If+it's+not+in+Git%2C+it+doesn't+exist!" alt="Footer" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=6366F1&center=true&vCenter=true&random=false&width=650&lines=Build+reliable+systems.;Automate+with+purpose.;Operate+with+confidence." alt="Footer" />
 </p>
-
----
-
-<!-- RCB Fan Section -->
-<div align="center">
-  <img src="https://img.shields.io/badge/🎽_RCB-2x%20IPL%20Champions%20(2025%20%26%202026)-E53935?style=for-the-badge&labelColor=1a1a2e" />
-  <br><br>
-  <h3> "✌️ SALA CUP NAMDU!" 🏆🏆</h3>
-
-```
-  Years of supporting RCB:  ████████████████████ 16+ years
-  Emotional damage:         ████████████████████ Maximum
-  Loyalty level:            ████████████████████ Unbreakable
-  Cups won:                 ██████████           2 (FINALLY! 🎉)
-
-  Status: From "Ee Sala Cup Namde" (meme) → "✌️SALA CUP NAMDU" (reality!)
-```
-
-  <i>Waited 18 years. Heart attacks every season. And then we won. TWICE. 🔥</i>
-  <br>
-  <i>My pipeline success rate is 99.9%, but my faith in RCB? 100%. Always.</i>
-  <br><br>
-  <img src="https://img.shields.io/badge/Play_Bold-🦁_RCB_Forever-E53935?style=flat-square"/>
-  <img src="https://img.shields.io/badge/❤️_Kohli-Forever_King-E53935?style=flat-square"/>
-</div>
 
 ---
 
